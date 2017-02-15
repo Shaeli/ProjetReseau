@@ -26,7 +26,6 @@ class ClientThread(Thread):
 			if not data: 
 				print("Plus de données, on sort !")
 				break
-
 			self.send(data) #Echo
 
 	#Fonction à utiliser pour envoyer un message en texte (utilise un encodage défini)
