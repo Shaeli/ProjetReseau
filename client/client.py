@@ -25,6 +25,10 @@ def client(): #Fonction client
 
 	sock.close()
 
+#Fonction pour envoyer un message string sur une socket
+def send(sock, message):
+	sock.send(message.encode("Utf8"))
+
 if __name__ == '__main__': #Connexion et appel à la fonction client
 	try:
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
