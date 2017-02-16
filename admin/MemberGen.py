@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
  
-from tkinter import *
-from tkinter import messagebox
+from Tkinter import *
+import tkMessageBox
 import hashlib 
 from os import chdir
 chdir(".")
@@ -10,9 +10,9 @@ chdir(".")
 #Fonction qui hache le mot de passe, et ajoute l'utilisateur en fin de fichier users.bdd
 def generationPasswd(name, passwd):
 	if name.get() == "" or passwd.get() == "":
-		messagebox.showerror("Member Generator", "Champ manquant !")
+		tkMessageBox.showerror("Member Generator", "Champ manquant !")
 	elif len(passwd.get()) <= 8:
-		messagebox.showerror("Member Generator", "Mot de passe trop court !")
+		tkMessageBox.showerror("Member Generator", "Mot de passe trop court !")
 	else:
 		#cryptage du mot de passe
 		mdp = passwd.get()
@@ -28,7 +28,7 @@ def generationPasswd(name, passwd):
 		fd.write(crypted)
 		fd.write("\n")
 		fd.close()
-		messagebox.showinfo("Member Generator", "Le nouvel utilisateur a été généré...\nNoubliez pas le mot de passe !")
+		tkMessageBox.showinfo("Member Generator", "Le nouvel utilisateur a été généré...\nNoubliez pas le mot de passe !")
 
 fenetre = Tk() #Fenetre principale
 fenetre.title("Member Generator")
