@@ -18,11 +18,15 @@ def client(): #Fonction client
 		data = input("<client>")
 		if data == "quit":
 			break
-		sock.send(bytes(data,'UTF-8'))
-		data = sock.recv(BUFFER_SIZE)
+		send(sock, data)
+		data = sock.recv(BUFFER_SIZE).decode("Utf-8")
 		print('<server>',str(data))
 
 	sock.close()
+
+#Fonction pour envoyer un message string sur une socket
+def send(sock, message):
+	sock.send(message.encode("Utf8"))
 
 if __name__ == '__main__': #Connexion et appel à la fonction client
 	try:
