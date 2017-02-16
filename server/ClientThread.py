@@ -23,9 +23,12 @@ class ClientThread(Thread):
 		while 1:
 			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
 			print(data)
+			if data == "commandes" :
+				Command.commandes_server()
 			if not data: 
 				print("Plus de données, on sort !")
 				break
+
 			self.send(data) #Echo
 
 	#Fonction à utiliser pour envoyer un message en texte (utilise un encodage défini)

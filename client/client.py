@@ -7,6 +7,17 @@ TCP_IP = "127.0.0.1"
 TCP_PORT = 8888
 BUFFER_SIZE = 50
 
+def commandes_client():
+	sock.send("commandes")
+	mess=raw_input("Tapez la commande que vous voulez effectuer.\nSont actuellement supportés les commandes ls et cd")
+	mess=mess.rstrip()
+	if mess == "cd":
+		sock.send(mess)
+	elif mess == "ls":
+		sock.send(mess)
+	else:
+		print("Cette commande n'est pas supporte pour le moment! Revenez plus tard.")
+
 
 
 def client(): #Fonction client
@@ -18,6 +29,8 @@ def client(): #Fonction client
 		data = sys.stdin.readline()
 		if data == "quit\n":
 			break
+		elif data == "commandes":
+			commandes_client()
 		sock.send(data)
 		data = sock.recv(BUFFER_SIZE)
 		sys.stdout.write('<server>')
