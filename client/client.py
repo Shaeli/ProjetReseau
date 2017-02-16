@@ -14,13 +14,14 @@ def client(): #Fonction client
 	print("Adresse IP : " + str(TCP_IP) + "\n")
 
 	while True: #Boucle communication simple
-		#print('<client>')
-		data = input("<client>")
-		if data == "quit":
+		sys.stdout.write('<client>')
+		data = sys.stdin.readline()
+		if data == "quit\n":
 			break
-		sock.send(bytes(data,'UTF-8'))
+		sock.send(data)
 		data = sock.recv(BUFFER_SIZE)
-		print('<server>',str(data))
+		sys.stdout.write('<server>')
+		sys.stdout.write(data)
 
 	sock.close()
 
