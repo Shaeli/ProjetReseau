@@ -2,12 +2,11 @@
 # -*-coding:Utf8 -*
 
 import socket, sys
+import commandclient
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8888
-BUFFER_SIZE = 50
-
-
+BUFFER_SIZE = 2048
 
 def client(): #Fonction client
 	print("Connexion sur le port " + str(TCP_PORT) + "\n") 
@@ -16,12 +15,16 @@ def client(): #Fonction client
 	while True: #Boucle communication simple
 		sys.stdout.write('<client>')
 		data = sys.stdin.readline()
-		if data == "quit\n":
+		data=data.rstrip()
+		if data == "quit":
 			break
-		sock.send(data)
-		data = sock.recv(BUFFER_SIZE)
-		sys.stdout.write('<server>')
-		sys.stdout.write(data)
+		elif data == "commandes":
+			commandclient.commandes_client(sock)
+		else:	
+			send(sock,data)
+			data = sock.recv(BUFFER_SIZE)
+			sys.stdout.write('<server>')
+			sys.stdout.write(data)
 
 	sock.close()
 
