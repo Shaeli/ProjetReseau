@@ -17,6 +17,7 @@ def commandes_server(self,clientsocket):
 		for mot in res :
 			tampon = tampon + mot
 		send(self,tampon,clientsocket)
+		send(self,"\n",clientsocket)
 		del tampon
 	if data[0] == "cd" :
 		print 'cd en cours'
