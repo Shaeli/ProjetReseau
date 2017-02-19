@@ -18,7 +18,6 @@ def client(): #Fonction client
 	send(sock,id_cli)
 	mdp_cli=getpass("mdp : ")
 	mdp_hash=md5.new(mdp_cli).hexdigest()
-	#print mdp_hash
 	send(sock,str(mdp_hash))
 	#print "mdp hache : " + str(hashlib.sha256("azerty").digest)
 	#print "mdp tappe " + str(mdp_cli)
