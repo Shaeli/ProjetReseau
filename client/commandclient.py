@@ -33,7 +33,7 @@ def utilisateur(sock):
 	while mdp_new1!=mdp_new2:
 		mdp_new1=getpass("mot de passe utilisateur :")
 		mdp_new2=getpass("retaper le mot de passe")
-		if mdp_new2!=mdp_new2:
+		if mdp_new1!=mdp_new2:
 			print "Les mots de passe ne correspondent pas, veuillez le rentrer a nouveau"
 	send(sock,id_new+";"+md5.new(mdp_new2).hexdigest())
 	print "personnel ajoute a la base de donnee"
