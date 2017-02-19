@@ -32,11 +32,13 @@ def client(): #Fonction client
 				break
 			elif data == "commandes":
 				commandclient.commandes_client(sock)
+			elif data == "ajout utilisateur":
+				commandclient.utilisateur(sock)
 			else:	
 				send(sock,data)
-				data = sock.recv(BUFFER_SIZE)
-				sys.stdout.write('<server>')
-				sys.stdout.write(data)
+				#data = sock.recv(BUFFER_SIZE)
+				#sys.stdout.write('<server>')
+				#sys.stdout.write(data)
 	else:
 		print "mauvais mot de passe connexion annulee"
 	sock.close()

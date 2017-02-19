@@ -23,6 +23,6 @@ while 1:
 	newthread.start()
 	threads.append(newthread)
 
-print("Fin de la connection")
+print("Fin de la connexion")
 conn.close()
 serv.close()

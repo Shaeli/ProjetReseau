@@ -27,7 +27,7 @@ class ClientThread(Thread):
 			(id_base,mdp_base)=line.split(";")
 			if (id_base==id_cli and mdp_base==mdp_cli):
 				accepted=True
-
+		user_base.close()
 		if accepted:
 			self.send("access granted")
 		else:
@@ -41,6 +41,9 @@ class ClientThread(Thread):
 			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
 			if data == "commandes" :
 				Command.commandes_server(self,self.clientsocket)
+			if data == "ajout utilisateur" :
+				print "salut"
+				Command.gestion_base(self,self.clientsocket)
 			if not data: 
 				print("Plus de données, on sort !")
 				break
