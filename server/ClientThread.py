@@ -18,15 +18,15 @@ class ClientThread(Thread):
 		self.ip = ip
 		self.port = port
 		self.clientsocket = clientsocket
-		id_cli=self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-		mdp_cli=self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+		id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+		mdp_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 
-		user_base=open("user_base.txt","r")
-		accepted=False
+		user_base = open("users.bdd","r")
+		accepted = False
 		for line in user_base.read().split("\n"):
-			(id_base,mdp_base)=line.split(";")
-			if (id_base==id_cli and mdp_base==mdp_cli):
-				accepted=True
+			(id_base, mdp_base) = line.split(';')
+			if (id_base == id_cli and mdp_base == mdp_cli):
+				accepted = True
 		user_base.close()
 		if accepted:
 			self.send("access granted")

@@ -3,7 +3,7 @@
  
 from Tkinter import *
 import tkMessageBox
-import hashlib 
+import md5
 from os import chdir
 chdir(".")
 
@@ -11,22 +11,22 @@ chdir(".")
 def generationPasswd(name, passwd):
 	if name.get() == "" or passwd.get() == "":
 		tkMessageBox.showerror("Member Generator", "Champ manquant !")
-	elif len(passwd.get()) <= 8:
+	elif len(passwd.get()) < 8:
 		tkMessageBox.showerror("Member Generator", "Mot de passe trop court !")
 	else:
 		#cryptage du mot de passe
 		mdp = passwd.get()
 		mdp = str(mdp)
 		mdp = mdp.encode("Utf-8")
-		hash = hashlib.sha256(mdp)
+		hash = md5.new(mdp)
 		crypted = hash.hexdigest() #Voilà la chaine cryptée en sha256
 
 		#Ajout de l'utilisateur dans le fichier
 		fd = open("users.bdd", 'a')
+		fd.write("\n")
 		fd.write(name.get())
 		fd.write(";")
 		fd.write(crypted)
-		fd.write("\n")
 		fd.close()
 		tkMessageBox.showinfo("Member Generator", "Le nouvel utilisateur a été généré...\nNoubliez pas le mot de passe !")
 
