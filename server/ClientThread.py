@@ -41,6 +41,8 @@ class ClientThread(Thread):
 				break
 
 			#self.send(data) #Echo
+		#Fermeture de connexion
+		self.clientsocket.close()
 
 	#Fonction à utiliser pour envoyer un message en texte (utilise un encodage défini)
 	def send(self, message):

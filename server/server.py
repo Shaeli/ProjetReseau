@@ -17,7 +17,7 @@ serv.bind((TCP_IP, TCP_PORT)) #Binding de la socket
 threads = []
 user_list={"root":"azerty"}
 while 1:
-	print "actuelement "+str(len(threads))+" clients connectes"
+	print "actuellement "+str(len(threads))+" clients connectes"
 	serv.listen(10)
 	(conn, (ip, port)) = serv.accept()
 	newthread = ClientThread.ClientThread(ip, port, conn,user_list)
