@@ -18,10 +18,11 @@ class ClientThread(Thread):
 		self.ip = ip
 		self.port = port
 		self.clientsocket = clientsocket
+
+		#Tentative de connection du client via id et mdp
 		id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 		mdp_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-
-		user_base = open("users.bdd","r")
+		user_base = open("server/ressources/users.bdd","r")
 		accepted = False
 		for line in user_base.read().split("\n"):
 			(id_base, mdp_base) = line.split(';')
@@ -41,8 +42,6 @@ class ClientThread(Thread):
 			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
 			if data == "commandes" :
 				Command.commandes_server(self,self.clientsocket)
-			if data == "ajout utilisateur" :
-				Command.gestion_base(self,self.clientsocket)
 			if not data: 
 				print("Plus de données, on sort !")
 				break
