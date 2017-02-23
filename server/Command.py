@@ -16,6 +16,8 @@ def commandes_server(self,clientsocket):
 	data=data.split(" ")
 	if data[0] == "ls":
 		chn = " ".join(data)
+		chn = chn + " " + self.path
+		print chn
 		res = os.popen(chn).readlines()
 		for mot in res :
 			tampon = tampon + mot

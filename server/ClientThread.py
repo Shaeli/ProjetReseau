@@ -20,6 +20,7 @@ class ClientThread(Thread):
 		self.clientsocket = clientsocket
 		id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 		mdp_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+		self.path = "./data"
 
 		user_base = open("users.bdd","r")
 		accepted = False
