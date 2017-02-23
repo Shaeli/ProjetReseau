@@ -14,29 +14,39 @@ def client(): #Fonction client
 	print("Connexion sur le port " + str(TCP_PORT) + "\n") 
 	print("Adresse IP : " + str(TCP_IP) + "\n")
 
+	#Connection via id et mdp
 	id_cli = raw_input("ID : ")
 	send(sock,id_cli)
 	mdp_cli = getpass("mdp : ")
 	mdp_hash = md5.new(mdp_cli).hexdigest()
 	send(sock,str(mdp_hash))
 
+	#Si on accepte l'accès au serveur
 	if sock.recv(BUFFER_SIZE) == "access granted":
 		print "acces autorisé"
-		while True: #Boucle communication simple
+
+		#Boucle communication simple fininie
+		while True: 
 			sys.stdout.write('<client>')
+
+			#Récupération des données
 			data = sys.stdin.readline()
 			data=data.rstrip()
+
+			#Si quit, on quitte le prgramme en fermant la socket
 			if data == "quit":
 				break
+			#Si commandes, on lance l'état commande chez le client
 			elif data == "commandes":
 				commandclient.commandes_client(sock)
-			elif data == "ajout utilisateur":
-				commandclient.utilisateur(sock)
+			#Sinon on envoit les données écrites au serveur
 			else:	
 				send(sock,data)
 
 	else:
 		print "mauvais mot de passe connexion annulee"
+
+	#Fermeture de la socket
 	sock.close()
 
 #Fonction pour envoyer un message string sur une socket

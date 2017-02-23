@@ -13,6 +13,9 @@ def commandes_client(sock):
 	mess=raw_input("Tapez la commande que vous voulez effectuer.\nSont actuellement supportés les commandes ls, cd, mv, cat\n")
 	mess=mess.rstrip()
 	mess=mess.split(" ")
+
+	#Listes des fonctions implémentées
+
 	if mess[0] == "cd":
 		chn = " ".join(mess)
 		send(sock,chn)
@@ -33,21 +36,7 @@ def commandes_client(sock):
 		send(sock,chn)
 	else:
 		print("Cette commande n'est pas supporte pour le moment! Revenez plus tard.")
-	
 
-def utilisateur(sock):
-	send(sock,"ajout utilisateur")
-	print("ajout d'un utilisateur : \n")
-	id_new=raw_input("nom d'utilisateur : ")
-	mdp_new2="a"
-	mdp_new1="b"
-	while mdp_new1!=mdp_new2:
-		mdp_new1=getpass("mot de passe utilisateur :")
-		mdp_new2=getpass("retaper le mot de passe")
-		if mdp_new1!=mdp_new2:
-			print "Les mots de passe ne correspondent pas, veuillez le rentrer a nouveau"
-	send(sock,id_new+";"+md5.new(mdp_new2).hexdigest())
-	print "personnel ajoute a la base de donnee"
 	
 #Fonction pour envoyer un message string sur une socket
 def send(sock, message):
