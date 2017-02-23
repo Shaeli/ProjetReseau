@@ -14,16 +14,13 @@ def client(): #Fonction client
 	print("Connexion sur le port " + str(TCP_PORT) + "\n") 
 	print("Adresse IP : " + str(TCP_IP) + "\n")
 
-	id_cli=raw_input("ID : ")
+	id_cli = raw_input("ID : ")
 	send(sock,id_cli)
-	mdp_cli=getpass("mdp : ")
-	mdp_hash=md5.new(mdp_cli).hexdigest()
-	#print mdp_hash
+	mdp_cli = getpass("mdp : ")
+	mdp_hash = md5.new(mdp_cli).hexdigest()
 	send(sock,str(mdp_hash))
-	#print "mdp hache : " + str(hashlib.sha256("azerty").digest)
-	#print "mdp tappe " + str(mdp_cli)
 
-	if sock.recv(BUFFER_SIZE)=="access granted":
+	if sock.recv(BUFFER_SIZE) == "access granted":
 		print "acces autorisé"
 		while True: #Boucle communication simple
 			sys.stdout.write('<client>')
@@ -33,11 +30,11 @@ def client(): #Fonction client
 				break
 			elif data == "commandes":
 				commandclient.commandes_client(sock)
+			elif data == "ajout utilisateur":
+				commandclient.utilisateur(sock)
 			else:	
 				send(sock,data)
-				data = sock.recv(BUFFER_SIZE)
-				sys.stdout.write('<server>')
-				sys.stdout.write(data)
+
 	else:
 		print "mauvais mot de passe connexion annulee"
 	sock.close()
