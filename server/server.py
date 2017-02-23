@@ -6,7 +6,10 @@ import socket
 from threading import Thread
 from socket import error as SocketError
 import errno
+import sys
 
+reload(sys)  
+sys.setdefaultencoding('utf8')
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8888
