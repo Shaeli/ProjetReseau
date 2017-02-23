@@ -8,23 +8,36 @@ from os import chdir
 from os import system
 import os
 from getpass import getpass
-BUFFER_SIZE = 2048
+BUFFER_SIZE = 4024
 
 def commandes_server(self,clientsocket):
 	tampon = " "
 	data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-	if data == "ls":
-		res = os.popen("/bin/ls").readlines()
+	data=data.split(" ")
+	if data[0] == "ls":
+		chn = " ".join(data)
+		res = os.popen(chn).readlines()
 		for mot in res :
 			tampon = tampon + mot
 		send(self,tampon,clientsocket)
 		send(self,"\n",clientsocket)
 		del tampon
 	if data[0] == "cd" :
-		print 'cd en cours'
-		os.system(data)
+		os.chdir(data[1])
+	if data[0] == "cat" :
+		chn = " ".join(data)
+		res = os.popen(chn).readlines()
+		for mot in res :
+			tampon = tampon + mot
+		send(self,tampon,clientsocket)
+		send(self,"\n",clientsocket)
+		del tampon
+	if data[0] == "mv" :
+		chn = " ".join(data)
+		os.system(chn)
+
+
 def gestion_base(self,clientsocket):
-	print "yolo"
 	id_new=clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 	base=open("user_base.txt","a")
 	base.write("\n"+id_new)

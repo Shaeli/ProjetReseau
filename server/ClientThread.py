@@ -8,7 +8,7 @@ import errno
 import Command
 import md5
 
-BUFFER_SIZE = 2048
+BUFFER_SIZE = 4024
 
 #Classe de thread d'un client
 class ClientThread(Thread):
@@ -42,7 +42,6 @@ class ClientThread(Thread):
 			if data == "commandes" :
 				Command.commandes_server(self,self.clientsocket)
 			if data == "ajout utilisateur" :
-				print "salut"
 				Command.gestion_base(self,self.clientsocket)
 			if not data: 
 				print("Plus de données, on sort !")
