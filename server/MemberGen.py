@@ -14,12 +14,12 @@ def generationPasswd(name, passwd):
 	elif len(passwd.get()) < 8:
 		tkMessageBox.showerror("Member Generator", "Mot de passe trop court !")
 	else:
-		#cryptage du mot de passe
+		#cryptage du mot de passe en md5
 		mdp = passwd.get()
 		mdp = str(mdp)
 		mdp = mdp.encode("Utf-8")
 		hash = md5.new(mdp)
-		crypted = hash.hexdigest() #Voilà la chaine cryptée en sha256
+		crypted = hash.hexdigest()
 
 		#Ajout de l'utilisateur dans le fichier
 		fd = open("users.bdd", 'a')
@@ -30,15 +30,19 @@ def generationPasswd(name, passwd):
 		fd.close()
 		tkMessageBox.showinfo("Member Generator", "Le nouvel utilisateur a été généré...\nNoubliez pas le mot de passe !")
 
+
+
+#Main
 fenetre = Tk() #Fenetre principale
 fenetre.title("Member Generator")
 
 #Déclaration des variables
 name = StringVar()
 passwd = StringVar() 
-
 name.set("Nom utilisateur")
 passwd.set("Password")
+
+#Les élements de la fenètre
 entreeName = Entry(fenetre, textvariable = name, width = 30)
 entreePass = Entry(fenetre, textvariable = passwd, show = "*", width = 30)
 
