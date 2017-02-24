@@ -25,29 +25,50 @@ def commandes_server(self,clientsocket):
 		send(self,"\n",clientsocket)
 		del tampon
 	elif data[0] == "cd" :
-		if data[1] == ".." :
-			if self.path != "./data" :
-				path=self.path.split("/")
-				self.path=""
-				for i in range(0,len(path)-1):
-					self.path=self.path+path[i]
-					self.path=self.path+"/"
+		ls ="ls" + " " + self.path
+		lst = os.popen(ls).readlines()
+		for i, item in enumerate(lst) :
+			lst[i] = item.rstrip()
+		if (data[1] in lst) or (data[1] == "..") :
+			if data[1] == ".." :
+				if self.path != "./data" :
+					path=self.path.split("/")
+					self.path=""
+					for i in range(0,len(path)-1):
+						self.path=self.path+path[i]
+						self.path=self.path+"/"
+			else :
+				self.path = self.path + "/" + data[1]
 		else :
-			self.path = self.path + "/" + data[1]
+			print("pas de changement de path car cd pas bon")
 	elif data[0] == "cat" :
-		data[1]=self.path+"/"+data[1]
-		chn = " ".join(data)
-		res = os.popen(chn).readlines()
-		for mot in res :
-			tampon = tampon + mot
-		send(self,tampon,clientsocket)
-		send(self,"\n",clientsocket)
-		del tampon
+		ls ="ls" + " " + self.path
+		lst = os.popen(ls).readlines()
+		for i, item in enumerate(lst) :
+			lst[i] = item.rstrip()
+		if (data[1] in lst) :
+			data[1]=self.path+"/"+data[1]
+			chn = " ".join(data)
+			res = os.popen(chn).readlines()
+			for mot in res :
+				tampon = tampon + mot
+			send(self,tampon,clientsocket)
+			send(self,"\n",clientsocket)
+			del tampon
+		else :
+			send(self,"le fichier n'existe pas il n'est pas possible de cat\n",clientsocket)
 	elif data[0] == "mv" :
-		data[1]=self.path+"/"+data[1]
-		data[2]=self.path+"/"+data[2]
-		chn = " ".join(data)
-		os.system(chn)
+		ls ="ls" + " " + self.path
+		lst = os.popen(ls).readlines()
+		for i, item in enumerate(lst) :
+			lst[i] = item.rstrip()
+		if (data[1] in lst) :
+			data[1]=self.path+"/"+data[1]
+			data[2]=self.path+"/"+data[2]
+			chn = " ".join(data)
+			os.system(chn)
+		else :
+			print("fichier inconnu")
 	else:
 		print "connais pas"
 
