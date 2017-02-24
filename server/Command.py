@@ -52,6 +52,8 @@ def commandes_server(self,clientsocket):
 			res = os.popen(chn).readlines()
 			for mot in res :
 				tampon = tampon + mot
+			taille= len(tampon)/4024
+			tampon = str(taille) + tampon
 			send(self,tampon,clientsocket)
 			send(self,"\n",clientsocket)
 			del tampon
