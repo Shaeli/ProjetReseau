@@ -24,6 +24,7 @@ def commandes_server(self,clientsocket):
 		send(self,tampon,clientsocket)
 		send(self,"\n",clientsocket)
 		del tampon
+
 	if data[0] == "cd" :
 		if data[1] == ".." :
 			path=self.path.split("/")
@@ -43,6 +44,7 @@ def commandes_server(self,clientsocket):
 		send(self,tampon,clientsocket)
 		send(self,"\n",clientsocket)
 		del tampon
+		
 	if data[0] == "mv" :
 		data[1]=self.path+"/"+data[1]
 		data[2]=self.path+"/"+data[2]
