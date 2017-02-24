@@ -6,12 +6,12 @@
 ##Fonctionnalités de base
 
 ### Client
-- [ ] Saisie Login et mdp
-- [ ] Execution des commandes classiques (ls, mv etc..)
+- [X] Saisie Login et mdp
+- [X] Execution des commandes classiques (ls, mv etc..)
 
 ### Serveur
-- [ ] Authentification des clients
-- [ ] Reception et execution des commandes reçues par le(s) client(s)
+- [X] Authentification des clients
+- [X] Reception et execution des commandes reçues par le(s) client(s)
 
 ***
 
@@ -26,9 +26,20 @@
 ## Roadmap
 
 Deux équipes travaillent en parallèle, l'une sur tout ce qui est connection entre les deux entités, l'autre sur la partie fonctionnement.
-- [ ] Etape 1 : Serveur multithreadé et connection client basique (echo sans authentification)    (Moins d'une semaine)
-- [ ] Etape 2 : Connection par mot de passe - Implémentation des commandes classiques             (1 semaine)
-- [ ] Etape 3 : Connection chiffrée via certificat - Dépot de documents                           (2 semaines)
-- [ ] Etape 4 : Chiffrement local des documents - Editions de documents                           (1-2 semaines)
-- [ ] Etape 5 : Envoit de flux graphiques - Gestion des droits utilisateurs                       (2 semaines)
-- [ ] Etape 6 : Ajout de fonctionnalités
+
+Etapes achevés:
+- [X] Etape 1 : Serveur multithreadé et connection client basique (echo sans authentification)    (Moins d'une semaine)
+- [X] Etape 2 : Connection par mot de passe - Implémentation des commandes classiques             (1 semaine)
+
+Etapes en cours:
+- [ ] Etape 3 : Connection chiffrée via certificat                                                (2 semaines)
+- [ ] Etape : Faire de la place au niveaux des thread
+- [ ] Etape : Comptabilité Windows
+- [ ] Etape : Ergonomie dans les commandes + test d'exception
+
+
+Etapes futures:
+- [ ] Etape : Dépot de documents
+- [ ] Etape : Chiffrement local des documents - Editions de documents                           (1-2 semaines)
+- [ ] Etape : Envoit de flux graphiques - Gestion des droits utilisateurs                       (2 semaines)
+- [ ] Etape : Ajout de fonctionnalités
