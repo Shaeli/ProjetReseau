@@ -12,7 +12,7 @@ from getpass import getpass
 BUFFER_SIZE = 4024
 
 def commandes_server(self,clientsocket):
-	tampon = " "
+	tampon = ""
 	data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 	data=data.split(" ")
 	if data[0] == "ls":
@@ -24,17 +24,17 @@ def commandes_server(self,clientsocket):
 		send(self,tampon,clientsocket)
 		send(self,"\n",clientsocket)
 		del tampon
-	if data[0] == "cd" :
+	elif data[0] == "cd" :
 		if data[1] == ".." :
-			path=self.path.split("/")
-			self.path=""
-			for i in range(0,len(path)-1):
-				self.path=self.path+path[i]
-				self.path=self.path+"/"
+			if self.path != "./data" :
+				path=self.path.split("/")
+				self.path=""
+				for i in range(0,len(path)-1):
+					self.path=self.path+path[i]
+					self.path=self.path+"/"
 		else :
 			self.path = self.path + "/" + data[1]
-
-	if data[0] == "cat" :
+	elif data[0] == "cat" :
 		data[1]=self.path+"/"+data[1]
 		chn = " ".join(data)
 		res = os.popen(chn).readlines()
@@ -43,12 +43,13 @@ def commandes_server(self,clientsocket):
 		send(self,tampon,clientsocket)
 		send(self,"\n",clientsocket)
 		del tampon
-	if data[0] == "mv" :
+	elif data[0] == "mv" :
 		data[1]=self.path+"/"+data[1]
 		data[2]=self.path+"/"+data[2]
 		chn = " ".join(data)
 		os.system(chn)
-
+	else:
+		print "connais pas"
 
 #Fonction à utiliser pour envoyer un message en texte (utilise un encodage défini)
 def send(self, message,clientsocket):

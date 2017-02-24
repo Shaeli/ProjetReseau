@@ -5,6 +5,7 @@ import socket, sys
 import commandclient
 import md5
 from getpass import getpass
+import time
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8888
@@ -32,13 +33,15 @@ def client(): #Fonction client
 			#Récupération des données
 			data = sys.stdin.readline()
 			data=data.rstrip()
-
+			data=data.split(" ")
 			#Si quit, on quitte le prgramme en fermant la socket
 			if data == "quit":
 				break
 			#Si commandes, on lance l'état commande chez le client
-			elif data == "commandes":
-				commandclient.commandes_client(sock)
+			elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat":
+				send(sock,"commandes")
+				time.sleep(0.1)
+				commandclient.commandes_client(sock,data)
 			#Sinon on envoit les données écrites au serveur
 			else:	
 				send(sock,data)

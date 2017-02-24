@@ -41,6 +41,7 @@ class ClientThread(Thread):
 	#Fonction de boucle infinie
 	def run(self):
 		while 1:
+			print ("attente commande")
 			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
 			if data == "commandes" :
 				Command.commandes_server(self,self.clientsocket)
