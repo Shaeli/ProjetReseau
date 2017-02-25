@@ -9,7 +9,7 @@ from os import system
 import os
 from getpass import getpass
 
-BUFFER_SIZE = 4024
+BUFFER_SIZE = 2048
 
 def commandes_server(self,clientsocket):
 	tampon = ""
@@ -21,6 +21,8 @@ def commandes_server(self,clientsocket):
 		res = os.popen(chn).readlines()
 		for mot in res :
 			tampon = tampon + mot
+		taille= len(tampon)/BUFFER_SIZE
+		tampon = str(taille) + tampon
 		send(self,tampon,clientsocket)
 		send(self,"\n",clientsocket)
 		del tampon
@@ -52,7 +54,7 @@ def commandes_server(self,clientsocket):
 			res = os.popen(chn).readlines()
 			for mot in res :
 				tampon = tampon + mot
-			taille= len(tampon)/4024
+			taille= len(tampon)/BUFFER_SIZE
 			tampon = str(taille) + tampon
 			send(self,tampon,clientsocket)
 			send(self,"\n",clientsocket)

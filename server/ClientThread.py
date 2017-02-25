@@ -8,7 +8,7 @@ import errno
 import Command
 import md5
 
-BUFFER_SIZE = 4024
+BUFFER_SIZE = 2048
 
 #Classe de thread d'un client
 class ClientThread(Thread):
