@@ -20,10 +20,10 @@ def commandes_client(sock,mess):
 		send(sock,chn)
 		data = sock.recv(BUFFER_SIZE).decode("Utf8")
 		message=""
-		nb=data[0]
-		taille=len(data) 
+		nb = data[0]
+		taille = len(data) 
 		for i in range(taille-1) :
-			message=message+data[i+1]
+			message = message+data[i+1]
 		sys.stdout.write('<server>')
 		sys.stdout.write(message)
 		if int(nb) > 0 :
@@ -35,11 +35,11 @@ def commandes_client(sock,mess):
 		chn = " ".join(mess)
 		send(sock,chn)
 		data = sock.recv(BUFFER_SIZE).decode("Utf8")
-		message=""
-		nb=data[0]
+		message = ""
+		nb = data[0]
 		taille=len(data) 
 		for i in range(taille-1) :
-			message=message+data[i+1]
+			message = message+data[i+1]
 		sys.stdout.write('<server>')
 		sys.stdout.write(message)
 		if int(nb) > 0 :

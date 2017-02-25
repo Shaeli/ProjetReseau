@@ -32,8 +32,8 @@ def client(): #Fonction client
 
 			#Récupération des données
 			data = sys.stdin.readline()
-			data=data.rstrip()
-			data=data.split(" ")
+			data = data.rstrip()
+			data = data.split(" ")
 			#Si quit, on quitte le prgramme en fermant la socket
 			if data == "quit":
 				break
