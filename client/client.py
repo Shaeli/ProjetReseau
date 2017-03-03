@@ -9,49 +9,47 @@ import time
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8099
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 2048
 
 def client(): #Fonction client
 	print("Connexion sur le port " + str(TCP_PORT) + "\n") 
 	print("Adresse IP : " + str(TCP_IP) + "\n")
+	acces = "access denied"
+	while acces == "access denied" :
+	#Connection via id et mdp
+		id_cli = raw_input("ID : ")
+		send(ssl_sock,id_cli)
+		mdp_cli = getpass("mdp : ")
+		mdp_hash = md5.new(mdp_cli).hexdigest()
+		send(ssl_sock,str(mdp_hash))
 
-	ssl_sock.getpeername()
-	ssl_sock.cipher()
+		acces = ssl_sock.recv(BUFFER_SIZE)
+		if acces == "stop" : #trop de tentatives de connexions echoues, on coupe la connexion
+			print "mauvais mot de passe consécutifs, connexion annulee"
+			sock.close()
+		if acces == "access granted" : 	#Si on accepte l'accès au serveur
+			en_route()
 
-	#Connexion via id et mdp
-	id_cli = raw_input("ID : ")
-	send(ssl_sock, id_cli)
-	mdp_cli = getpass("mdp : ")
-	mdp_hash = md5.new(mdp_cli).hexdigest()
-	send(ssl_sock,str(mdp_hash))
 
-	#Si on accepte l'accès au serveur
-	if sock.recv(BUFFER_SIZE) == "access granted":
-		print "acces autorisé"
-
-		#Boucle communication simple finie
-	while True: 
-		#Récupération des données
-		data = input("<serveur>")
-		data=data.rstrip()
-		data=data.split(" ")
-		#Si quit, on quitte le prgramme en fermant la socket
+def en_route():
+	while True : 
+		sys.stdout.write('<client>')
+	#Récupération des données
+		data = sys.stdin.readline()
+		data = data.rstrip()
+		data = data.split(" ")
+	#Si quit, on quitte le prgramme en fermant la socket
 		if data == "quit":
 			break
-		#Si commandes, on lance l'état commande chez le client
+	#Si commandes, on lance l'état commande chez le client
 		elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat":
 			send(ssl_sock,"commandes")
 			time.sleep(0.1)
 			commandclient.commandes_client(ssl_sock,data)
-		#Sinon on envoit les données écrites au serveur
-		else:
-
-			send(ssl_sock,"reponse serveur")
-
-	else:
-		print "mauvais mot de passe connexion annulee"
 
 	#Fermeture de la socket
+
+	ssl_sock.close()
 	sock.close()
 
 #Fonction pour envoyer un message string sur une socket

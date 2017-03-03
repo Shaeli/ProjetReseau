@@ -22,7 +22,7 @@ def generationPasswd(name, passwd):
 		crypted = hash.hexdigest()
 
 		#Ajout de l'utilisateur dans le fichier
-		fd = open("users.bdd", 'a')
+		fd = open("ressources/users.bdd", 'a')
 		fd.write("\n")
 		fd.write(name.get())
 		fd.write(";")
