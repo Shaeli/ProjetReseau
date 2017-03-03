@@ -19,7 +19,7 @@ def commandes_client(sock,mess):
 		chn = " ".join(mess)
 		send(sock,chn)
 		data = sock.recv(BUFFER_SIZE).decode("Utf8")
-		message=""
+		message = ""
 		nb = data[0]
 		taille = len(data) 
 		for i in range(taille-1) :
