@@ -18,26 +18,32 @@ class ClientThread(Thread):
 		self.ip = ip
 		self.port = port
 		self.clientsocket = clientsocket
-
+		passages = 0
 		#Tentative de connection du client via id et mdp
-		id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-		mdp_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-		self.path = "./data"
-		user_base = open("server/ressources/users.bdd","r")
+		while passages < 4 :
+			id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			mdp_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			self.path = "./data"
+			user_base = open("server/ressources/users.bdd","r")
 
-		accepted = False
-		for line in user_base.read().split("\n"):
-			(id_base, mdp_base) = line.split(';')
-			if (id_base == id_cli and mdp_base == mdp_cli):
-				accepted = True
-		user_base.close()
-		if accepted:
-			self.send("access granted")
-		else:
-			self.send("access denied")
+			accepted = False
+			for line in user_base.read().split("\n"):
+				(id_base, mdp_base) = line.split(';')
+				if (id_base == id_cli and mdp_base == mdp_cli):
+					accepted = True
+			user_base.close()
+			if accepted:	
+				self.send("access granted")
+				passages = 8
 
-		print("Nouveau client : "+ id_cli + " sur : " + ip + " " + str(port))
+			else:
+				if passages == 3 :
+					self.send("stop")
+				else:
+					self.send("access denied")
 
+			print("Nouveau client : "+ id_cli + " sur : " + ip + " " + str(port))
+			passages=passages+1
 	#Fonction de boucle infinie
 	def run(self):
 		while 1:
@@ -47,7 +53,6 @@ class ClientThread(Thread):
 			if not data: 
 				print("Plus de données, on sort !")
 				break
-
 			#self.send(data) #Echo
 
 	#Fonction à utiliser pour envoyer un message en texte (utilise un encodage défini)
