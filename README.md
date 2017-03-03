@@ -40,6 +40,7 @@ Etapes en cours:
 
 Etapes futures:
 - [ ] Etape : Dépot de documents
+- [ ] Etape : Le client peut ajouter des donnees dans les fichiers
 - [ ] Etape : Chiffrement local des documents - Editions de documents                           (1-2 semaines)
 - [ ] Etape : Envoit de flux graphiques - Gestion des droits utilisateurs                       (2 semaines)
 - [ ] Etape : Ajout de fonctionnalités
