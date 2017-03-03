@@ -23,12 +23,11 @@ def client(): #Fonction client
 		mdp_hash = md5.new(mdp_cli).hexdigest()
 		send(sock,str(mdp_hash))
 
-	#Si on accepte l'accès au serveur
 		acces = sock.recv(BUFFER_SIZE)
-		if acces == "stop" :
+		if acces == "stop" : #trop de tentatives de connexions echoues, on coupe la connexion
 			print "mauvais mot de passe consécutifs, connexion annulee"
 			sock.close()
-		if acces == "access granted" :
+		if acces == "access granted" : 	#Si on accepte l'accès au serveur
 			en_route()
 
 

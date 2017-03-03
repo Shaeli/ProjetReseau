@@ -11,7 +11,7 @@ BUFFER_SIZE = 2048
 def commandes_client(sock,mess):
 
 
-	#Listes des fonctions implémentées
+	#Liste des commandes implémentées : cd, ls, cat, mv
 	if mess[0] == "cd":
 		chn = " ".join(mess)
 		send(sock,chn)
