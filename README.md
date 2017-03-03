@@ -34,8 +34,8 @@ Etapes achevés:
 Etapes en cours:
 - [ ] Etape 3 : Connection chiffrée via certificat                                                (2 semaines)
 - [ ] Etape : Faire de la place au niveaux des thread
-- [ ] Etape : Comptabilité Windows
-- [ ] Etape : Ergonomie dans les commandes + test d'exception
+- [X] Etape : Comptabilité Windows (client seulement)
+- [X] Etape : Ergonomie dans les commandes + test d'exception
 
 
 Etapes futures:
