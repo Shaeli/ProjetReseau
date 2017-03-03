@@ -21,24 +21,24 @@ def commandes_server(self,clientsocket):
 		res = os.popen(chn).readlines()
 		for mot in res :
 			tampon = tampon + mot
-		taille= len(tampon)/BUFFER_SIZE
+		taille = len(tampon)/BUFFER_SIZE
 		tampon = str(taille) + tampon
 		send(self,tampon,clientsocket)
 		send(self,"\n",clientsocket)
 		del tampon
 	elif data[0] == "cd" :
-		ls ="ls" + " " + self.path
+		ls = "ls" + " " + self.path
 		lst = os.popen(ls).readlines()
 		for i, item in enumerate(lst) :
 			lst[i] = item.rstrip()
 		if (data[1] in lst) or (data[1] == "..") :
 			if data[1] == ".." :
 				if self.path != "./data" :
-					path=self.path.split("/")
-					self.path=""
+					path = self.path.split("/")
+					self.path = ""
 					for i in range(0,len(path)-1):
-						self.path=self.path+path[i]
-						self.path=self.path+"/"
+						self.path = self.path+path[i]
+						self.path = self.path+"/"
 			else :
 				self.path = self.path + "/" + data[1]
 		else :
@@ -49,12 +49,12 @@ def commandes_server(self,clientsocket):
 		for i, item in enumerate(lst) :
 			lst[i] = item.rstrip()
 		if (data[1] in lst) :
-			data[1]=self.path+"/"+data[1]
+			data[1] = self.path+"/"+data[1]
 			chn = " ".join(data)
 			res = os.popen(chn).readlines()
 			for mot in res :
 				tampon = tampon + mot
-			taille= len(tampon)/BUFFER_SIZE
+			taille = len(tampon)/BUFFER_SIZE
 			tampon = str(taille) + tampon
 			send(self,tampon,clientsocket)
 			send(self,"\n",clientsocket)
@@ -67,8 +67,8 @@ def commandes_server(self,clientsocket):
 		for i, item in enumerate(lst) :
 			lst[i] = item.rstrip()
 		if (data[1] in lst) :
-			data[1]=self.path+"/"+data[1]
-			data[2]=self.path+"/"+data[2]
+			data[1] = self.path+"/"+data[1]
+			data[2] = self.path+"/"+data[2]
 			chn = " ".join(data)
 			os.system(chn)
 		else :

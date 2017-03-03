@@ -27,7 +27,7 @@ def commandes_client(sock,mess):
 		sys.stdout.write('<server>')
 		sys.stdout.write(message)
 		if int(nb) > 0 :
-			a=int(nb) 
+			a = int(nb) 
 			for i in range(a):
 				data = sock.recv(BUFFER_SIZE).decode("Utf8")
 				sys.stdout.write(data)
@@ -37,7 +37,7 @@ def commandes_client(sock,mess):
 		data = sock.recv(BUFFER_SIZE).decode("Utf8")
 		message = ""
 		nb = data[0]
-		taille=len(data) 
+		taille = len(data) 
 		for i in range(taille-1) :
 			message = message+data[i+1]
 		sys.stdout.write('<server>')
