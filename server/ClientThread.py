@@ -6,7 +6,7 @@ from threading import Thread
 from socket import error as SocketError
 import errno
 import Command
-import md5
+import md5, ssl
 
 BUFFER_SIZE = 4024
 
