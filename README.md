@@ -28,19 +28,25 @@
 Deux équipes travaillent en parallèle, l'une sur tout ce qui est connection entre les deux entités, l'autre sur la partie fonctionnement.
 
 Etapes achevés:
-- [X] Etape 1 : Serveur multithreadé et connection client basique (echo sans authentification)    (Moins d'une semaine)
-- [X] Etape 2 : Connection par mot de passe - Implémentation des commandes classiques             (1 semaine)
 
-Etapes en cours:
-- [ ] Etape 3 : Connection chiffrée via certificat                                                (2 semaines)
-- [ ] Etape : Faire de la place au niveaux des thread
+- [X] Etape 1 : Serveur multithreadé et connection client basique (echo sans authentification)   
+- [X] Etape 2 : Connection par mot de passe - Implémentation des commandes classiques            
 - [X] Etape : Comptabilité Windows (client seulement)
 - [X] Etape : Ergonomie dans les commandes + test d'exception
+- [X] Etape 3 : Connection chiffrée via certificat   
+
+Etapes en cours:
+
+- [ ] Etape : Faire de la place au niveaux des thread
+- [ ] Etape : Le client peut ajouter des donnees dans les fichiers ~ en mode console
+- [ ] Etape : Rajouter mkdir et rm
+
 
 
 Etapes futures:
+
+- [ ] Client graphique ?? a voir
 - [ ] Etape : Dépot de documents
-- [ ] Etape : Le client peut ajouter des donnees dans les fichiers
-- [ ] Etape : Chiffrement local des documents - Editions de documents                           (1-2 semaines)
-- [ ] Etape : Envoit de flux graphiques - Gestion des droits utilisateurs                       (2 semaines)
+- [ ] Etape : Chiffrement local des documents - Editions de documents                     
+- [ ] Etape : Envoit de flux graphiques - Gestion des droits utilisateurs                 
 - [ ] Etape : Ajout de fonctionnalités
