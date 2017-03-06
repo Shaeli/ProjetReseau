@@ -38,7 +38,7 @@ Etapes achevés:
 Etapes en cours:
 
 - [ ] Etape : Faire de la place au niveaux des thread
-- [ ] Etape : Le client peut ajouter des donnees dans les fichiers ~ en mode console
+- [X] Etape : Le client peut ajouter des donnees dans les fichiers ~ en mode console
 - [ ] Etape : Rajouter mkdir et rm
 
 
