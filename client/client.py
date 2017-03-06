@@ -42,7 +42,7 @@ def en_route():
 		if data == "quit":
 			break
 	#Si commandes, on lance l'état commande chez le client
-		elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat":
+		elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm":
 			send(ssl_sock,"commandes")
 			time.sleep(0.1)
 			commandclient.commandes_client(ssl_sock,data)

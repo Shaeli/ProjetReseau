@@ -11,7 +11,7 @@ from getpass import getpass
 
 BUFFER_SIZE = 2048
 
-def commandes_server(self,clientsocket):
+def commandes_server(self, clientsocket):
 	tampon = ""
 	data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 	data=data.split(" ")
@@ -22,9 +22,8 @@ def commandes_server(self,clientsocket):
 		for mot in res :
 			tampon = tampon + mot
 		taille = len(tampon)/BUFFER_SIZE
-		tampon = str(taille) + tampon
+		tampon = str(taille) + tampon + "\n"
 		send(self,tampon,clientsocket)
-		send(self,"\n",clientsocket)
 		del tampon
 
 	elif data[0] == "cd" :
@@ -74,6 +73,20 @@ def commandes_server(self,clientsocket):
 			os.system(chn)
 		else :
 			print("fichier inconnu")
+	elif data[0] == "rm" :
+		if data[1] == "-R":
+			try:
+				os.rmtree(self.path+"/"+data[2] + "/")
+				send(self,"Suppression effectuée.\n", clientsocket)
+			except Exception as e:
+				send(self,"Impossible de supprimer le dossier, erreur.\n", clientsocket)
+		else:
+			try:
+				os.remove(self.path+"/"+data[1])
+				send(self,"Suppression effectuée.\n", clientsocket)
+			except Exception as e:
+				send(self,"Impossible de supprimer le fichier, erreur.\n", clientsocket)
+				
 	else:
 		print "commande non reconnue"
 

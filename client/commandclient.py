@@ -50,6 +50,12 @@ def commandes_client(sock,mess):
 	elif mess[0] == "mv":
 		chn = " ".join(mess)
 		send(sock,chn)
+	elif mess[0] == "rm":
+		chn = " ".join(mess)
+		send(sock,chn)
+		data = sock.recv(BUFFER_SIZE).decode("Utf8")
+		sys.stdout.write('<server>')
+		sys.stdout.write(data)
 	
 #Fonction pour envoyer un message string sur une socket
 def send(sock, message):
