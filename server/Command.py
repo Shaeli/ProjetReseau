@@ -22,9 +22,9 @@ def commandes_server(self,clientsocket):
 		for mot in res :
 			tampon = tampon + mot
 		taille = len(tampon)/BUFFER_SIZE
-		tampon = str(taille) + tampon
+		tampon = str(taille) + tampon + "\n"
 		send(self,tampon,clientsocket)
-		send(self,"\n",clientsocket)
+		#send(self,"\n",clientsocket)
 		del tampon
 
 	elif data[0] == "cd" :

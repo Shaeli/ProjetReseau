@@ -39,7 +39,8 @@ def en_route():
 		data = data.rstrip()
 		data = data.split(" ")
 	#Si quit, on quitte le prgramme en fermant la socket
-		if data == "quit":
+		if data[0] == "quit":
+			print("\nFermeture de la socket client\n")
 			break
 	#Si commandes, on lance l'état commande chez le client
 		elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat":
@@ -48,9 +49,8 @@ def en_route():
 			commandclient.commandes_client(ssl_sock,data)
 
 	#Fermeture de la socket
-
-	ssl_sock.close()
 	sock.close()
+	ssl_sock.close()
 
 #Fonction pour envoyer un message string sur une socket
 def send(sock, message):
