@@ -1,15 +1,17 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
-import socket, sys
+import socket, sys, md5, ssl, time, readline
 import commandclient
-import md5, ssl
+import autocompletion as ac
+
 from getpass import getpass
-import time
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8099
 BUFFER_SIZE = 2048
+
+
 
 def client(): #Fonction client
 	print("Connexion sur le port " + str(TCP_PORT) + "\n") 
@@ -32,10 +34,14 @@ def client(): #Fonction client
 
 
 def en_route():
+	completer = ac.AutoCompleter(["ls", "cd", "cat", "mv"])
+	readline.set_completer(completer.complete)
+	readline.parse_and_bind('tab: complete')
 	while True : 
-		sys.stdout.write('<client>')
+		#sys.stdout.write('<client>')
 	#Récupération des données
-		data = sys.stdin.readline()
+		data = raw_input("<client>")
+		readline.add_history(data)
 		data = data.rstrip()
 		data = data.split(" ")
 	#Si quit, on quitte le prgramme en fermant la socket
@@ -62,4 +68,5 @@ if __name__ == '__main__': #Connexion et appel à la fonction client
 								ca_certs = "server/sslcertif/server.crt",
 								cert_reqs = ssl.CERT_REQUIRED)
 	ssl_sock.connect((TCP_IP, TCP_PORT))
+	
 	client()

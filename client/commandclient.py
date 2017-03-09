@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 from getpass import getpass
-import socket, sys
-import md5
+import socket, sys, md5
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8888
