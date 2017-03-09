@@ -8,6 +8,7 @@ from os import chdir
 from os import system
 import os
 from getpass import getpass
+import time
 
 BUFFER_SIZE = 2048
 
@@ -108,8 +109,8 @@ def commandes_server(self, clientsocket):
 				tampon = tampon + mot
 			taille = len(tampon)/BUFFER_SIZE
 			tampon = str(taille) + tampon
+			tampon = tampon + "\n"
 			send(self,tampon,clientsocket)
-			send(self,"\n",clientsocket)
 			del tampon
 			etat=True
 		else :

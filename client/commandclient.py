@@ -47,7 +47,6 @@ def commandes_client(sock,mess):
 			for i in range(a):
 				data = sock.recv(BUFFER_SIZE).decode("Utf8")
 				sys.stdout.write(data)
-		print('\n')
 	elif mess[0] == "mv":
 		chn = " ".join(mess)
 		send(sock,chn)
