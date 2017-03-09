@@ -27,8 +27,10 @@ def client(): #Fonction client
 		if acces == "stop" : #trop de tentatives de connexions echoues, on coupe la connexion
 			print "mauvais mot de passe consécutifs, connexion annulee"
 			sock.close()
+			break
 		if acces == "access granted" : 	#Si on accepte l'accès au serveur
 			en_route()
+		print "mauvaise combinaison ID/MdP, veuillez reessayer"
 
 
 def en_route():
