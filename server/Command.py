@@ -3,7 +3,7 @@
 
 import socket
 from socket import error as SocketError
-import errno
+import errno, shutil
 from os import chdir
 from os import system
 import os
@@ -76,7 +76,7 @@ def commandes_server(self, clientsocket):
 	elif data[0] == "rm" :
 		if data[1] == "-R":
 			try:
-				os.rmtree(self.path+"/"+data[2] + "/")
+				shutil.rmtree(self.path+"/"+data[2])
 				send(self,"Suppression effectuée.\n", clientsocket)
 			except Exception as e:
 				send(self,"Impossible de supprimer le dossier, erreur.\n", clientsocket)
