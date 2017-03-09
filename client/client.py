@@ -29,8 +29,11 @@ def client(): #Fonction client
 		if acces == "stop" : #trop de tentatives de connexions echoues, on coupe la connexion
 			print "mauvais mot de passe consécutifs, connexion annulee"
 			sock.close()
+			break
 		if acces == "access granted" : 	#Si on accepte l'accès au serveur
 			en_route()
+			break
+		print "mauvaise combinaison ID/MdP, veuillez reessayer"
 
 
 def en_route():
@@ -49,7 +52,7 @@ def en_route():
 			print("\nFermeture de la socket client\n")
 			break
 	#Si commandes, on lance l'état commande chez le client
-		elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm":
+		elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm" or data[0] == "touch" or data[0] == "add" or data[0] == "mkdir" :
 			send(ssl_sock,"commandes")
 			time.sleep(0.1)
 			commandclient.commandes_client(ssl_sock,data)

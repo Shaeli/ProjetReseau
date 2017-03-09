@@ -14,8 +14,9 @@ sys.setdefaultencoding('utf8')
 #Socket du serveur
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8099
-
+nb_cli=0
 threads = []
+tmp=[]
 
 
 context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
@@ -29,11 +30,15 @@ nosslserv.listen(10)
 #Boucle infinie d'écoute et de création de thread client
 while True:
 	(conn, (ip, port)) = nosslserv.accept()
-	sslconn = context.wrap_socket(conn,
-                             server_side = True)
+	sslconn = context.wrap_socket(conn,server_side = True)
 	newthread = ClientThread.ClientThread(ip, port, sslconn)
 	newthread.start()
 	threads.append(newthread)
+	nb_cli=0
+	for a in threads:
+		if str(a).find("started")!=-1:
+			nb_cli+=1
+	print "il y a actuellement "+str(nb_cli)+" client(s) connectes"
 
 #En cas de fin de connection
 print("Fin de la connexion")
