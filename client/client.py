@@ -30,6 +30,7 @@ def client(): #Fonction client
 			break
 		if acces == "access granted" : 	#Si on accepte l'accès au serveur
 			en_route()
+			break
 		print "mauvaise combinaison ID/MdP, veuillez reessayer"
 
 
