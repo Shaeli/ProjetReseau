@@ -1,19 +1,29 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 from getpass import getpass
-import socket, sys, md5
+import socket, sys , os
+import md5
+import subprocess
+
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8888
 BUFFER_SIZE = 2048
+
+path = ""
 
 def commandes_client(sock,mess):
 
 
 	#Liste des commandes implémentées : cd, ls, cat, mv
 	if mess[0] == "cd":
+		global path
 		chn = " ".join(mess)
 		send(sock,chn)
+		tmp = sock.recv(BUFFER_SIZE).decode("Utf8")
+		taille=len(tmp)
+		path=tmp[6:taille]
+
 	elif mess[0] == "ls":
 		chn = " ".join(mess)
 		send(sock,chn)
@@ -81,6 +91,12 @@ def commandes_client(sock,mess):
 			ajout = sys.stdin.readline()
 			ajout = ajout.rstrip()
 			send(sock,ajout)
+	elif mess[0] == "vim" :
+		chn = " ".join(mess) 
+		send(sock,chn)
+		myfile = "/tmp/" + mess[1]
+		print myfile 
+		os.system("vim "+ myfile)
 
 	
 #Fonction pour envoyer un message string sur une socket
