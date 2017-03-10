@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
-import socket
+import socket, Rights
 from socket import error as SocketError
 import errno, shutil
 from os import chdir
@@ -16,6 +16,11 @@ def commandes_server(self, clientsocket):
 	tampon = ""
 	data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 	data=data.split(" ")
+
+	#Partie gestion des droits
+	rights = Rights.Rights(self.path)
+
+
 	if data[0] == "ls":
 		chn = " ".join(data)
 		chn = chn + " " + self.path
@@ -44,56 +49,73 @@ def commandes_server(self, clientsocket):
 				self.path = self.path + "/" + data[1]
 		else :
 			print("pas de changement de path car cd pas bon")
+
 	elif data[0] == "cat" :
-		ls ="ls" + " " + self.path
-		lst = os.popen(ls).readlines()
-		for i, item in enumerate(lst) :
-			lst[i] = item.rstrip()
-		if (data[1] in lst) :
-			data[1] = self.path+"/"+data[1]
-			chn = " ".join(data)
-			res = os.popen(chn).readlines()
-			for mot in res :
-				tampon = tampon + mot
-			taille = len(tampon)/BUFFER_SIZE
-			tampon = str(taille) + tampon
-			send(self,tampon,clientsocket)
-			del tampon
-		else :
-			send(self,"le fichier n'existe pas il n'est pas possible de cat\n",clientsocket)
+		if rights.isReadable(self.rights):
+			ls ="ls" + " " + self.path
+			lst = os.popen(ls).readlines()
+			for i, item in enumerate(lst) :
+				lst[i] = item.rstrip()
+			if (data[1] in lst) :
+				data[1] = self.path+"/"+data[1]
+				chn = " ".join(data)
+				res = os.popen(chn).readlines()
+				for mot in res :
+					tampon = tampon + mot
+				taille = len(tampon)/BUFFER_SIZE
+				tampon = str(taille) + tampon
+				send(self,tampon,clientsocket)
+				del tampon
+			else :
+				send(self,"le fichier n'existe pas il n'est pas possible de cat\n",clientsocket)
+		else:
+			send(self,"0Droits de lectures insuffisants.\n",clientsocket)
+
 	elif data[0] == "mv" :
-		ls ="ls" + " " + self.path
-		lst = os.popen(ls).readlines()
-		for i, item in enumerate(lst) :
-			lst[i] = item.rstrip()
-		if (data[1] in lst) :
+		if rights.isWritable(self.rights):
+			ls ="ls" + " " + self.path
+			lst = os.popen(ls).readlines()
+			for i, item in enumerate(lst) :
+				lst[i] = item.rstrip()
+			if (data[1] in lst) :
+				data[1] = self.path+"/"+data[1]
+				data[2] = self.path+"/"+data[2]
+				chn = " ".join(data)
+				os.system(chn)
+			else :
+				print("fichier inconnu")
+
+	elif data[0] == "rm" :
+		if rights.isWritable(self.rights):
+			if data[1] == "-R":
+				try:
+					shutil.rmtree(self.path+"/"+data[2])
+					send(self,"Suppression effectuée.\n", clientsocket)
+				except Exception as e:
+					send(self,"Impossible de supprimer le dossier, erreur.\n", clientsocket)
+			else:
+				try:
+					os.remove(self.path+"/"+data[1])
+					send(self,"Suppression effectuée.\n", clientsocket)
+				except Exception as e:
+					send(self,"Impossible de supprimer le fichier, erreur.\n", clientsocket)
+		else:
+			send(self,"Droits d'écriture insuffisants.\n", clientsocket)
+
+	elif data[0] == "mkdir" :
+		if rights.isWritable(self.rights):
 			data[1] = self.path+"/"+data[1]
-			data[2] = self.path+"/"+data[2]
 			chn = " ".join(data)
 			os.system(chn)
-		else :
-			print("fichier inconnu")
-	elif data[0] == "rm" :
-		if data[1] == "-R":
-			try:
-				shutil.rmtree(self.path+"/"+data[2])
-				send(self,"Suppression effectuée.\n", clientsocket)
-			except Exception as e:
-				send(self,"Impossible de supprimer le dossier, erreur.\n", clientsocket)
-		else:
-			try:
-				os.remove(self.path+"/"+data[1])
-				send(self,"Suppression effectuée.\n", clientsocket)
-			except Exception as e:
-				send(self,"Impossible de supprimer le fichier, erreur.\n", clientsocket)
-	elif data[0] == "mkdir" :
-		data[1] = self.path+"/"+data[1]
-		chn = " ".join(data)
-		os.system(chn)
+			config = open(data[1] + "/.config", "w")
+			config.write("[read]\nall\n[write]\nall\n")
+
 	elif data[0] == "touch" :
-		data[1] = self.path+"/"+data[1]
-		chn = " ".join(data)
-		os.system(chn)
+		if rights.isWritable(self.rights):
+			data[1] = self.path+"/"+data[1]
+			chn = " ".join(data)
+			os.system(chn)
+
 	elif data[0] == "add" :
 		etat=False
 		ls ="ls" + " " + self.path
