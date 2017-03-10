@@ -9,6 +9,7 @@ from os import system
 import os
 from getpass import getpass
 import time
+import pysftp
 
 BUFFER_SIZE = 2048
 
@@ -119,7 +120,13 @@ def commandes_server(self, clientsocket):
 			ajout = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 			commande = 'echo "' + ajout + '" ' + ">>" + " " + fichier
 			os.system(commande)
-		
+	elif data[0]=="envoie":
+		srv = pysftp.Connection(host=TCP_IP, username="login", password="password")
+		filename = 'test.txt'
+		directories_data = srv.listdir()
+		if filename in directories_data:
+			srv.get(filename)
+
 	else:
 		print "commande non reconnue"
 

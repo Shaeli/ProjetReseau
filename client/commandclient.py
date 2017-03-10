@@ -3,6 +3,7 @@
 from getpass import getpass
 import socket, sys
 import md5
+import paramiko
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8888
@@ -82,6 +83,25 @@ def commandes_client(sock,mess):
 			ajout = sys.stdin.readline()
 			ajout = ajout.rstrip()
 			send(sock,ajout)
+	elif mess[0]==envoie:
+
+		host = TCP_IP                    #hard-coded
+		port = TCP_PORT
+		transport = paramiko.Transport((host, port))
+
+		password = "THEPASSWORD"                #hard-coded
+		username = "THEUSERNAME"                #hard-coded
+		transport.connect(username = username, password = password)
+
+		sftp = paramiko.SFTPClient.from_transport(transport)
+
+		path = '/home/yabda/ProjetReseau/data' + sys.argv[1]    #hard-coded
+		localpath = sys.argv[1]
+		sftp.put(localpath, path)
+
+		sftp.close()
+		transport.close()
+		print 'Upload done.'
 
 	
 #Fonction pour envoyer un message string sur une socket
