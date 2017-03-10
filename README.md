@@ -18,7 +18,7 @@
 ## Fonctionnalités additionnelles
 - [ ] Le client peut accepter les flux graphiques du serveur (RDP ou VNC)
 - [ ] Création de dossiers ou fichiers avec certains privilèges
-- [ ] Utilisation de connexions chiffrées pour le client et le serveur (utilisation de certificats par exemple)
+- [X] Utilisation de connexions chiffrées pour le client et le serveur (utilisation de certificats par exemple)
 - [ ] Le client peut stocker localement des fichiers chiffrés et les ouvrir sans qu'ils apparaissent en clair sur le poste client
 - [ ] Client et Serveur sous Windows
 - [ ] Client et serveur sur des systèmes hétérogènes (serveur linux et client windows)
@@ -34,19 +34,24 @@ Etapes achevés:
 - [X] Etape : Comptabilité Windows (client seulement)
 - [X] Etape : Ergonomie dans les commandes + test d'exception
 - [X] Etape 3 : Connection chiffrée via certificat   
+- [X] Etape : Le client peut ajouter des donnees dans les fichiers ~ en mode console
+- [X] Etape : Rajouter mkdir et rm
 
 Etapes en cours:
 
-- [ ] Etape : Faire de la place au niveaux des thread
-- [X] Etape : Le client peut ajouter des donnees dans les fichiers ~ en mode console
-- [ ] Etape : Rajouter mkdir et rm
+- [ ] Etape : Dépot de documents
+- [ ] Etape : Chiffrement local des documents - Editions de documents   
+- [ ] Création de dossiers ou fichiers avec certains privilèges
+- [ ] Etape : Envoie de flux graphiques   
+
+
+- [ ] Etape secondaire : Faire de la place au niveaux des thread
+
 
 
 
 Etapes futures:
 
-- [ ] Client graphique ?? a voir
-- [ ] Etape : Dépot de documents
-- [ ] Etape : Chiffrement local des documents - Editions de documents                     
-- [ ] Etape : Envoit de flux graphiques - Gestion des droits utilisateurs                 
+- [ ] Client graphique ?? a voir                  
+- [ ] Etape : Envoit de flux graphiques             
 - [ ] Etape : Ajout de fonctionnalités
