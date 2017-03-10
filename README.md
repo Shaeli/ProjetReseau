@@ -36,7 +36,7 @@ Etapes achevés:
 - [X] Etape 3 : Connection chiffrée via certificat   
 - [X] Etape : Le client peut ajouter des donnees dans les fichiers ~ en mode console
 - [X] Etape : Rajouter mkdir et rm
-
+- [X] Autocomplétion
 
 Etapes en cours:
 
@@ -44,7 +44,7 @@ Etapes en cours:
 - [ ] Chiffrement local des documents - Editions de documents   
 - [ ] Création de dossiers ou fichiers avec certains privilèges
 - [ ] Envoie de flux graphiques   
-- [ ] Autocomplétion
+
 
 
 - [ ] Etape secondaire : Faire de la place au niveaux des thread

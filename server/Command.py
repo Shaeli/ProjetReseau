@@ -9,7 +9,7 @@ from os import system
 import os
 from getpass import getpass
 import time
-import pysftp
+
 
 BUFFER_SIZE = 2048
 
