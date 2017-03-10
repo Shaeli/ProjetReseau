@@ -44,6 +44,7 @@ def commandes_server(self, clientsocket):
 				self.path = self.path + "/" + data[1]
 		else :
 			print("pas de changement de path car cd pas bon")
+		send(self,self.path,clientsocket)
 	elif data[0] == "cat" :
 		ls ="ls" + " " + self.path
 		lst = os.popen(ls).readlines()
@@ -119,7 +120,8 @@ def commandes_server(self, clientsocket):
 			ajout = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 			commande = 'echo "' + ajout + '" ' + ">>" + " " + fichier
 			os.system(commande)
-		
+	elif data[0] == "vim":
+		print "edition"
 	else:
 		print "commande non reconnue"
 
