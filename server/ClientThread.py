@@ -1,12 +1,9 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
-import socket
+import socket, os, errno, Command, md5, ssl
 from threading import Thread
 from socket import error as SocketError
-import errno
-import Command
-import md5, ssl
 
 BUFFER_SIZE = 2048
 
@@ -56,6 +53,13 @@ class ClientThread(Thread):
 	#Fonction de boucle infinie
 	def run(self):
 		while self.Thread_name!="":
+			liste = []
+			for (repertoire, sousRepertoires, fichiers) in os.walk("./data"):
+ 				liste.extend(fichiers)
+ 				liste.extend(sousRepertoires)
+ 			completion= " ".join(liste)
+ 			self.send(completion)
+			#self.send(fichiers)
 			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
 			if data == "commandes" :
 				Command.commandes_server(self,self.clientsocket)
