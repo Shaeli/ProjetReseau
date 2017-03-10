@@ -15,6 +15,8 @@ class ClientThread(Thread):
 		self.ip = ip
 		self.port = port
 		self.clientsocket = clientsocket
+
+		rights = ""
 		passages = 0
 		#Tentative de connection du client via id et mdp 
 		while passages < 4 : #apres 4 tentatives echouees, la connexion est refusée
@@ -25,14 +27,16 @@ class ClientThread(Thread):
 
 			accepted = False
 			for line in user_base.read().split("\n"):
-				(id_base, mdp_base) = line.split(';')
+				(id_base, mdp_base, rghts) = line.split(';')
 				if (id_base == id_cli and mdp_base == mdp_cli):
 					accepted = True
+					rights = rghts
 			user_base.close()
 			if accepted:	
 				self.send("access granted") #acces accorde au client
-				print("Nouveau client : "+ id_cli + " sur : " + ip + " " + str(port))
-				self.Thread_name=id_cli
+				print("Nouveau client : "+ id_cli + " sur : " + ip + " " + str(port) + ", droits de type " + str(rights))
+				self.Thread_name = id_cli
+				self.rights = str(rights)
 				passages = 8
 
 			else:

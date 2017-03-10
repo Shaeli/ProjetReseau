@@ -19,7 +19,10 @@ def check_data(completionstring):
 	ensemblenew = set(completiontable)
 	table_completion= list(ensembletable | ensemblenew)
 
+id_cli=""
+
 def client(): #Fonction client
+	global id_cli
 	print("Connexion sur le port " + str(TCP_PORT) + "\n") 
 	print("Adresse IP : " + str(TCP_IP) + "\n")
 	acces = "access denied"
@@ -37,6 +40,7 @@ def client(): #Fonction client
 			sock.close()
 			break
 		if acces == "access granted" : 	#Si on accepte l'accès au serveur
+
 			en_route()
 			break
 		print "mauvaise combinaison ID/MdP, veuillez reessayer"
@@ -50,6 +54,11 @@ def en_route():
 	readline.set_completer(completer.complete) 
 	readline.parse_and_bind('tab: complete')
 	while True : 
+		if id_cli != "root" :
+			sys.stdout.write(id_cli + ":~" + commandclient.path + "$" + " ")
+		else :
+			sys.stdout.write(id_cli + ":~" + commandclient.path + "#" + " ")
+
 		completion = ssl_sock.recv(BUFFER_SIZE)
 		check_data(completion)
 		completer.insert(table_completion)
@@ -63,7 +72,7 @@ def en_route():
 			print("\nFermeture de la socket client\n")
 			break
 	#Si commandes, on lance l'état commande chez le client
-		elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm" or data[0] == "touch" or data[0] == "add" or data[0] == "mkdir" :
+		elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm" or data[0] == "touch" or data[0] == "add" or data[0] == "mkdir" or data[0] == "vim" :
 			send(ssl_sock,"commandes")
 			time.sleep(0.1)
 			commandclient.commandes_client(ssl_sock,data)
