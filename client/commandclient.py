@@ -34,7 +34,7 @@ def commandes_client(sock,mess):
 		taille = len(data) 
 		for i in range(taille-1) :
 			message = message+data[i+1]
-		sys.stdout.write('<server>')
+		#sys.stdout.write('<server>')
 		sys.stdout.write(message)
 		if int(nb) > 0 :
 			a = int(nb) 

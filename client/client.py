@@ -63,7 +63,7 @@ def en_route():
 		check_data(completion)
 		completer.insert(table_completion)
 	#Récupération des données
-		data = raw_input("<client>")
+		data = raw_input("")
 		readline.add_history(data)
 		data = data.rstrip()
 		data = data.split(" ")
