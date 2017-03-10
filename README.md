@@ -37,18 +37,17 @@ Etapes achevés:
 - [X] Etape : Le client peut ajouter des donnees dans les fichiers ~ en mode console
 - [X] Etape : Rajouter mkdir et rm
 
+
 Etapes en cours:
 
-- [ ] Etape : Dépot de documents
-- [ ] Etape : Chiffrement local des documents - Editions de documents   
+- [ ]  Dépot de documents
+- [ ] Chiffrement local des documents - Editions de documents   
 - [ ] Création de dossiers ou fichiers avec certains privilèges
-- [ ] Etape : Envoie de flux graphiques   
+- [ ] Envoie de flux graphiques   
+- [ ] Autocomplétion
 
 
 - [ ] Etape secondaire : Faire de la place au niveaux des thread
-
-
-
 
 Etapes futures:
 
