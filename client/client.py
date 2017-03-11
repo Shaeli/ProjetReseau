@@ -9,6 +9,10 @@ from getpass import getpass
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8099
 BUFFER_SIZE = 2048
+
+#Variables globales
+#nom du client
+id_cli=""
 #Table contenant les commandes de base
 table_completion = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch"]
 
@@ -19,7 +23,6 @@ def check_data(completionstring):
 	ensemblenew = set(completiontable)
 	table_completion= list(ensembletable | ensemblenew)
 
-id_cli=""
 
 def client(): #Fonction client
 	global id_cli
@@ -54,16 +57,15 @@ def en_route():
 	readline.set_completer(completer.complete) 
 	readline.parse_and_bind('tab: complete')
 	while True : 
-		if id_cli != "root" :
-			sys.stdout.write(id_cli + ":~" + commandclient.path + "$" + " ")
-		else :
-			sys.stdout.write(id_cli + ":~" + commandclient.path + "#" + " ")
 
 		completion = ssl_sock.recv(BUFFER_SIZE)
 		check_data(completion)
 		completer.insert(table_completion)
 	#Récupération des données
-		data = raw_input("")
+		if id_cli != "root" :
+			data = raw_input(id_cli + ":~" + commandclient.path + "$" + " ")
+		else :
+			data = raw_input(id_cli + ":~" + commandclient.path + "#" + " ")
 		readline.add_history(data)
 		data = data.rstrip()
 		data = data.split(" ")
