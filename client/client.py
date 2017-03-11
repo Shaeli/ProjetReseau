@@ -14,14 +14,19 @@ BUFFER_SIZE = 2048
 #nom du client
 id_cli=""
 #Table contenant les commandes de base
-table_completion = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch"]
+table_commandes = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch"]
+# Table completion post traitement
+table_new = []
+
 
 def check_data(completionstring):
-	global table_completion
+	global table_commandes
+	global table_new
 	completiontable = completionstring.split()
-	ensembletable = set(table_completion)
+	# Mise sous forme d'ensemble pour faciliter le traitement et Union entre les deux ensembles
+	ensembletable = set(table_commandes)
 	ensemblenew = set(completiontable)
-	table_completion= list(ensembletable | ensemblenew)
+	table_new = list(ensembletable | ensemblenew)
 
 
 def client(): #Fonction client
@@ -50,17 +55,18 @@ def client(): #Fonction client
 
 
 def en_route():
+	global table_new
 	#Initialisation de l'autocompletion
-	global table_completion
-	completer = ac.AutoCompleter(table_completion) 
+	global table_commandes
+	completer = ac.AutoCompleter(table_commandes) 
 	#bind de la touche <TAB>
 	readline.set_completer(completer.complete) 
 	readline.parse_and_bind('tab: complete')
 	while True : 
-
+	#Mise à jour table d'auto_completion
 		completion = ssl_sock.recv(BUFFER_SIZE)
 		check_data(completion)
-		completer.insert(table_completion)
+		completer.insert(table_new)
 	#Récupération des données
 		if id_cli != "root" :
 			data = raw_input(id_cli + ":~" + commandclient.path + "$" + " ")

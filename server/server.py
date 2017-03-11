@@ -18,13 +18,14 @@ nb_cli=0
 threads = []
 tmp=[]
 
-
+# Context pour la connexion via certificats
 context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 context.load_cert_chain(certfile = "server/sslcertif/server.crt", keyfile = "server/sslcertif/server.key")
 
+#Création et bind de la socket server
 nosslserv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)	#Création de la socket
 nosslserv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-nosslserv.bind((TCP_IP, TCP_PORT)) #Binding de la socket
+nosslserv.bind((TCP_IP, TCP_PORT))
 nosslserv.listen(10)
 
 #Boucle infinie d'écoute et de création de thread client

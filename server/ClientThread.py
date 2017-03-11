@@ -54,7 +54,7 @@ class ClientThread(Thread):
 	def run(self):
 		while self.Thread_name!="":
 			liste = []
-			for (repertoire, sousRepertoires, fichiers) in os.walk("./data"):
+			for (repertoire, sousRepertoires, fichiers) in os.walk(self.path):
  				liste.extend(fichiers)
  				liste.extend(sousRepertoires)
  			completion= " ".join(liste)
