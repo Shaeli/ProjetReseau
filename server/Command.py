@@ -89,17 +89,23 @@ def commandes_server(self, clientsocket):
 	elif data[0] == "rm" :
 		if rights.isWritable(self.rights):
 			if data[1] == "-R":
-				try:
-					shutil.rmtree(self.path+"/"+data[2])
-					send(self,"Suppression effectuée.\n", clientsocket)
-				except Exception as e:
-					send(self,"Impossible de supprimer le dossier, erreur.\n", clientsocket)
+				if data[2] == ".config":
+					send(self,"Fichier de configuration vérouillé.\n", clientsocket)
+				else :
+					try:
+						shutil.rmtree(self.path+"/"+data[2])
+						send(self,"Suppression effectuée.\n", clientsocket)
+					except Exception as e:
+						send(self,"Impossible de supprimer le dossier, erreur.\n", clientsocket)
 			else:
-				try:
-					os.remove(self.path+"/"+data[1])
-					send(self,"Suppression effectuée.\n", clientsocket)
-				except Exception as e:
-					send(self,"Impossible de supprimer le fichier, erreur.\n", clientsocket)
+				if data[1] == ".config":
+					send(self,"Fichier de configuration vérouillé.\n", clientsocket)
+				else :
+					try:
+						os.remove(self.path+"/"+data[1])
+						send(self,"Suppression effectuée.\n", clientsocket)
+					except Exception as e:
+						send(self,"Impossible de supprimer le fichier, erreur.\n", clientsocket)
 		else:
 			send(self,"Droits d'écriture insuffisants.\n", clientsocket)
 
@@ -109,13 +115,31 @@ def commandes_server(self, clientsocket):
 			chn = " ".join(data)
 			os.system(chn)
 			config = open(data[1] + "/.config", "w")
-			config.write("[read]\nall\n[write]\nall\n")
+			config.write("[read]\n")
+			line = ""
+			for l in rights.read :
+				line = line + l + ";"
+			line = line[:-1]
+			config.write(line + "\n[write]\n")
+			line = ""
+			for l in rights.write :
+				line = line + l + ";"
+			line = line[:-1]
+			config.write(line)
 
 	elif data[0] == "touch" :
 		if rights.isWritable(self.rights):
 			data[1] = self.path+"/"+data[1]
 			chn = " ".join(data)
 			os.system(chn)
+
+	elif data[0] == "rights":
+		config = open(self.path +"/.config", "r")
+		config.readline()
+		line = "Lecture : " + config.readline().replace(";", ", ") + "Ecriture : "
+		config.readline()
+		line = line + config.readline().replace(";", ", ") +"\n"
+		send(self, line, clientsocket)
 
 	elif data[0] == "add" :
 		etat=False

@@ -92,6 +92,12 @@ def commandes_client(sock,mess):
 			ajout = sys.stdin.readline()
 			ajout = ajout.rstrip()
 			send(sock,ajout)
+	elif mess[0] == "rights":
+		chn = " ".join(mess)
+		send(sock,chn)
+		data = sock.recv(BUFFER_SIZE).decode("Utf8")
+		sys.stdout.write(data)
+
 	elif mess[0]==envoie:
 
 		host = TCP_IP                    #hard-coded
