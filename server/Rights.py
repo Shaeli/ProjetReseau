@@ -10,6 +10,8 @@ class Rights():
 		self.read = config.readline().rstrip().split(";")
 		config.readline()
 		self.write = config.readline().rstrip().split(";")
+		config.readline()
+		self.owners = config.readline().rstrip().split(";")
 
 	def isReadable(self, typeClient):
 		#Si le client est admin, il peut toujours lire
@@ -32,6 +34,19 @@ class Rights():
 		#Si le droits utilisateur est dans la liste des droits du dossier OK
 		for rgts in self.write:
 			if typeClient == rgts or rgts == "all":
+				return True
+
+		#Sinon non
+		return False
+
+	def isOwner(self, nameClient):
+		#Si le client est admin, il peut toujours écrire
+		if nameClient == "root":
+			return True
+
+		#Si le droits utilisateur est dans la liste des droits du dossier OK
+		for rgts in self.owners:
+			if nameClient == rgts:
 				return True
 
 		#Sinon non

@@ -52,7 +52,7 @@ def commandes_server(self, clientsocket):
 			print("pas de changement de path car cd pas bon")
 		send(self,self.path,clientsocket)
 	elif data[0] == "cat" :
-		if rights.isReadable(self.rights):
+		if rights.isReadable(self.rights) and data[1] != ".config":
 			ls ="ls" + " " + self.path
 			lst = os.popen(ls).readlines()
 			for i, item in enumerate(lst) :
@@ -73,7 +73,7 @@ def commandes_server(self, clientsocket):
 			send(self,"0Droits de lectures insuffisants.\n",clientsocket)
 
 	elif data[0] == "mv" :
-		if rights.isWritable(self.rights):
+		if rights.isWritable(self.rights) and data[1] != ".config":
 			ls ="ls" + " " + self.path
 			lst = os.popen(ls).readlines()
 			for i, item in enumerate(lst) :
@@ -125,6 +125,11 @@ def commandes_server(self, clientsocket):
 			for l in rights.write :
 				line = line + l + ";"
 			line = line[:-1]
+			config.write(line + "\n[owners]\n")
+			line = ""
+			for l in rights.owners :
+				line = line + l + ";"
+			line = line +self.Thread_name
 			config.write(line)
 
 	elif data[0] == "touch" :
