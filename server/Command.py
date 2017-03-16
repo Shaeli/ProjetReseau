@@ -258,6 +258,20 @@ def commandes_server(self, clientsocket):
 				data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 				fp.write(data)
 			fp.close()
+	elif data[0] == 'upload' :
+
+		nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+		nbretour = int(nbretour)
+		fich = self.path + "/" + data[1]
+		fp = open(fich, "wb")
+		if nbretour > BUFFER_SIZE :
+			for i in range((nbretour / BUFFER_SIZE) +1) :
+				data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+				fp.write(data)
+		else :
+			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			fp.write(data)
+		fp.close()
 	else:
 		print "commande non reconnue"
 
