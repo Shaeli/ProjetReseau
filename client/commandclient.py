@@ -98,7 +98,7 @@ def commandes_client(sock,mess):
 		data = sock.recv(BUFFER_SIZE).decode("Utf8")
 		sys.stdout.write(data)
 
-	elif mess[0]==envoie:
+	elif mess[0]=="envoie":
 
 		host = TCP_IP                    #hard-coded
 		port = TCP_PORT
@@ -118,13 +118,46 @@ def commandes_client(sock,mess):
 		transport.close()
 		print 'Upload done.'
 	elif mess[0] == "vim" :
+		modif = False
 		chn = " ".join(mess) 
 		send(sock,chn)
-		myfile = "/tmp/" + mess[1]
-		print myfile 
-		os.system("vim "+ myfile)
+###########################  Partie reception du fichier  ################################ 
+		infos = sock.recv(BUFFER_SIZE).decode("Utf8")
+		if infos == "Ce fichier n'existe pas!\n" :
+			print "Le fichier n'existe pas"
+		else :
+			infos = int(infos)
+			fich = "./client/dataclient" + "/" + mess[1]
+			fp = open(fich, "wb")
+			if infos > BUFFER_SIZE :
+				for i in range((infos / BUFFER_SIZE) +1) :
+					data = sock.recv(BUFFER_SIZE).decode("Utf8")
+					fp.write(data)
+			else :
+				data = sock.recv(BUFFER_SIZE).decode("Utf8")
+				fp.write(data)
+###########################  Partie edition du fichier  ################################ 				
+			os.system("vim "+fich)
+			modif=True
+###########################  Partie renvoie du fichier  ################################ 
+		if modif == True :
+			num = 0
+			fp=open(fich,"rb")
+			nboctets = os.path.getsize(fich)
+			send(sock,str(nboctets))
+			print nboctets
+			if nboctets > BUFFER_SIZE :
+				for i in range((nboctets/BUFFER_SIZE)+1) :
+					fp.seek(num,0)
+					data = fp.read(BUFFER_SIZE)
+					print data
+					send(sock,data)
+					num = num + BUFFER_SIZE
+			else :
+				data = fp.read()
+				send(sock,data)
+			fp.close()
 
-	
 #Fonction pour envoyer un message string sur une socket
 def send(sock, message):
 	sock.send(message.encode("Utf8"))
