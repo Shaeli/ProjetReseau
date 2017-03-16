@@ -97,6 +97,37 @@ def commandes_client(sock,mess):
 		send(sock,chn)
 		data = sock.recv(BUFFER_SIZE).decode("Utf8")
 		sys.stdout.write(data)
+	elif mess[0] == "admin":
+		#Demande d'administration des drots au serveur
+		chn = " ".join(mess)
+		send(sock,chn)
+		data = sock.recv(BUFFER_SIZE).decode("Utf8")
+		#Si les droits sont insuffisants
+		if data == "no":
+			print "Droits insuffisants"
+		#Sinon on lance l'édition
+		else:
+			#On récupère les droits
+			read = sock.recv(BUFFER_SIZE).decode("Utf8")
+			write = sock.recv(BUFFER_SIZE).decode("Utf8")
+			#On lance le programme d'édition
+			os.system("python2.7 client/RightsAdministrator.py " + read + " " + write + " " + str(os.getpid()))
+			#On lit des information de retour
+			fd = open("client/tmp", 'r')
+			line = fd.readline()
+			send(sock, line)
+			line = fd.readline()
+			send(sock, line)
+			fd.close()
+			os.remove("client/tmp")
+			#Accusé de reception
+			data = sock.recv(BUFFER_SIZE).decode("Utf8")
+			if data == "ok":
+				print "Les droits ont bien été modifiés."
+			else:
+				print "Problème dans l'édition des droits."
+
+
 
 	elif mess[0]=="envoie":
 

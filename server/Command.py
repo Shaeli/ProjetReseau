@@ -146,6 +146,43 @@ def commandes_server(self, clientsocket):
 		line = line + config.readline().replace(";", ", ") +"\n"
 		send(self, line, clientsocket)
 
+	elif data[0] == "admin":
+		if rights.isOwner(self.Thread_name):
+			#Envoit des données à l'application graphique
+			send(self, "yes", clientsocket)			
+			config = open(self.path +"/.config", "r")
+			config.readline()
+			line = config.readline().replace(";", ",").replace(" ", "").rstrip()
+			send(self, line, clientsocket)
+			config.readline()
+			line = config.readline().replace(";", ",").replace(" ", "").rstrip()
+			send(self, line, clientsocket)
+			config.close()
+			#Retour des données
+			read = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			write = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			read = read.rstrip().replace(" ", "").replace(",", ";")
+			write = read.rstrip().replace(" ", "").replace(",", ";")
+			#Ecriture des informations
+			os.remove(self.path + "/.config")
+			config = open(self.path + "/.config", "w")
+			config.write("[read]\n")
+			config.write(read + "\n[write]\n")
+			config.write(write + "\n[owners]\n")
+			line = ""
+			for l in rights.owners :
+				line = line + l + ";"
+			line = line[:-1]
+			config.write(line)
+			#Mise à jour des droits
+			rights = Rights.Rights(self.path)
+			#Réponse du serveur
+			send(self, "ok", clientsocket)
+		else:
+			send(self, "no", clientsocket)
+
+
+
 	elif data[0] == "add" :
 		etat=False
 		ls ="ls" + " " + self.path
