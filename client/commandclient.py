@@ -164,6 +164,7 @@ def commandes_client(sock,mess):
 			else :
 				data = sock.recv(BUFFER_SIZE).decode("Utf8")
 				fp.write(data)
+			fp.close()
 ###########################  Partie edition du fichier  ################################ 				
 			os.system("vim " + fich)
 			modif=True
