@@ -4,6 +4,7 @@ from getpass import getpass
 import socket, sys , os
 import md5
 import subprocess
+import time
 
 
 
@@ -16,63 +17,60 @@ path = ""
 def commandes_client(sock,mess):
 
 
-	#Liste des commandes implémentées : cd, ls, cat, mv
-	if mess[0] == "cd":
+	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
+	if mess[0] == "cd": #commande cd
 		global path
 		chn = " ".join(mess)
-		send(sock,chn)
+		send(sock,chn) #envoie du changement de chemin
 		tmp = sock.recv(BUFFER_SIZE).decode("Utf8")
 		taille=len(tmp)
-		path=tmp[6:taille]
+		path=tmp[6:taille] #mise a jour du nouveau chemin coté client
 
-	elif mess[0] == "ls":
+	elif mess[0] == "ls": #commande ls
 		chn = " ".join(mess)
-		send(sock,chn)
-		data = sock.recv(BUFFER_SIZE).decode("Utf8")
+		send(sock,chn) #envoie de la commande
+		data = sock.recv(BUFFER_SIZE).decode("Utf8") #recuperation de la reponse
 		message = ""
-		nb = data[0]
+		nb = data[0] #récuperation du chiffre indiquant combien de message vont arriver
 		taille = len(data) 
-		for i in range(taille-1) :
+		for i in range(taille-1) : #affichage du premier message sans le premier octet (le chiffre indiquant le nombre de message)
 			message = message+data[i+1]
-		#sys.stdout.write('<server>')
-		sys.stdout.write(message)
-		if int(nb) > 0 :
+		sys.stdout.write(message) #on imprime a l'ecran le resultat
+		if int(nb) > 0 : #si il y a plusieurs messages, on recommence avec les autres
 			a = int(nb) 
 			for i in range(a):
 				data = sock.recv(BUFFER_SIZE).decode("Utf8")
 				sys.stdout.write(data)
-	elif mess[0] == "cat":
+	elif mess[0] == "cat": #commande cat
 		chn = " ".join(mess)
-		send(sock,chn)
-		data = sock.recv(BUFFER_SIZE).decode("Utf8")
+		send(sock,chn) #envoie du message
+		data = sock.recv(BUFFER_SIZE).decode("Utf8") #reception des donnees
 		message = ""
-		nb = data[0]
+		nb = data[0] #recuperation du nombre de message arrivant
 		taille = len(data) 
-		for i in range(taille-1) :
+		for i in range(taille-1) : #affichage du premier message sans le premier caractere
 			message = message+data[i+1]
-		sys.stdout.write('<server>')
 		sys.stdout.write(message)
-		if int(nb) > 0 :
+		if int(nb) > 0 : #si il y a plusieurs messages, recuperation et affichage des autre messages
 			a=int(nb) 
 			for i in range(a):
 				data = sock.recv(BUFFER_SIZE).decode("Utf8")
 				sys.stdout.write(data)
-	elif mess[0] == "mv":
-		chn = " ".join(mess)
+	elif mess[0] == "mv": #commande mv
+		chn = " ".join(mess) 
 		send(sock,chn)
-	elif mess[0] == "rm":
+	elif mess[0] == "rm": #commande rm
 		chn = " ".join(mess)
-		send(sock,chn)
-		data = sock.recv(BUFFER_SIZE).decode("Utf8")
-		sys.stdout.write('<server>')
+		send(sock,chn) #envoie du fichier a supprimer
+		data = sock.recv(BUFFER_SIZE).decode("Utf8") 
 		sys.stdout.write(data)
-	elif mess[0] == "mkdir" :
+	elif mess[0] == "mkdir" : #commande mkdir
 		chn = " ".join(mess)
 		send(sock,chn)
-	elif mess[0] == "touch" :
+	elif mess[0] == "touch" : #commande touch
 		chn = " ".join(mess)
 		send(sock,chn)
-	elif mess[0] == "add" :
+	elif mess[0] == "add" : #commande add
 		chn = " ".join(mess) 
 		send(sock,chn)
 		data = sock.recv(BUFFER_SIZE).decode("Utf8")
@@ -81,7 +79,6 @@ def commandes_client(sock,mess):
 		taille = len(data) 
 		for i in range(taille-1) :
 			message = message+data[i+1]
-		sys.stdout.write('<server>')
 		sys.stdout.write(message)
 		if nb > 0 :
 			for i in range(nb):
@@ -92,12 +89,12 @@ def commandes_client(sock,mess):
 			ajout = sys.stdin.readline()
 			ajout = ajout.rstrip()
 			send(sock,ajout)
-	elif mess[0] == "rights":
+	elif mess[0] == "rights": #commande rights
 		chn = " ".join(mess)
 		send(sock,chn)
 		data = sock.recv(BUFFER_SIZE).decode("Utf8")
 		sys.stdout.write(data)
-	elif mess[0] == "admin":
+	elif mess[0] == "admin": #commande admin
 		#Demande d'administration des drots au serveur
 		chn = " ".join(mess)
 		send(sock,chn)
@@ -158,7 +155,7 @@ def commandes_client(sock,mess):
 			print "Le fichier n'existe pas"
 		else :
 			infos = int(infos)
-			fich = "/home/elounette/tempo/client/dataclient" + "/" + mess[1]
+			fich = "client/dataclient" + "/" + mess[1]
 			fp = open(fich, "wb")
 			if infos > BUFFER_SIZE :
 				for i in range((infos / BUFFER_SIZE) +1) :
@@ -193,11 +190,11 @@ def commandes_client(sock,mess):
 		send(sock,chn)
 		pourcent = 0
 		num = 0
-		fich = "./client/dataclient/" + mess[1]
-		fp=open(fich,"rb")
+		fich = "./client/dataclient/" + mess[1] #fichier a upload : il doit se situer dans le dossier client/dataclient
+		fp=open(fich,"rb") #on ouvre le fichier
 		nboctets = os.path.getsize(fich)
-		send(sock,str(nboctets))
-		if nboctets > BUFFER_SIZE :
+		send(sock,str(nboctets)) #on envoie le nombre d'octets presents dans le fichier
+		if nboctets > BUFFER_SIZE : #si il y a plus d'octets que la taille du buffer, on envoie en plusieurs fois
 			for i in range((nboctets/BUFFER_SIZE)+1) :
 				fp.seek(num,0)
 				data = fp.read(BUFFER_SIZE)
@@ -231,8 +228,8 @@ def commandes_client(sock,mess):
 					print " >> 90%"                    
 					pourcent = 9
 
-		else :
-			data = fp.read()
+		else : #si il est possible d'envoyer en une fois
+			data = fp.read() 
 			send(sock,data)
 		fp.close()
 	else :
