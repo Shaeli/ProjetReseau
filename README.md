@@ -40,7 +40,7 @@ Etapes achevés:
 
 Etapes en cours:
 
-- [ ]  Dépot de documents
+- [ ] Dépot de documents
 - [ ] Chiffrement local des documents - Editions de documents   
 - [ ] Création de dossiers ou fichiers avec certains privilèges
 - [ ] Envoie de flux graphiques   
