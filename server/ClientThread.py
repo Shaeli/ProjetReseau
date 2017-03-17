@@ -21,6 +21,7 @@ class ClientThread(Thread):
 		#Tentative de connection du client via id et mdp 
 		while passages < 4 : #apres 4 tentatives echouees, la connexion est refusée
 			id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			id_cli=id_cli[1:]
 			mdp_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 			self.path = "./data"
 			user_base = open("server/ressources/users.bdd","r")
@@ -59,13 +60,14 @@ class ClientThread(Thread):
  				liste.extend(sousRepertoires)
  			completion= " ".join(liste)
  			self.send(completion)
-			#self.send(fichiers)
 			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
+
 			if data == "commandes" :
 				Command.commandes_server(self,self.clientsocket)
 			if not data: 
 				print self.Thread_name + " s'est deconnecte"
 				break
+
 
 	#Fonction à utiliser pour envoyer un message en texte (utilise un encodage défini)
 	def send(self, message):
