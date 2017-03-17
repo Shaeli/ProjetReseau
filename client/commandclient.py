@@ -188,11 +188,12 @@ def commandes_client(sock,mess):
 				elif pourcent < 9 and num > nboctets / 100 * 90 and num < nboctets / 100 * 100:
 					print " >> 90%"                    
 					pourcent = 9
-		elif mess[0] == "download" :
 		else : #si il est possible d'envoyer en une fois
 			data = fp.read() 
 			send(sock,data)
 		fp.close()
+	elif mess[0] == "download" :
+		print "coucou"
 	else :
 		print("Commande non reconnue")
 
