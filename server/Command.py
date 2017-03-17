@@ -161,23 +161,26 @@ def commandes_server(self, clientsocket):
 			#Retour des données
 			read = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 			write = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			read = read.rstrip().replace(" ", "").replace(",", ";")
-			write = read.rstrip().replace(" ", "").replace(",", ";")
-			#Ecriture des informations
-			os.remove(self.path + "/.config")
-			config = open(self.path + "/.config", "w")
-			config.write("[read]\n")
-			config.write(read + "\n[write]\n")
-			config.write(write + "\n[owners]\n")
-			line = ""
-			for l in rights.owners :
-				line = line + l + ";"
-			line = line[:-1]
-			config.write(line)
-			#Mise à jour des droits
-			rights = Rights.Rights(self.path)
-			#Réponse du serveur
-			send(self, "ok", clientsocket)
+			if read.rstrip() == "abort" or write.rstrip() == "abort":
+				send(self, "no", clientsocket)
+			else:
+				read = read.rstrip().replace(" ", "").replace(",", ";")
+				write = read.rstrip().replace(" ", "").replace(",", ";")
+				#Ecriture des informations
+				os.remove(self.path + "/.config")
+				config = open(self.path + "/.config", "w")
+				config.write("[read]\n")
+				config.write(read + "\n[write]\n")
+				config.write(write + "\n[owners]\n")
+				line = ""
+				for l in rights.owners :
+					line = line + l + ";"
+				line = line[:-1]
+				config.write(line)
+				#Mise à jour des droits
+				rights = Rights.Rights(self.path)
+				#Réponse du serveur
+				send(self, "ok", clientsocket)
 		else:
 			send(self, "no", clientsocket)
 
