@@ -22,57 +22,58 @@ def commandes_server(self, clientsocket):
 	rights = Rights.Rights(self.path)
 
 
-	if data[0] == "ls":
+	if data[0] == "ls": #commande ls
 		chn = " ".join(data)
-		chn = chn + " " + self.path
-		res = os.popen(chn).readlines()
-		for mot in res :
+		chn = chn + " " + self.path #on recupere le path
+		res = os.popen(chn).readlines() #on recupère le resultat de ls
+		for mot in res : #on le remet sous la forme chaine de caractere
 			tampon = tampon + mot
 		taille = len(tampon)/BUFFER_SIZE
 		tampon = str(taille) + tampon + "\n"
-		send(self,tampon,clientsocket)
+		send(self,tampon,clientsocket) #on envoie le resultat
 		del tampon
 
-	elif data[0] == "cd" :
-		ls = "ls" + " " + self.path
-		lst = os.popen(ls).readlines()
-		for i, item in enumerate(lst) :
-			lst[i] = item.rstrip()
-		if (data[1] in lst) or (data[1] == "..") :
-			if data[1] == ".." :
-				if self.path != "./data" :
-					path = self.path.split("/")
-					self.path = ""
-					for i in range(0,len(path)-1):
-						self.path = self.path+path[i]
-						self.path = self.path+"/"
-			else :
-				self.path = self.path + "/" + data[1]
-		else :
-			print("pas de changement de path car cd pas bon")
-		send(self,self.path,clientsocket)
-	elif data[0] == "cat" :
-		if rights.isReadable(self.rights) and data[1] != ".config":
-			ls ="ls" + " " + self.path
+	elif data[0] == "cd" : #commande cd
+		if len(data) != 1 :
+			ls = "ls" + " " + self.path #on fait d'abord un ls voir si il est possible de cd
 			lst = os.popen(ls).readlines()
+			for i, item in enumerate(lst) : 
+				lst[i] = item.rstrip()
+			if (data[1] in lst) or (data[1] == "..") : #si c'est dans la liste, ou "..", on peut changer le path
+				if data[1] == ".." :
+					if self.path != "./data" : #si le path est "./data" et l'on souhaite faire "cd ..", on ne le change pas, ce n'est pas possible
+						path = self.path.split("/")
+						self.path = ""
+						for i in range(0,len(path)-1): #mise a jour du nouveau path
+							self.path = self.path+path[i]
+							self.path = self.path+"/"
+				else :
+					self.path = self.path + "/" + data[1]
+			else :
+				print("pas de changement de path car cd pas bon")
+		send(self,self.path,clientsocket)
+	elif data[0] == "cat" : #commande cat
+		if rights.isReadable(self.rights) and data[1] != ".config": #verification si l'on possede les droits
+			ls ="ls" + " " + self.path
+			lst = os.popen(ls).readlines() #on regarde si le fichier est present
 			for i, item in enumerate(lst) :
 				lst[i] = item.rstrip()
 			if (data[1] in lst) :
-				data[1] = self.path+"/"+data[1]
+				data[1] = self.path+"/"+data[1] #on met a jour le chemin
 				chn = " ".join(data)
-				res = os.popen(chn).readlines()
+				res = os.popen(chn).readlines() #on recupere la sortie du cat
 				for mot in res :
 					tampon = tampon + mot
-				taille = len(tampon)/BUFFER_SIZE
+				taille = len(tampon)/BUFFER_SIZE #on regarde le nombre de message qu'il faut pour envoyer entierement le fichier
 				tampon = str(taille) + tampon
-				send(self,tampon,clientsocket)
+				send(self,tampon,clientsocket) #on envoie le message
 				del tampon
 			else :
-				send(self,"le fichier n'existe pas il n'est pas possible de cat\n",clientsocket)
+				send(self,"0le fichier n'existe pas il n'est pas possible de cat\n",clientsocket)
 		else:
 			send(self,"0Droits de lectures insuffisants.\n",clientsocket)
 
-	elif data[0] == "mv" :
+	elif data[0] == "mv" : #commande mv
 		if rights.isWritable(self.rights) and data[1] != ".config":
 			ls ="ls" + " " + self.path
 			lst = os.popen(ls).readlines()
@@ -161,62 +162,30 @@ def commandes_server(self, clientsocket):
 			#Retour des données
 			read = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 			write = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			read = read.rstrip().replace(" ", "").replace(",", ";")
-			write = read.rstrip().replace(" ", "").replace(",", ";")
-			#Ecriture des informations
-			os.remove(self.path + "/.config")
-			config = open(self.path + "/.config", "w")
-			config.write("[read]\n")
-			config.write(read + "\n[write]\n")
-			config.write(write + "\n[owners]\n")
-			line = ""
-			for l in rights.owners :
-				line = line + l + ";"
-			line = line[:-1]
-			config.write(line)
-			#Mise à jour des droits
-			rights = Rights.Rights(self.path)
-			#Réponse du serveur
-			send(self, "ok", clientsocket)
+			if read.rstrip() == "abort" or write.rstrip() == "abort":
+				send(self, "no", clientsocket)
+			else:
+				read = read.rstrip().replace(" ", "").replace(",", ";")
+				write = read.rstrip().replace(" ", "").replace(",", ";")
+				#Ecriture des informations
+				os.remove(self.path + "/.config")
+				config = open(self.path + "/.config", "w")
+				config.write("[read]\n")
+				config.write(read + "\n[write]\n")
+				config.write(write + "\n[owners]\n")
+				line = ""
+				for l in rights.owners :
+					line = line + l + ";"
+				line = line[:-1]
+				config.write(line)
+				#Mise à jour des droits
+				rights = Rights.Rights(self.path)
+				#Réponse du serveur
+				send(self, "ok", clientsocket)
 		else:
 			send(self, "no", clientsocket)
-
-
-
-	elif data[0] == "add" :
-		etat=False
-		ls ="ls" + " " + self.path
-		lst = os.popen(ls).readlines()
-		for i, item in enumerate(lst) :
-			lst[i] = item.rstrip()
-		if (data[1] in lst) :
-			data[1] = self.path+"/"+data[1]
-			fichier = data[1]
-			chn = "cat " + fichier
-			res = os.popen(chn).readlines()
-			for mot in res :
-				tampon = tampon + mot
-			taille = len(tampon)/BUFFER_SIZE
-			tampon = str(taille) + tampon
-			tampon = tampon + "\n"
-			send(self,tampon,clientsocket)
-			del tampon
-			etat=True
-		else :
-			send(self,"0Le fichier n'existe pas, creez le avant d'ajouter du texte\n",clientsocket)
-		if etat == True :
-			ajout = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			commande = 'echo "' + ajout + '" ' + ">>" + " " + fichier
-			os.system(commande)
-	elif data[0]=="envoie":
-		srv = pysftp.Connection(host=TCP_IP, username="login", password="password")
-		filename = 'test.txt'
-		directories_data = srv.listdir()
-		if filename in directories_data:
-			srv.get(filename)
-
 	elif data[0] == "vim":
-		############################  Partie envoie du fichier au client  ################################ 
+	############################  Partie envoie du fichier au client  ################################ 
 		
 		fich = self.path + "/" + data[1] 
 		exist = False
