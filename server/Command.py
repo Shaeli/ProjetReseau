@@ -184,41 +184,6 @@ def commandes_server(self, clientsocket):
 				send(self, "ok", clientsocket)
 		else:
 			send(self, "no", clientsocket)
-
-
-
-	elif data[0] == "add" :
-		etat=False
-		ls ="ls" + " " + self.path
-		lst = os.popen(ls).readlines()
-		for i, item in enumerate(lst) :
-			lst[i] = item.rstrip()
-		if (data[1] in lst) :
-			data[1] = self.path+"/"+data[1]
-			fichier = data[1]
-			chn = "cat " + fichier
-			res = os.popen(chn).readlines()
-			for mot in res :
-				tampon = tampon + mot
-			taille = len(tampon)/BUFFER_SIZE
-			tampon = str(taille) + tampon
-			tampon = tampon + "\n"
-			send(self,tampon,clientsocket)
-			del tampon
-			etat=True
-		else :
-			send(self,"0Le fichier n'existe pas, creez le avant d'ajouter du texte\n",clientsocket)
-		if etat == True :
-			ajout = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			commande = 'echo "' + ajout + '" ' + ">>" + " " + fichier
-			os.system(commande)
-	elif data[0]=="envoie":
-		srv = pysftp.Connection(host=TCP_IP, username="login", password="password")
-		filename = 'test.txt'
-		directories_data = srv.listdir()
-		if filename in directories_data:
-			srv.get(filename)
-
 	elif data[0] == "vim":
 	############################  Partie envoie du fichier au client  ################################ 
 		

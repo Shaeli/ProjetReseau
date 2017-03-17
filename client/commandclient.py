@@ -70,25 +70,6 @@ def commandes_client(sock,mess):
 	elif mess[0] == "touch" : #commande touch
 		chn = " ".join(mess)
 		send(sock,chn)
-	elif mess[0] == "add" : #commande add
-		chn = " ".join(mess) 
-		send(sock,chn)
-		data = sock.recv(BUFFER_SIZE).decode("Utf8")
-		message = ""
-		nb = int(data[0])
-		taille = len(data) 
-		for i in range(taille-1) :
-			message = message+data[i+1]
-		sys.stdout.write(message)
-		if nb > 0 :
-			for i in range(nb):
-				data = sock.recv(BUFFER_SIZE).decode("Utf8")
-				sys.stdout.write(data)
-		if data != "0Le fichier n'existe pas, creez le avant d'ajouter du texte\n" :
-			print("\n \n Que voulez vous rajouter a ce fichier ?\n")
-			ajout = sys.stdin.readline()
-			ajout = ajout.rstrip()
-			send(sock,ajout)
 	elif mess[0] == "rights": #commande rights
 		chn = " ".join(mess)
 		send(sock,chn)
@@ -123,25 +104,6 @@ def commandes_client(sock,mess):
 				print "Les droits ont bien été modifiés."
 			else:
 				print "Problème dans l'édition des droits."
-	elif mess[0]=="envoie":
-
-		host = TCP_IP                    #hard-coded
-		port = TCP_PORT
-		transport = paramiko.Transport((host, port))
-
-		password = "THEPASSWORD"                #hard-coded
-		username = "THEUSERNAME"                #hard-coded
-		transport.connect(username = username, password = password)
-
-		sftp = paramiko.SFTPClient.from_transport(transport)
-
-		path = '/home/yabda/ProjetReseau/data' + sys.argv[1]    #hard-coded
-		localpath = sys.argv[1]
-		sftp.put(localpath, path)
-
-		sftp.close()
-		transport.close()
-		print 'Upload done.'
 	elif mess[0] == "vim" :
 		modif = False
 		chn = " ".join(mess) 
@@ -225,7 +187,7 @@ def commandes_client(sock,mess):
 				elif pourcent < 9 and num > nboctets / 100 * 90 and num < nboctets / 100 * 100:
 					print " >> 90%"                    
 					pourcent = 9
-
+		elif mess[0] == "download" :
 		else : #si il est possible d'envoyer en une fois
 			data = fp.read() 
 			send(sock,data)
