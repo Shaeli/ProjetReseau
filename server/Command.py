@@ -68,7 +68,7 @@ def commandes_server(self, clientsocket):
 				send(self,tampon,clientsocket)
 				del tampon
 			else :
-				send(self,"le fichier n'existe pas il n'est pas possible de cat\n",clientsocket)
+				send(self,"0le fichier n'existe pas il n'est pas possible de cat\n",clientsocket)
 		else:
 			send(self,"0Droits de lectures insuffisants.\n",clientsocket)
 
