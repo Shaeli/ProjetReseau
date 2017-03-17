@@ -186,6 +186,8 @@ def commandes_server(self, clientsocket):
 				send(self, "ok", clientsocket)
 		else:
 			send(self, "no", clientsocket)
+
+
 	elif data[0] == "vim":
 		if rights.isWritable(self.rights):
 			send(self,"ok",clientsocket)
@@ -193,7 +195,6 @@ def commandes_server(self, clientsocket):
 			send(self,"RO",clientsocket)
 		else:
 			send(self,"no",clientsocket)
-
 
 	############################  Partie envoie du fichier au client  ################################ 
 		
@@ -237,6 +238,8 @@ def commandes_server(self, clientsocket):
 				data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 				fp.write(data)
 			fp.close()
+
+
 	elif data[0] == 'upload' :
 		if rights.isWritable(self.rights):
 			send(self, "ok",clientsocket)
@@ -251,19 +254,13 @@ def commandes_server(self, clientsocket):
 			else :
 				data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 				fp.write(data)
-<<<<<<< HEAD
 			fp.close()
 		else:
 			send(self,"no",clientsocket)
 
-=======
-		else :
-			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			fp.write(data)
-		fp.close()
 	elif data[0] == "nothing" :
 		print("Commande incomplete")
->>>>>>> efd3c74c86ffdc284c0f9c26474038b73acb685e
+
 	else:
 		print "commande non reconnue"
 
