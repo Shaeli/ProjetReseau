@@ -123,6 +123,7 @@ def commandes_client(sock,mess):
 				print "Les droits ont bien été modifiés."
 			else:
 				print "Problème dans l'édition des droits."
+
 	elif mess[0]=="envoie":
 
 		host = TCP_IP                    #hard-coded
@@ -142,95 +143,111 @@ def commandes_client(sock,mess):
 		sftp.close()
 		transport.close()
 		print 'Upload done.'
+
+
 	elif mess[0] == "vim" :
 		modif = False
 		chn = " ".join(mess) 
 		send(sock,chn)
+		openingTry = sock.recv(BUFFER_SIZE).decode("Utf8")
+		if openingTry != "no":
 ###########################  Partie reception du fichier  ################################ 
-		infos = sock.recv(BUFFER_SIZE).decode("Utf8")
-		if infos == "Ce fichier n'existe pas!\n" :
-			print "Le fichier n'existe pas"
-		else :
-			infos = int(infos)
-			fich = "client/dataclient" + "/" + mess[1]
-			fp = open(fich, "wb")
-			if infos > BUFFER_SIZE :
-				for i in range((infos / BUFFER_SIZE) +1) :
+			infos = sock.recv(BUFFER_SIZE).decode("Utf8")
+			if infos == "Ce fichier n'existe pas!\n" :
+				print "Le fichier n'existe pas"
+			else :
+				infos = int(infos)
+				fich = "client/dataclient" + "/" + mess[1]
+				fp = open(fich, "wb")
+				if infos > BUFFER_SIZE :
+					for i in range((infos / BUFFER_SIZE) +1) :
+						data = sock.recv(BUFFER_SIZE).decode("Utf8")
+						fp.write(data)
+				else :
 					data = sock.recv(BUFFER_SIZE).decode("Utf8")
 					fp.write(data)
-			else :
-				data = sock.recv(BUFFER_SIZE).decode("Utf8")
-				fp.write(data)
-			fp.close()
+				fp.close()
 ###########################  Partie edition du fichier  ################################ 				
-			time.sleep(1)
-			os.system("vim " + fich)
-			modif=True
+				time.sleep(1)
+				if openingTry == "RO":
+					os.system("vim -R " + fich)
+				else:
+					os.system("vim " + fich)
+				modif=True
 ###########################  Partie renvoie du fichier  ################################ 
-		if modif == True :
-			num = 0
-			fp=open(fich,"rb")
-			nboctets = os.path.getsize(fich)
-			send(sock,str(nboctets))
-			print nboctets
-			if nboctets > BUFFER_SIZE :
-				for i in range((nboctets/BUFFER_SIZE)+1) :
-					fp.seek(num,0)
-					data = fp.read(BUFFER_SIZE)
-					print data
+			if modif == True :
+				num = 0
+				fp=open(fich,"rb")
+				nboctets = os.path.getsize(fich)
+				send(sock,str(nboctets))
+				print nboctets
+				if nboctets > BUFFER_SIZE :
+					for i in range((nboctets/BUFFER_SIZE)+1) :
+						fp.seek(num,0)
+						data = fp.read(BUFFER_SIZE)
+						print data
+						send(sock,data)
+						num = num + BUFFER_SIZE
+				else :
+					data = fp.read()
 					send(sock,data)
-					num = num + BUFFER_SIZE
-			else :
-				data = fp.read()
-				send(sock,data)
-			fp.close()
+				fp.close()
+				os.remove(fich)
+		else:
+			print "Droits de lecture et écriture insuffisants"
+
+
 	elif mess[0] == "upload" :
 		chn = " ".join(mess)
 		send(sock,chn)
-		pourcent = 0
-		num = 0
-		fich = "./client/dataclient/" + mess[1] #fichier a upload : il doit se situer dans le dossier client/dataclient
-		fp=open(fich,"rb") #on ouvre le fichier
-		nboctets = os.path.getsize(fich)
-		send(sock,str(nboctets)) #on envoie le nombre d'octets presents dans le fichier
-		if nboctets > BUFFER_SIZE : #si il y a plus d'octets que la taille du buffer, on envoie en plusieurs fois
-			for i in range((nboctets/BUFFER_SIZE)+1) :
-				fp.seek(num,0)
-				data = fp.read(BUFFER_SIZE)
-				send(sock,data)
-				num = num + BUFFER_SIZE
-				if pourcent == 0 and num > nboctets / 100 * 10 and num < nboctets / 100 * 20:
-					print " >> 10%",
-					pourcent = 1
-				elif pourcent == 1 and num > nboctets / 100 * 20 and num < nboctets / 100 * 30:
-					print " >> 20%",
-					pourcent = 2
-				elif pourcent < 3 and num > nboctets / 100 * 30 and num < nboctets / 100 * 40:
-					print " >> 30%",
-					pourcent = 3
- 				elif pourcent < 4 and num > nboctets / 100 * 40 and num < nboctets / 100 * 50:
-					print " >> 40%",
-					pourcent = 4
-				elif pourcent < 5 and num > nboctets / 100 * 50 and num < nboctets / 100 * 60:
-					print " >> 50%",
-					pourcent = 5
-				elif pourcent < 6 and num > nboctets / 100 * 60 and num < nboctets / 100 * 70:
-					print " >> 60%",
-					pourcent = 6
-				elif pourcent < 7 and num > nboctets / 100 * 70 and num < nboctets / 100 * 80:
-					print " >> 70%",
-					pourcent = 7
-				elif pourcent < 8 and num > nboctets / 100 * 80 and num < nboctets / 100 * 90:
-					print " >> 80%",
-					pourcent = 8
-				elif pourcent < 9 and num > nboctets / 100 * 90 and num < nboctets / 100 * 100:
-					print " >> 90%"                    
-					pourcent = 9
+		data = sock.recv(BUFFER_SIZE).decode("Utf8")
+		if data == "ok":
+			pourcent = 0
+			num = 0
+			fich = "./client/dataclient/" + mess[1] #fichier a upload : il doit se situer dans le dossier client/dataclient
+			fp=open(fich,"rb") #on ouvre le fichier
+			nboctets = os.path.getsize(fich)
+			send(sock,str(nboctets)) #on envoie le nombre d'octets presents dans le fichier
+			if nboctets > BUFFER_SIZE : #si il y a plus d'octets que la taille du buffer, on envoie en plusieurs fois
+				for i in range((nboctets/BUFFER_SIZE)+1) :
+					fp.seek(num,0)
+					data = fp.read(BUFFER_SIZE)
+					send(sock,data)
+					num = num + BUFFER_SIZE
+					if pourcent == 0 and num > nboctets / 100 * 10 and num < nboctets / 100 * 20:
+						print " >> 10%",
+						pourcent = 1
+					elif pourcent == 1 and num > nboctets / 100 * 20 and num < nboctets / 100 * 30:
+						print " >> 20%",
+						pourcent = 2
+					elif pourcent < 3 and num > nboctets / 100 * 30 and num < nboctets / 100 * 40:
+						print " >> 30%",
+						pourcent = 3
+	 				elif pourcent < 4 and num > nboctets / 100 * 40 and num < nboctets / 100 * 50:
+						print " >> 40%",
+						pourcent = 4
+					elif pourcent < 5 and num > nboctets / 100 * 50 and num < nboctets / 100 * 60:
+						print " >> 50%",
+						pourcent = 5
+					elif pourcent < 6 and num > nboctets / 100 * 60 and num < nboctets / 100 * 70:
+						print " >> 60%",
+						pourcent = 6
+					elif pourcent < 7 and num > nboctets / 100 * 70 and num < nboctets / 100 * 80:
+						print " >> 70%",
+						pourcent = 7
+					elif pourcent < 8 and num > nboctets / 100 * 80 and num < nboctets / 100 * 90:
+						print " >> 80%",
+						pourcent = 8
+					elif pourcent < 9 and num > nboctets / 100 * 90 and num < nboctets / 100 * 100:
+						print " >> 90%"                    
+						pourcent = 9
 
-		else : #si il est possible d'envoyer en une fois
-			data = fp.read() 
-			send(sock,data)
-		fp.close()
+			else : #si il est possible d'envoyer en une fois
+				data = fp.read() 
+				send(sock,data)
+			fp.close()
+		else:
+			print "Droit d'écriture insuffisants."
 	else :
 		print("Commande non reconnue")
 

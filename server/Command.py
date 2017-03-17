@@ -166,11 +166,13 @@ def commandes_server(self, clientsocket):
 				send(self, "no", clientsocket)
 			else:
 				read = read.rstrip().replace(" ", "").replace(",", ";")
-				write = read.rstrip().replace(" ", "").replace(",", ";")
+				write = write.rstrip().replace(" ", "").replace(",", ";")
 				#Ecriture des informations
 				os.remove(self.path + "/.config")
 				config = open(self.path + "/.config", "w")
 				config.write("[read]\n")
+				print read
+				print write
 				config.write(read + "\n[write]\n")
 				config.write(write + "\n[owners]\n")
 				line = ""
@@ -220,6 +222,14 @@ def commandes_server(self, clientsocket):
 			srv.get(filename)
 
 	elif data[0] == "vim":
+		if rights.isWritable(self.rights):
+			send(self,"ok",clientsocket)
+		elif rights.isReadable(self.rights) and not rights.isWritable(self.rights):
+			send(self,"RO",clientsocket)
+		else:
+			send(self,"no",clientsocket)
+
+
 	############################  Partie envoie du fichier au client  ################################ 
 		
 		fich = self.path + "/" + data[1] 
@@ -263,19 +273,23 @@ def commandes_server(self, clientsocket):
 				fp.write(data)
 			fp.close()
 	elif data[0] == 'upload' :
-
-		nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-		nbretour = int(nbretour)
-		fich = self.path + "/" + data[1]
-		fp = open(fich, "wb")
-		if nbretour > BUFFER_SIZE :
-			for i in range((nbretour / BUFFER_SIZE) +1) :
+		if rights.isWritable(self.rights):
+			send(self, "ok",clientsocket)
+			nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			nbretour = int(nbretour)
+			fich = self.path + "/" + data[1]
+			fp = open(fich, "wb")
+			if nbretour > BUFFER_SIZE :
+				for i in range((nbretour / BUFFER_SIZE) +1) :
+					data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+					fp.write(data)
+			else :
 				data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 				fp.write(data)
-		else :
-			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			fp.write(data)
-		fp.close()
+			fp.close()
+		else:
+			send(self,"no",clientsocket)
+
 	else:
 		print "commande non reconnue"
 
