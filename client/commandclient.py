@@ -42,34 +42,49 @@ def commandes_client(sock,mess):
 				data = sock.recv(BUFFER_SIZE).decode("Utf8")
 				sys.stdout.write(data)
 	elif mess[0] == "cat": #commande cat
-		chn = " ".join(mess)
-		send(sock,chn) #envoie du message
-		data = sock.recv(BUFFER_SIZE).decode("Utf8") #reception des donnees
-		message = ""
-		nb = data[0] #recuperation du nombre de message arrivant
-		taille = len(data) 
-		for i in range(taille-1) : #affichage du premier message sans le premier caractere
-			message = message+data[i+1]
-		sys.stdout.write(message)
-		if int(nb) > 0 : #si il y a plusieurs messages, recuperation et affichage des autre messages
-			a=int(nb) 
-			for i in range(a):
-				data = sock.recv(BUFFER_SIZE).decode("Utf8")
-				sys.stdout.write(data)
+		if len(mess) != 1 :
+			chn = " ".join(mess)
+			send(sock,chn) #envoie du message
+			data = sock.recv(BUFFER_SIZE).decode("Utf8") #reception des donnees
+			message = ""
+			nb = data[0] #recuperation du nombre de message arrivant
+			taille = len(data) 
+			for i in range(taille-1) : #affichage du premier message sans le premier caractere
+				message = message+data[i+1]
+			sys.stdout.write(message)
+			if int(nb) > 0 : #si il y a plusieurs messages, recuperation et affichage des autre messages
+				a=int(nb) 
+				for i in range(a):
+					data = sock.recv(BUFFER_SIZE).decode("Utf8")
+					sys.stdout.write(data)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "mv": #commande mv
-		chn = " ".join(mess) 
-		send(sock,chn)
+		if len(mess) != 2 :
+			chn = " ".join(mess) 
+			send(sock,chn)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "rm": #commande rm
-		chn = " ".join(mess)
-		send(sock,chn) #envoie du fichier a supprimer
-		data = sock.recv(BUFFER_SIZE).decode("Utf8") 
-		sys.stdout.write(data)
+		if len(mess) != 1 :
+			chn = " ".join(mess)
+			send(sock,chn) #envoie du fichier a supprimer
+			data = sock.recv(BUFFER_SIZE).decode("Utf8") 
+			sys.stdout.write(data)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "mkdir" : #commande mkdir
-		chn = " ".join(mess)
-		send(sock,chn)
+		if len(mess) != 1 :
+			chn = " ".join(mess)
+			send(sock,chn)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "touch" : #commande touch
-		chn = " ".join(mess)
-		send(sock,chn)
+		if len(mess) != 1 :
+			chn = " ".join(mess)
+			send(sock,chn)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "rights": #commande rights
 		chn = " ".join(mess)
 		send(sock,chn)
@@ -188,11 +203,12 @@ def commandes_client(sock,mess):
 				elif pourcent < 9 and num > nboctets / 100 * 90 and num < nboctets / 100 * 100:
 					print " >> 90%"                    
 					pourcent = 9
-		elif mess[0] == "download" :
-		else : #si il est possible d'envoyer en une fois
+		else : #si c'est possible d'envoyer en une fois
 			data = fp.read() 
 			send(sock,data)
 		fp.close()
+	elif mess[0] == "download" :
+		print "coucou"
 	else :
 		print("Commande non reconnue")
 

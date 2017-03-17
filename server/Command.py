@@ -241,6 +241,8 @@ def commandes_server(self, clientsocket):
 			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 			fp.write(data)
 		fp.close()
+	elif data[0] == "nothing" :
+		print("Commande incomplete")
 	else:
 		print "commande non reconnue"
 
