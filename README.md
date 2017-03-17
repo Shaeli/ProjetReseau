@@ -17,7 +17,7 @@
 
 ## Fonctionnalités additionnelles
 - [ ] Le client peut accepter les flux graphiques du serveur (RDP ou VNC)
-- [ ] Création de dossiers ou fichiers avec certains privilèges
+- [X] Création de dossiers ou fichiers avec certains privilèges
 - [X] Utilisation de connexions chiffrées pour le client et le serveur (utilisation de certificats par exemple)
 - [ ] Le client peut stocker localement des fichiers chiffrés et les ouvrir sans qu'ils apparaissent en clair sur le poste client
 - [ ] Client et Serveur sous Windows
@@ -37,16 +37,13 @@ Etapes achevés:
 - [X] Etape : Le client peut ajouter des donnees dans les fichiers ~ en mode console
 - [X] Etape : Rajouter mkdir et rm
 - [X] Autocomplétion
+- [X] Dépot de documents
+- [X] Création de dossiers ou fichiers avec certains privilèges
 
 Etapes en cours:
 
-- [ ]  Dépot de documents
 - [ ] Chiffrement local des documents - Editions de documents   
-- [ ] Création de dossiers ou fichiers avec certains privilèges
-- [ ] Envoie de flux graphiques   
-
-
-
+- [ ] Envoie de flux graphiques
 - [ ] Etape secondaire : Faire de la place au niveaux des thread
 
 Etapes futures:
