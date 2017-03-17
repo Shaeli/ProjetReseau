@@ -42,53 +42,49 @@ def commandes_client(sock,mess):
 				data = sock.recv(BUFFER_SIZE).decode("Utf8")
 				sys.stdout.write(data)
 	elif mess[0] == "cat": #commande cat
-		chn = " ".join(mess)
-		send(sock,chn) #envoie du message
-		data = sock.recv(BUFFER_SIZE).decode("Utf8") #reception des donnees
-		message = ""
-		nb = data[0] #recuperation du nombre de message arrivant
-		taille = len(data) 
-		for i in range(taille-1) : #affichage du premier message sans le premier caractere
-			message = message+data[i+1]
-		sys.stdout.write(message)
-		if int(nb) > 0 : #si il y a plusieurs messages, recuperation et affichage des autre messages
-			a=int(nb) 
-			for i in range(a):
-				data = sock.recv(BUFFER_SIZE).decode("Utf8")
-				sys.stdout.write(data)
+		if len(mess) != 1 :
+			chn = " ".join(mess)
+			send(sock,chn) #envoie du message
+			data = sock.recv(BUFFER_SIZE).decode("Utf8") #reception des donnees
+			message = ""
+			nb = data[0] #recuperation du nombre de message arrivant
+			taille = len(data) 
+			for i in range(taille-1) : #affichage du premier message sans le premier caractere
+				message = message+data[i+1]
+			sys.stdout.write(message)
+			if int(nb) > 0 : #si il y a plusieurs messages, recuperation et affichage des autre messages
+				a=int(nb) 
+				for i in range(a):
+					data = sock.recv(BUFFER_SIZE).decode("Utf8")
+					sys.stdout.write(data)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "mv": #commande mv
-		chn = " ".join(mess) 
-		send(sock,chn)
+		if len(mess) != 2 :
+			chn = " ".join(mess) 
+			send(sock,chn)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "rm": #commande rm
-		chn = " ".join(mess)
-		send(sock,chn) #envoie du fichier a supprimer
-		data = sock.recv(BUFFER_SIZE).decode("Utf8") 
-		sys.stdout.write(data)
+		if len(mess) != 1 :
+			chn = " ".join(mess)
+			send(sock,chn) #envoie du fichier a supprimer
+			data = sock.recv(BUFFER_SIZE).decode("Utf8") 
+			sys.stdout.write(data)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "mkdir" : #commande mkdir
-		chn = " ".join(mess)
-		send(sock,chn)
+		if len(mess) != 1 :
+			chn = " ".join(mess)
+			send(sock,chn)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "touch" : #commande touch
-		chn = " ".join(mess)
-		send(sock,chn)
-	elif mess[0] == "add" : #commande add
-		chn = " ".join(mess) 
-		send(sock,chn)
-		data = sock.recv(BUFFER_SIZE).decode("Utf8")
-		message = ""
-		nb = int(data[0])
-		taille = len(data) 
-		for i in range(taille-1) :
-			message = message+data[i+1]
-		sys.stdout.write(message)
-		if nb > 0 :
-			for i in range(nb):
-				data = sock.recv(BUFFER_SIZE).decode("Utf8")
-				sys.stdout.write(data)
-		if data != "0Le fichier n'existe pas, creez le avant d'ajouter du texte\n" :
-			print("\n \n Que voulez vous rajouter a ce fichier ?\n")
-			ajout = sys.stdin.readline()
-			ajout = ajout.rstrip()
-			send(sock,ajout)
+		if len(mess) != 1 :
+			chn = " ".join(mess)
+			send(sock,chn)
+		else :
+			send(sock,"nothing to do")
 	elif mess[0] == "rights": #commande rights
 		chn = " ".join(mess)
 		send(sock,chn)
@@ -123,27 +119,6 @@ def commandes_client(sock,mess):
 				print "Les droits ont bien été modifiés."
 			else:
 				print "Problème dans l'édition des droits."
-
-	elif mess[0]=="envoie":
-
-		host = TCP_IP                    #hard-coded
-		port = TCP_PORT
-		transport = paramiko.Transport((host, port))
-
-		password = "THEPASSWORD"                #hard-coded
-		username = "THEUSERNAME"                #hard-coded
-		transport.connect(username = username, password = password)
-
-		sftp = paramiko.SFTPClient.from_transport(transport)
-
-		path = '/home/yabda/ProjetReseau/data' + sys.argv[1]    #hard-coded
-		localpath = sys.argv[1]
-		sftp.put(localpath, path)
-
-		sftp.close()
-		transport.close()
-		print 'Upload done.'
-
 
 	elif mess[0] == "vim" :
 		modif = False
