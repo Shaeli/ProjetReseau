@@ -19,12 +19,12 @@ def commandes_client(sock,mess):
 
 	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
 	if mess[0] == "cd": #commande cd
-		global path
-		chn = " ".join(mess)
-		send(sock,chn) #envoie du changement de chemin
-		tmp = sock.recv(BUFFER_SIZE).decode("Utf8")
-		taille=len(tmp)
-		path=tmp[6:taille] #mise a jour du nouveau chemin coté client
+			global path
+			chn = " ".join(mess)
+			send(sock,chn) #envoie du changement de chemin
+			tmp = sock.recv(BUFFER_SIZE).decode("Utf8")
+			taille=len(tmp)
+			path=tmp[6:taille] #mise a jour du nouveau chemin coté client
 
 	elif mess[0] == "ls": #commande ls
 		chn = " ".join(mess)
@@ -123,9 +123,6 @@ def commandes_client(sock,mess):
 				print "Les droits ont bien été modifiés."
 			else:
 				print "Problème dans l'édition des droits."
-
-
-
 	elif mess[0]=="envoie":
 
 		host = TCP_IP                    #hard-coded
@@ -166,6 +163,7 @@ def commandes_client(sock,mess):
 				fp.write(data)
 			fp.close()
 ###########################  Partie edition du fichier  ################################ 				
+			time.sleep(1)
 			os.system("vim " + fich)
 			modif=True
 ###########################  Partie renvoie du fichier  ################################ 
