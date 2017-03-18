@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
-import socket, sys, md5, ssl, time, readline
+import socket, sys, md5, ssl, time, readline, os
 import commandclient
 import autocompletion as ac
 from getpass import getpass
@@ -14,7 +14,7 @@ BUFFER_SIZE = 2048
 #nom du client
 id_cli=""
 #Table contenant les commandes de base
-table_commandes = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch"]
+table_commandes = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch","rights","admin", "upload"]
 # Table completion post traitement
 table_new = []
 
@@ -37,7 +37,7 @@ def client(): #Fonction client
 	while acces == "access denied" :
 	#Connection via id et mdp
 		id_cli = raw_input("ID : ")
-		send(ssl_sock,id_cli)
+		send(ssl_sock,"X"+id_cli)
 		mdp_cli = getpass("mdp : ")
 		mdp_hash = md5.new(mdp_cli).hexdigest()
 		send(ssl_sock,str(mdp_hash))
@@ -55,8 +55,8 @@ def client(): #Fonction client
 
 
 def en_route():
-	global table_new
 	#Initialisation de l'autocompletion
+	global table_new
 	global table_commandes
 	completer = ac.AutoCompleter(table_commandes) 
 	#bind de la touche <TAB>
@@ -64,7 +64,12 @@ def en_route():
 	readline.parse_and_bind('tab: complete')
 	while True : 
 	#Mise à jour table d'auto_completion
+		table_client = []
 		completion = ssl_sock.recv(BUFFER_SIZE)
+		for (repertoires, sousrep, fichiers) in os.walk("client/dataclient"):
+			table_client.extend(fichiers)
+		string_table_client = " ".join(table_client)
+		completion = completion + '\n' + string_table_client
 		check_data(completion)
 		completer.insert(table_new)
 	#Récupération des données
@@ -84,7 +89,8 @@ def en_route():
 			send(ssl_sock,"commandes")
 			time.sleep(0.1)
 			commandclient.commandes_client(ssl_sock,data)
-
+		else: 
+			send(ssl_sock,str(data))
 	#Fermeture de la socket
 	sock.close()
 	ssl_sock.close()

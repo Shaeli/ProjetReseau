@@ -27,6 +27,13 @@ if len(sys.argv) == 4:
 	writeArg = sys.argv[2]
 	parentPid = sys.argv[3]
 
+	#Au cas où il y a un avortement du changement de graphique
+	fd = open("client/tmp", 'w')
+	fd.write("abort")
+	fd.write("\n")
+	fd.write("abort")
+	fd.close()
+
 	#Main
 	fenetre = Tk() #Fenetre principale
 	fenetre.title("Rights Administrator")
