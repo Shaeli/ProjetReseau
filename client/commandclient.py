@@ -23,8 +23,9 @@ def commandes_client(sock,mess):
 	if mess[0] == "startx":
 		window = GUI.Window(sock)
 		window.launchWindow()
+		window.closeWindow()
 
-	if mess[0] == "cd": #commande cd
+	elif mess[0] == "cd": #commande cd
 			global path
 			chn = " ".join(mess)
 			send(sock,chn) #envoie du changement de chemin

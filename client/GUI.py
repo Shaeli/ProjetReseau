@@ -49,3 +49,6 @@ class Window:
 
 	def launchWindow(self):
 		self.fenetre.mainloop()
+
+	def closeWindow(self):
+		self.fenetre.destroy()
