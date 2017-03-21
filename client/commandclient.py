@@ -6,6 +6,7 @@ import md5
 import subprocess
 import time
 import tempfile
+import GUI
 
 
 TCP_IP = "127.0.0.1"
@@ -20,7 +21,8 @@ def commandes_client(sock,mess):
 	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
 	
 	if mess[0] == "startx":
-		os.system("python2.7 client/GUI.py")
+		window = GUI.Window(sock)
+		window.launchWindow()
 
 	if mess[0] == "cd": #commande cd
 			global path
