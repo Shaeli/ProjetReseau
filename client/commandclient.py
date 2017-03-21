@@ -18,6 +18,10 @@ def commandes_client(sock,mess):
 
 
 	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
+	
+	if mess[0] == "startx":
+		os.system("python2.7 client/GUI.py")
+
 	if mess[0] == "cd": #commande cd
 			global path
 			chn = " ".join(mess)
