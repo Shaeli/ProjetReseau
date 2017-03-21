@@ -5,7 +5,7 @@ import socket, sys , os
 import md5
 import subprocess
 import time
-
+import tempfile
 
 
 TCP_IP = "127.0.0.1"
@@ -125,53 +125,46 @@ def commandes_client(sock,mess):
 				print "Problème dans l'édition des droits."
 
 	elif mess[0] == "vim" :
-		modif = False
+		vide = False
 		chn = " ".join(mess) 
 		send(sock,chn)
 		openingTry = sock.recv(BUFFER_SIZE).decode("Utf8")
 		if openingTry != "no":
-###########################  Partie reception du fichier  ################################ 
-			infos = sock.recv(BUFFER_SIZE).decode("Utf8")
+			infos= sock.recv(BUFFER_SIZE).decode("Utf8")
 			if infos == "Ce fichier n'existe pas!\n" :
 				print "Le fichier n'existe pas"
 			else :
-				infos = int(infos)
-				fich = "client/dataclient" + "/" + mess[1]
-				fp = open(fich, "wb")
+				data = ""
+				infos = int (infos)
+				print infos
 				if infos > BUFFER_SIZE :
-					for i in range((infos / BUFFER_SIZE) +1) :
-						data = sock.recv(BUFFER_SIZE).decode("Utf8")
-						fp.write(data)
+					for i in range((infos/BUFFER_SIZE) +1) :
+						data = data + sock.recv(BUFFER_SIZE).decode("Utf8")
+				elif infos == 0 :
+					vide = True
 				else :
 					data = sock.recv(BUFFER_SIZE).decode("Utf8")
-					fp.write(data)
-				fp.close()
-###########################  Partie edition du fichier  ################################ 				
-				time.sleep(1)
-				if openingTry == "RO":
-					os.system("vim -R " + fich)
-				else:
-					os.system("vim " + fich)
-				modif=True
-###########################  Partie renvoie du fichier  ################################ 
-			if modif == True :
-				num = 0
-				fp=open(fich,"rb")
-				nboctets = os.path.getsize(fich)
-				send(sock,str(nboctets))
-				print nboctets
-				if nboctets > BUFFER_SIZE :
-					for i in range((nboctets/BUFFER_SIZE)+1) :
-						fp.seek(num,0)
-						data = fp.read(BUFFER_SIZE)
-						print data
+				with tempfile.NamedTemporaryFile(suffix=".tmp") as tmpfile :
+					tmpfile.write(data)
+					tmpfile.flush()
+					if openingTry == "RO" :
+					#subprocess.call([vim],tempfil.name)
+						os.system("vim -R " + tmpfile.name)
+					else:
+						os.system("vim " + tmpfile.name)
+					num = 0
+					nboctets = os.path.getsize(tmpfile.name)
+					send(sock,str(nboctets))
+					if nboctets > BUFFER_SIZE :
+						for i in range((nboctets/BUFFER_SIZE)+1) :
+							tmpfile.seek(num,0)
+							data = tmpfile.read(BUFFER_SIZE)
+							send(sock,data)
+							num = num + BUFFER_SIZE
+					else :
+						tmpfile.seek(0)
+						data = tmpfile.read()
 						send(sock,data)
-						num = num + BUFFER_SIZE
-				else :
-					data = fp.read()
-					send(sock,data)
-				fp.close()
-				os.remove(fich)
 		else:
 			print "Droits de lecture et écriture insuffisants"
 

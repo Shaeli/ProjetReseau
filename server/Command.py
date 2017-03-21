@@ -9,6 +9,7 @@ from os import system
 import os
 from getpass import getpass
 import time
+import tempfile
 
 
 BUFFER_SIZE = 2048
@@ -189,55 +190,59 @@ def commandes_server(self, clientsocket):
 
 
 	elif data[0] == "vim":
+		droits = True
 		if rights.isWritable(self.rights):
 			send(self,"ok",clientsocket)
 		elif rights.isReadable(self.rights) and not rights.isWritable(self.rights):
 			send(self,"RO",clientsocket)
 		else:
 			send(self,"no",clientsocket)
+			droits = False
 
 	############################  Partie envoie du fichier au client  ################################ 
-		
-		fich = self.path + "/" + data[1] 
-		exist = False
-		try:
-			fp=open(fich,"rb") #ici nous testons l'exitence du fichier
-			fp.close()
-			exist = True
-		except:
-			send(self,"Ce fichier n'existe pas!\n",clientsocket)
+		if droits == True :	
+			fich = self.path + "/" + data[1] 
+			exist = False
+			vide = False
+			try:
+				fp=open(fich,"rb") #ici nous testons l'exitence du fichier
+				fp.close()
+				exist = True
+			except:
+				send(self,"Ce fichier n'existe pas!\n",clientsocket)
 
-		if exist == True :
-			num = 0
-			fp=open(fich,"rb")
-			nboctets = os.path.getsize(fich)
-			send(self,str(nboctets),clientsocket)
-			print nboctets
-			if nboctets > BUFFER_SIZE :
-				for i in range((nboctets/BUFFER_SIZE)+1) :
-					fp.seek(num,0)
-					data = fp.read(BUFFER_SIZE)
-					print data
+			if exist == True :
+				num = 0
+				fp=open(fich,"rb")
+				nboctets = os.path.getsize(fich)
+				send(self,str(nboctets),clientsocket)
+				if nboctets > BUFFER_SIZE :
+					for i in range((nboctets/BUFFER_SIZE)+1) :
+						fp.seek(num,0)
+						data = fp.read(BUFFER_SIZE)
+						print data
+						send(self,data,clientsocket)
+						num = num + BUFFER_SIZE
+				elif nboctets == 0 :
+					vide = True
+				else :
+					data = fp.read()
 					send(self,data,clientsocket)
-					num = num + BUFFER_SIZE
-			else :
-				data = fp.read()
-				send(self,data,clientsocket)
-			fp.close()
+				fp.close()
 
 ############################  Partie reception du fichier  ################################ 
-		if exist == True :
-			nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			nbretour = int(nbretour)
-			fp = open(fich, "wb")
-			if nbretour > BUFFER_SIZE :
-				for i in range((infos / BUFFER_SIZE) +1) :
+			if exist == True :
+				nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+				nbretour = int(nbretour)
+				fp = open(fich, "wb")
+				if nbretour > BUFFER_SIZE :
+					for i in range((infos / BUFFER_SIZE) +1) :
+						data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+						fp.write(data)
+				else :
 					data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 					fp.write(data)
-			else :
-				data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-				fp.write(data)
-			fp.close()
+				fp.close()
 
 
 	elif data[0] == 'upload' :
