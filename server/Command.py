@@ -263,6 +263,9 @@ def commandes_server(self, clientsocket):
 		else:
 			send(self,"no",clientsocket)
 
+	elif data[0] == "startx" : #commande startx
+		pass
+
 	elif data[0] == "nothing" :
 		print("Commande incomplete")
 
