@@ -161,6 +161,8 @@ def commandes_client(sock,mess):
 							data = tmpfile.read(BUFFER_SIZE)
 							send(sock,data)
 							num = num + BUFFER_SIZE
+					elif nboctets == 0 :
+						pass
 					else :
 						tmpfile.seek(0)
 						data = tmpfile.read()

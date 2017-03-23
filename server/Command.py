@@ -243,6 +243,8 @@ def commandes_server(self, clientsocket):
 					for i in range((infos / BUFFER_SIZE) +1) :
 						data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 						fp.write(data)
+				elif nbretour == 0 :
+					pass
 				else :
 					data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 					fp.write(data)
