@@ -220,6 +220,9 @@ def commandes_client(sock,mess):
 			fp.close()
 		else:
 			print "Droit d'écriture insuffisants."
+
+	elif mess[0] == "dl" :
+		
 	else :
 		print("Commande non reconnue")
 

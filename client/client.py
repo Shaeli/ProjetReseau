@@ -13,7 +13,7 @@ BUFFER_SIZE = 2048
 #nom du client
 id_cli=""
 #Table contenant les commandes de base
-table_commandes = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch","rights","admin", "upload"]
+table_commandes = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch","rights","admin", "upload","dl"]
 # Table completion post traitement
 table_new = []
 
@@ -84,7 +84,7 @@ def en_route():
 			print("\nFermeture de la socket client\n")
 			break
 	#Si commandes, on lance l'état commande chez le client
-		elif data[0] == "startx" or data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm" or data[0] == "touch" or data[0] == "add" or data[0] == "mkdir" or data[0] == "vim" or data[0] == "rights":
+		elif data[0] == "startx" or data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm" or data[0] == "touch" or data[0] == "add" or data[0] == "mkdir" or data[0] == "vim" or data[0] == "rights" or data[0] == "dl":
 			send(ssl_sock,"commandes")
 			time.sleep(0.1)
 			commandclient.commandes_client(ssl_sock,data)

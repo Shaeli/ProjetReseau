@@ -17,7 +17,7 @@ BUFFER_SIZE = 2048
 def commandes_server(self, clientsocket):
 	tampon = ""
 	data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-	data=data.split(" ")
+	data = data.split(" ")
 
 	#Partie gestion des droits
 	rights = Rights.Rights(self.path)
@@ -42,16 +42,20 @@ def commandes_server(self, clientsocket):
 				lst[i] = item.rstrip()
 			if (data[1] in lst) or (data[1] == "..") : #si c'est dans la liste, ou "..", on peut changer le path
 				if data[1] == ".." :
-					if self.path != "./data" : #si le path est "./data" et l'on souhaite faire "cd ..", on ne le change pas, ce n'est pas possible
+					if self.path != "./data" : #si le path est pas"./data" et l'on souhaite faire "cd ..", on ne le change pas, ce n'est pas possible
 						path = self.path.split("/")
 						self.path = ""
 						for i in range(0,len(path)-1): #mise a jour du nouveau path
 							self.path = self.path+path[i]
 							self.path = self.path+"/"
+						nb= len(self.path)
+						self.path=self.path[0:nb-1]
+
 				else :
 					self.path = self.path + "/" + data[1]
 			else :
 				print("pas de changement de path car cd pas bon")
+		print 'le nouveau chemin est :' + self.path
 		send(self,self.path,clientsocket)
 	elif data[0] == "cat" : #commande cat
 		if rights.isReadable(self.rights) and data[1] != ".config": #verification si l'on possede les droits
@@ -230,7 +234,7 @@ def commandes_server(self, clientsocket):
 					send(self,data,clientsocket)
 				fp.close()
 
-############################  Partie reception du fichier  ################################ 
+############################  Partie reception du fichier  ###############################
 			if exist == True :
 				nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 				nbretour = int(nbretour)
