@@ -249,7 +249,7 @@ def commandes_server(self, clientsocket):
 				fp.close()
 
 
-	elif data[0] == 'upload' :
+	elif data[0] == 'upload' :#test si fich existe a faire
 		if rights.isWritable(self.rights):
 			send(self, "ok",clientsocket)
 			nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
@@ -270,6 +270,41 @@ def commandes_server(self, clientsocket):
 	elif data[0] == "nothing" :
 		print("Commande incomplete")
 
+	elif data[0] == "dl" :
+		fich = self.path + "/" + data[1] 
+		droits = True
+		exist = False
+		if rights.isWritable(self.rights) :
+			send(self,"ok",clientsocket)
+		elif rights.isReadable(self.rights) and not rights.isWritable(self.rights):
+			send(self,"RO",clientsocket)
+		else:
+			send(self,"no",clientsocket)
+			droits = False
+		if droits :
+			try:
+				fp=open(fich,"rb") #ici nous testons l'exitence du fichier
+				fp.close()
+				exist = True
+			except:
+				send(self,"Ce fichier n'existe pas!\n",clientsocket)
+			if exist :
+				fp = open(fich,'rb')
+				nboctets=os.path.getsize(fich)
+				send(self,str(nboctets),clientsocket)
+				num = 0
+				if nboctets > BUFFER_SIZE : #si il y a plus d'octets que la taille du buffer, on envoie en plusieurs fois
+					for i in range((nboctets/BUFFER_SIZE)+1) :
+						fp.seek(num,0)
+						data = fp.read(BUFFER_SIZE)
+						send(self,data,clientsocket)
+						num = num + BUFFER_SIZE
+				elif nboctets == 0 :
+					pass
+				else : #si il est possible d'envoyer en une fois
+					data = fp.read() 
+					send(self,data,clientsocket)
+				fp.close()
 	else:
 		print "commande non reconnue"
 
