@@ -2,6 +2,7 @@
 # -*-coding:Utf8 -*
 
 from Tkinter import *
+import CommandsGUI
 
 class Window:
 
@@ -16,7 +17,7 @@ class Window:
 		self.fenetre = fenetre
 
 		#Création de l'arborescence de fichiers
-		arbo = Frame(fenetre, borderwidth=2, bg = "grey", relief=GROOVE, height = 350, width = 100) 
+		arbo = Frame(fenetre, borderwidth=2, bg = "grey", relief=GROOVE, height = 350, width = 100)
 		arbo.pack(side=LEFT, padx=5, pady=5)
 
 		# Création de l'affichage du path
@@ -41,7 +42,7 @@ class Window:
 		DOWNLOAD = Button(menubar, text = "Download", width = 80)
 		DOWNLOAD.pack(pady=5)
 
-		UPLOAD = Button(menubar, text = "Upload", width = 80)
+		UPLOAD = Button(menubar, text = "Upload", width = 80, command = lambda y = socket : CommandsGUI.sendFileToServer(y))
 		UPLOAD.pack(pady=5)
 
 		QUIT = Button(menubar, text = "Quitter", command = self.fenetre.quit, width = 80)
