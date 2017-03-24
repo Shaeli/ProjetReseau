@@ -104,5 +104,5 @@ if __name__ == '__main__': #Connexion et appel à la fonction client
 								ca_certs = "server/sslcertif/server.crt",
 								cert_reqs = ssl.CERT_REQUIRED)
 	ssl_sock.connect((TCP_IP, TCP_PORT))
-	
 	client()
+

@@ -227,6 +227,30 @@ def commandes_client(sock,mess):
 			fp.close()
 		else:
 			print "Droit d'écriture insuffisants."
+
+	elif mess[0] == "dl" :
+		chn = " ".join(mess)
+		send(sock,chn)
+		droits = sock.recv(BUFFER_SIZE).decode("Utf8")
+		fich = "."+separateur+"client"+separateur+"dataclient"+separateur + mess[1]
+		if droits != "no" :
+			existe = sock.recv(BUFFER_SIZE).decode("Utf8")
+			if existe == "Ce fichier n'existe pas!\n" :
+				print existe
+			else :
+				fp = open(fich,"wb")
+				nbretour = int(existe)
+				if nbretour > BUFFER_SIZE :
+					for i in range((nbretour / BUFFER_SIZE) +1) :
+						data = sock.recv(BUFFER_SIZE).decode("Utf8")
+						fp.write(data)
+				elif nbretour == 0 :
+					pass
+				else :
+					data = sock.recv(BUFFER_SIZE).decode("Utf8")
+					fp.write(data)
+				fp.close()	
+
 	else :
 		print("Commande non reconnue")
 

@@ -42,10 +42,6 @@ def commandes_server(self, clientsocket):
 
 	elif data[0] == "cd" : #commande cd
 		if len(data) != 1 :
-			#ls = "ls" + " " + self.path #on fait d'abord un ls voir si il est possible de cd
-			#lst = os.popen(ls).readlines()
-			#for i, item in enumerate(lst) : 
-			#	lst[i] = item.rstrip()
 			if (data[1] in os.listdir(self.path))  : #si c'est dans la liste, ou "..", on peut changer le path
 				self.path = self.path + separateur + data[1]
 			elif data[1] == ".." :
@@ -55,19 +51,15 @@ def commandes_server(self, clientsocket):
 					for i in range(0,len(path)-1): #mise a jour du nouveau path
 						self.path = self.path+path[i]
 						self.path = self.path+separateur
-						
+					nb=len(self.path)
+					self.path=self.path[0:nb-1]
 			else :
 				print("pas de changement de path car cd pas bon")
 		send(self,self.path,clientsocket)
 	elif data[0] == "cat" : #commande cat
 		if rights.isReadable(self.rights) and data[1] != ".config": #verification si l'on possede les droits
-			#ls ="ls" + " " + self.path
-			#lst = os.popen(ls).readlines() #on regarde si le fichier est present
-			#for i, item in enumerate(lst) :
-			#	lst[i] = item.rstrip()
 			if (data[1] in os.listdir(self.path)) :
 				data[1] = self.path+separateur+data[1] #on met a jour le chemin
-				print data[1]
 				if os.name=="nt":
 					chn="type "+data[1]
 				else:
@@ -86,10 +78,6 @@ def commandes_server(self, clientsocket):
 
 	elif data[0] == "mv" : #commande mv
 		if rights.isWritable(self.rights) and data[1] != ".config":
-			#ls ="ls" + " " + self.path
-			#lst = os.popen(ls).readlines()
-			#for i, item in enumerate(lst) :
-			#	lst[i] = item.rstrip()
 			if (data[1] in os.listdir(self.path)):
 				data[1] = self.path+separateur+data[1]
 				data[2] = self.path+separateur+data[2]
@@ -255,13 +243,15 @@ def commandes_server(self, clientsocket):
 					for i in range((infos / BUFFER_SIZE) +1) :
 						data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 						fp.write(data)
+				elif nbretour==0:
+					pass
 				else :
 					data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 					fp.write(data)
 				fp.close()
 
 
-	elif data[0] == 'upload' :
+	elif data[0] == 'upload' : #test si fich existe a faire
 		if rights.isWritable(self.rights):
 			send(self, "ok",clientsocket)
 			nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
@@ -282,9 +272,46 @@ def commandes_server(self, clientsocket):
 	elif data[0] == "nothing" :
 		print("Commande incomplete")
 
+	elif data[0] == "dl" :
+		fich = self.path + separateur + data[1] 
+		droits = True
+		exist = False
+		if rights.isWritable(self.rights) :
+			send(self,"ok",clientsocket)
+		elif rights.isReadable(self.rights) and not rights.isWritable(self.rights):
+			send(self,"RO",clientsocket)
+		else:
+			send(self,"no",clientsocket)
+			droits = False
+		if droits :
+			try:
+				fp=open(fich,"rb") #ici nous testons l'exitence du fichier
+				fp.close()
+				exist = True
+			except:
+				send(self,"Ce fichier n'existe pas!\n",clientsocket)
+			if exist :
+				fp = open(fich,'rb')
+				nboctets=os.path.getsize(fich)
+				send(self,str(nboctets),clientsocket)
+				num = 0
+				if nboctets > BUFFER_SIZE : #si il y a plus d'octets que la taille du buffer, on envoie en plusieurs fois
+					for i in range((nboctets/BUFFER_SIZE)+1) :
+						fp.seek(num,0)
+						data = fp.read(BUFFER_SIZE)
+						send(self,data,clientsocket)
+						num = num + BUFFER_SIZE
+				elif nboctets == 0 :
+					pass
+				else : #si il est possible d'envoyer en une fois
+					data = fp.read() 
+					send(self,data,clientsocket)
+				fp.close()
+
 	else:
 		print "commande non reconnue"
 
 #Fonction à utiliser pour envoyer un message en texte (utilise un encodage défini)
 def send(self, message,clientsocket):
+
 	self.clientsocket.send(message.encode("Utf8"))
