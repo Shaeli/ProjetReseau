@@ -136,7 +136,6 @@ def commandes_client(sock,mess):
 			else :
 				data = ""
 				infos = int (infos)
-				print infos
 				if infos > BUFFER_SIZE :
 					for i in range((infos/BUFFER_SIZE) +1) :
 						data = data + sock.recv(BUFFER_SIZE).decode("Utf8")
@@ -144,14 +143,22 @@ def commandes_client(sock,mess):
 					vide = True
 				else :
 					data = sock.recv(BUFFER_SIZE).decode("Utf8")
-				with tempfile.NamedTemporaryFile(suffix=".tmp") as tmpfile :
+				if os.name=="nt":
+					option="delete=False"
+				else:
+					option=""
+				with tempfile.NamedTemporaryFile(suffix=".tmp", delete=False) as tmpfile :
 					tmpfile.write(data)
 					tmpfile.flush()
-					if openingTry == "RO" :
-					#subprocess.call([vim],tempfil.name)
-						os.system("vim -R " + tmpfile.name)
+
+					if os.name=="nt":
+						os.system("notepad " + tmpfile.name)
+						if openingTry=="RO":
+							print "pas le droit"
 					else:
 						os.system("vim " + tmpfile.name)
+						if openingTry == "RO" :
+							os.system("vim -R " + tmpfile.name)
 					num = 0
 					nboctets = os.path.getsize(tmpfile.name)
 					send(sock,str(nboctets))
@@ -176,7 +183,7 @@ def commandes_client(sock,mess):
 		if data == "ok":
 			pourcent = 0
 			num = 0
-			fich = "./client/dataclient/" + mess[1] #fichier a upload : il doit se situer dans le dossier client/dataclient
+			fich = "."+separateur+"client"+separateur+"dataclient"+separateur + mess[1] #fichier a upload : il doit se situer dans le dossier client/dataclient
 			fp=open(fich,"rb") #on ouvre le fichier
 			nboctets = os.path.getsize(fich)
 			send(sock,str(nboctets)) #on envoie le nombre d'octets presents dans le fichier
