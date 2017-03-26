@@ -10,6 +10,7 @@ import os
 from getpass import getpass
 import time
 import tempfile
+from Crypto.Cipher import AES
 
 
 BUFFER_SIZE = 2048
@@ -224,7 +225,6 @@ def commandes_server(self, clientsocket):
 					for i in range((nboctets/BUFFER_SIZE)+1) :
 						fp.seek(num,0)
 						data = fp.read(BUFFER_SIZE)
-						print data
 						send(self,data,clientsocket)
 						num = num + BUFFER_SIZE
 				elif nboctets == 0 :
@@ -240,7 +240,7 @@ def commandes_server(self, clientsocket):
 				nbretour = int(nbretour)
 				fp = open(fich, "wb")
 				if nbretour > BUFFER_SIZE :
-					for i in range((infos / BUFFER_SIZE) +1) :
+					for i in range((nbretour/ BUFFER_SIZE) +1) :
 						data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 						fp.write(data)
 				elif nbretour==0:
@@ -291,6 +291,7 @@ def commandes_server(self, clientsocket):
 			except:
 				send(self,"Ce fichier n'existe pas!\n",clientsocket)
 			if exist :
+				codeur = AES.new('1234567891234567',AES.MODE_ECB)
 				fp = open(fich,'rb')
 				nboctets=os.path.getsize(fich)
 				send(self,str(nboctets),clientsocket)
@@ -299,15 +300,19 @@ def commandes_server(self, clientsocket):
 					for i in range((nboctets/BUFFER_SIZE)+1) :
 						fp.seek(num,0)
 						data = fp.read(BUFFER_SIZE)
-						send(self,data,clientsocket)
+						data += '\0' *(-len(data)%16)
+						datacryptes = codeur.encrypt(data)
+						self.clientsocket.send(datacryptes)
 						num = num + BUFFER_SIZE
 				elif nboctets == 0 :
 					pass
 				else : #si il est possible d'envoyer en une fois
 					data = fp.read() 
-					send(self,data,clientsocket)
+					data += '\0' *(-len(data)%16)
+					datacryptes = codeur.encrypt(data)
+					self.clientsocket.send(datacryptes)
+					#send(self,datacryptes,clientsocket)
 				fp.close()
-
 	else:
 		print "commande non reconnue"
 

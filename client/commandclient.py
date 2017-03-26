@@ -6,7 +6,7 @@ import md5
 import subprocess
 import time
 import tempfile
-
+from Crypto.Cipher import AES
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8888
@@ -168,6 +168,8 @@ def commandes_client(sock,mess):
 							data = tmpfile.read(BUFFER_SIZE)
 							send(sock,data)
 							num = num + BUFFER_SIZE
+					elif nboctets == 0 :
+						pass
 					else :
 						tmpfile.seek(0)
 						data = tmpfile.read()
@@ -231,8 +233,9 @@ def commandes_client(sock,mess):
 	elif mess[0] == "dl" :
 		chn = " ".join(mess)
 		send(sock,chn)
+		print"dl en cours"
 		droits = sock.recv(BUFFER_SIZE).decode("Utf8")
-		fich = "."+separateur+"client"+separateur+"dataclient"+separateur + mess[1]
+		fich = "./client/dataclient/" + mess[1]
 		if droits != "no" :
 			existe = sock.recv(BUFFER_SIZE).decode("Utf8")
 			if existe == "Ce fichier n'existe pas!\n" :
@@ -242,14 +245,27 @@ def commandes_client(sock,mess):
 				nbretour = int(existe)
 				if nbretour > BUFFER_SIZE :
 					for i in range((nbretour / BUFFER_SIZE) +1) :
-						data = sock.recv(BUFFER_SIZE).decode("Utf8")
+						data=sock.recv(BUFFER_SIZE)
 						fp.write(data)
 				elif nbretour == 0 :
 					pass
 				else :
-					data = sock.recv(BUFFER_SIZE).decode("Utf8")
+					data=sock.recv(BUFFER_SIZE)
 					fp.write(data)
 				fp.close()	
+
+	elif mess[0] == 'test' :
+		print"test en cours"
+		coder = AES.new('1234567891234567',AES.MODE_ECB)
+		message="motac\0rypter"
+		message += '\0' *(-len(message)% 16)
+		motcrypte = coder.encrypt(message)
+		print "le mot crupté est :"
+		print motcrypte
+		decoder = AES.new('1234567891234567',AES.MODE_ECB)
+		motdecrypter =  decoder.decrypt(motcrypte)
+		print "le mot decrypté est :"
+		print motdecrypter
 
 	else :
 		print("Commande non reconnue")
