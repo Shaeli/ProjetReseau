@@ -21,6 +21,7 @@ def commandes_client(sock,mess):
 	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
 	
 	if mess[0] == "startx":
+		send(sock,mess[0]) #envoie du changement de chemin
 		window = GUI.Window(sock)
 		window.launchWindow()
 		window.closeWindow()
@@ -219,7 +220,10 @@ def commandes_client(sock,mess):
 
 			else : #si il est possible d'envoyer en une fois
 				data = fp.read() 
-				send(sock,data)
+				if data == "":
+					send(" ", socket)
+				else:
+					send(str(data), socket)
 			fp.close()
 		else:
 			print "Droit d'écriture insuffisants."

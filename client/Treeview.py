@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
+import socket
+
 BUFFER_SIZE = 2048
 
 #Méthode pour initialiser l'arborescence

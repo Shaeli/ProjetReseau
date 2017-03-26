@@ -4,6 +4,7 @@
 from Tkinter import *
 import ttk
 import Treeview as tv 
+import CommandsGUI
 
 # Création de la fenêtre principale
 fenetre = Tk()
@@ -26,6 +27,7 @@ path_name.pack(side = TOP, padx=5, pady=5)
 affichage = Frame(fenetre, borderwidth=2, relief=GROOVE, height = 300, width = 400)
 affichage.pack(side=LEFT, padx=5, pady=5)
 
+
 #Création du menu
 menubar = Frame(fenetre, bg="white", borderwidth=2, relief=GROOVE, height = 300, width = 100)
 menubar.pack_propagate(False)
@@ -40,14 +42,13 @@ SUPPR.pack(pady=5)
 DOWNLOAD = Button(menubar, text = "Download", width = 80)
 DOWNLOAD.pack(pady=5)
 
-UPLOAD = Button(menubar, text = "Upload", width = 80)
-UPLOAD.pack(pady=5)
-
 QUIT = Button(menubar, text = "Quitter", command = fenetre.quit, width = 80)
 QUIT.pack(side = BOTTOM, pady=5)
 
 
-fenetre.mainloop()
+UPLOAD = Button(menubar, text = "Upload", width = 80, command = lambda y = socket : CommandsGUI.sendFileToServer(y))
+UPLOAD.pack(pady=5)
 
+fenetre.mainloop()
 
 
