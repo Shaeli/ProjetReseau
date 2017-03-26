@@ -266,6 +266,16 @@ def commandes_server(self, clientsocket):
 	elif data[0] == "startx" : #commande startx
 		pass
 
+	elif data[0] == "init_arbo":
+		liste = []
+		for path, dirs, files in os.walk("data"):
+			pathlist = [path]
+		  	liste.extend(pathlist)
+		  	liste.extend(files)
+		arbostring = " ".join(liste)
+		send(self, arbostring)
+
+
 	elif data[0] == "nothing" :
 		print("Commande incomplete")
 

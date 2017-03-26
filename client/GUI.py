@@ -2,6 +2,8 @@
 # -*-coding:Utf8 -*
 
 from Tkinter import *
+import ttk
+import Treeview as tv 
 
 # Création de la fenêtre principale
 fenetre = Tk()
@@ -10,6 +12,11 @@ fenetre.title("PREZO")
 #Création de l'arborescence de fichiers
 arbo = Frame(fenetre, borderwidth=2, bg = "grey", relief=GROOVE, height = 350, width = 100) 
 arbo.pack(side=LEFT, padx=5, pady=5)
+
+tree_arb = ttk.Treeview(arbo)
+tree_arb.grid(column=0, row=0, sticky='nswe')
+tree_arb.heading("#0", text="Arborescence", anchor='w')
+#tv.initialisation_arbre_racine(tree_arb, sock)
 
 # Création de l'affichage du path
 path_name = Frame(fenetre, bg = "ivory", borderwidth=2, relief=GROOVE, height = 40, width = 510)

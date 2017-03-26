@@ -13,7 +13,7 @@ BUFFER_SIZE = 2048
 #nom du client
 id_cli=""
 #Table contenant les commandes de base
-table_commandes = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch","rights","admin", "upload"]
+table_commandes = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch","rights","admin", "upload", "startx"]
 # Table completion post traitement
 table_new = []
 
