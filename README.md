@@ -43,12 +43,14 @@ Etapes achevés:
 
 Etapes en cours:
 
- -[ ] Adaptation windows
+- [ ] Adaptation windows
 - [ ] Client graphique
 - [ ] Faire de la place au niveaux des thread
 - [ ] Regler probleme de cd : differencier les dossiers /fichier? + si cd dans un fichier -> NOP.
 - [ ] commande clear
+
 Etapes futures:
+
 - [ ] Faire de la place au niveaux des thread                
 - [ ] Etape : Envoit de flux graphiques             
 - [ ] Etape : Ajout de fonctionnalités
