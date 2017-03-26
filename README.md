@@ -23,6 +23,12 @@
 - [ ] Client et Serveur sous Windows
 - [ ] Client et serveur sur des systèmes hétérogènes (serveur linux et client windows)
 
+## LIB NECESSAIRES :
+
+
+  -PyCrypto
+
+
 ## Roadmap
 
 Deux équipes travaillent en parallèle, l'une sur tout ce qui est connection entre les deux entités, l'autre sur la partie fonctionnement.
