@@ -18,7 +18,7 @@ def commandes_client(sock,mess):
 
 
 	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
-	
+	RAM = "./server"
 	if mess[0] == "startx":
 		os.system("python2.7 client/GUI.py")
 
@@ -147,7 +147,7 @@ def commandes_client(sock,mess):
 					option="delete=False"
 				else:
 					option=""
-				with tempfile.NamedTemporaryFile(suffix=".tmp", delete=False) as tmpfile :
+				with tempfile.NamedTemporaryFile(prefix=".tmp", dir=RAM) as tmpfile :
 					tmpfile.write(data)
 					tmpfile.flush()
 
@@ -233,7 +233,6 @@ def commandes_client(sock,mess):
 	elif mess[0] == "dl" :
 		chn = " ".join(mess)
 		send(sock,chn)
-		print"dl en cours"
 		droits = sock.recv(BUFFER_SIZE).decode("Utf8")
 		fich = "./client/dataclient/" + mess[1]
 		if droits != "no" :
@@ -253,20 +252,6 @@ def commandes_client(sock,mess):
 					data=sock.recv(BUFFER_SIZE)
 					fp.write(data)
 				fp.close()	
-
-	elif mess[0] == 'test' :
-		print"test en cours"
-		coder = AES.new('1234567891234567',AES.MODE_ECB)
-		message="motac\0rypter"
-		message += '\0' *(-len(message)% 16)
-		motcrypte = coder.encrypt(message)
-		print "le mot crupté est :"
-		print motcrypte
-		decoder = AES.new('1234567891234567',AES.MODE_ECB)
-		motdecrypter =  decoder.decrypt(motcrypte)
-		print "le mot decrypté est :"
-		print motdecrypter
-
 	else :
 		print("Commande non reconnue")
 

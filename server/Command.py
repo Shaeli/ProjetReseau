@@ -291,7 +291,9 @@ def commandes_server(self, clientsocket):
 			except:
 				send(self,"Ce fichier n'existe pas!\n",clientsocket)
 			if exist :
-				codeur = AES.new('1234567891234567',AES.MODE_ECB)
+				cle = self.id_cli
+				cle += '\0' *(-len(cle)%16)
+				codeur = AES.new(cle,AES.MODE_ECB)
 				fp = open(fich,'rb')
 				nboctets=os.path.getsize(fich)
 				send(self,str(nboctets),clientsocket)
