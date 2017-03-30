@@ -10,9 +10,10 @@ import os
 from getpass import getpass
 import time
 import tempfile
+from xml.sax.saxutils import escape as xml
 
 
-BUFFER_SIZE = 2048
+BUFFER_SIZE = 4096
 
 def commandes_server(self, clientsocket):
 	tampon = ""
@@ -265,6 +266,32 @@ def commandes_server(self, clientsocket):
 
 	elif data[0] == "startx" : #commande startx
 		pass
+
+	elif data[0] == "init_arbo":
+		def initialisationXML(path):
+		    arborescence = '<dir>\n<name>%s</name>\n' % xml(os.path.basename(path))
+		    dirs = []
+		    files = []
+		    for item in os.listdir(path):
+		        itempath = os.path.join(path, item)
+		        if os.path.isdir(itempath):
+		            dirs.append(item)
+		        elif os.path.isfile(itempath):
+		            files.append(item)
+		    if files:
+		        arborescence += '  <files>\n' + '\n'.join('    <file>\n      <name>%s</name>\n    </file>' % xml(f) for f in files) + '\n  </files>\n'
+		    if dirs:
+		        for d in dirs:
+		            x = initialisationXML(os.path.join(path, d))
+		            arborescence += '\n'.join('  ' + line for line in x.split('\n'))
+		    arborescence += '</dir>'
+		    return arborescence
+		arbostring =initialisationXML("data")
+		str(arbostring)
+		send(self, arbostring ,clientsocket)
+		
+	elif data[0] == "getpass":
+		send(self,self.path,clientsocket)
 
 	elif data[0] == "nothing" :
 		print("Commande incomplete")
