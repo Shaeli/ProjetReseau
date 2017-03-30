@@ -21,7 +21,7 @@ class ClientThread(Thread):
 		#Tentative de connection du client via id et mdp 
 		while passages < 4 : #apres 4 tentatives echouees, la connexion est refusée
 			id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			id_cli=id_cli[1:]
+			self.id_cli=id_cli[1:]
 			mdp_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 			self.path = "./data"
 			user_base = open("server/ressources/users.bdd","r")

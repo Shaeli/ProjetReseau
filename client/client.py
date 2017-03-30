@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
-import socket, sys, md5, ssl, time, readline
-import commandclient
+import socket, sys, md5, ssl, time, readline, os, commandclient
 import autocompletion as ac
 from getpass import getpass
 
@@ -14,7 +13,7 @@ BUFFER_SIZE = 2048
 #nom du client
 id_cli=""
 #Table contenant les commandes de base
-table_commandes = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch","rights","admin"]
+table_commandes = ["ls", "cd", "cat", "mv", "add", "rm", "mkdir", "touch","rights","admin", "upload"]
 # Table completion post traitement
 table_new = []
 
@@ -55,8 +54,8 @@ def client(): #Fonction client
 
 
 def en_route():
-	global table_new
 	#Initialisation de l'autocompletion
+	global table_new
 	global table_commandes
 	completer = ac.AutoCompleter(table_commandes) 
 	#bind de la touche <TAB>
@@ -64,7 +63,12 @@ def en_route():
 	readline.parse_and_bind('tab: complete')
 	while True : 
 	#Mise à jour table d'auto_completion
+		table_client = []
 		completion = ssl_sock.recv(BUFFER_SIZE)
+		for (repertoires, sousrep, fichiers) in os.walk("client/dataclient"):
+			table_client.extend(fichiers)
+		string_table_client = " ".join(table_client)
+		completion = completion + '\n' + string_table_client
 		check_data(completion)
 		completer.insert(table_new)
 	#Récupération des données
@@ -80,8 +84,7 @@ def en_route():
 			print("\nFermeture de la socket client\n")
 			break
 	#Si commandes, on lance l'état commande chez le client
-		elif data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm" or data[0] == "touch" or data[0] == "add" or data[0] == "mkdir" or data[0] == "vim" or data[0] == "rights" or data[0] == "upload"  or data[0] == "admin":
-
+		elif data[0] == "startx" or data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm" or data[0] == "touch" or data[0] == "add" or data[0] == "mkdir" or data[0] == "vim" or data[0] == "rights" or data[0] == "dl":
 			send(ssl_sock,"commandes")
 			time.sleep(0.1)
 			commandclient.commandes_client(ssl_sock,data)
@@ -101,5 +104,5 @@ if __name__ == '__main__': #Connexion et appel à la fonction client
 								ca_certs = "server/sslcertif/server.crt",
 								cert_reqs = ssl.CERT_REQUIRED)
 	ssl_sock.connect((TCP_IP, TCP_PORT))
-	
 	client()
+
