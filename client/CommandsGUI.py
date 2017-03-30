@@ -6,6 +6,12 @@ import socket, sys, md5, ssl, time, readline, os, commandclient
 
 BUFFER_SIZE = 2048
 
+def getPass(self, socket):
+	send("commandes", socket)
+	send("getpass", socket)
+	socket.recv(BUFFER_SIZE).decode("Utf8")
+	self.path = socket.recv(BUFFER_SIZE).decode("Utf8")
+
 def sendFileToServer(socket):
 	#On récupère le nom du fichier à envoyer
 	filename = tkFileDialog.askopenfilename(title = "Fichier à envoyer")

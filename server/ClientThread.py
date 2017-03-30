@@ -58,7 +58,6 @@ class ClientThread(Thread):
 			for (repertoire, sousRepertoires, fichiers) in os.walk(self.path):
  				liste.extend(fichiers)
  				liste.extend(sousRepertoires)
- 			print liste
  			completion= " ".join(liste)
  			self.send(completion)
 			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
