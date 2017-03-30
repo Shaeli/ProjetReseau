@@ -147,10 +147,9 @@ def commandes_client(sock,mess):
 					option="delete=False"
 				else:
 					option=""
-				with tempfile.NamedTemporaryFile(prefix=".tmp", dir=RAM) as tmpfile :
+				with tempfile.NamedTemporaryFile(prefix=".tmp") as tmpfile :
 					tmpfile.write(data)
 					tmpfile.flush()
-
 					if os.name=="nt":
 						os.system("notepad " + tmpfile.name)
 						if openingTry=="RO":
@@ -162,6 +161,7 @@ def commandes_client(sock,mess):
 					num = 0
 					nboctets = os.path.getsize(tmpfile.name)
 					send(sock,str(nboctets))
+					print nboctets
 					if nboctets > BUFFER_SIZE :
 						for i in range((nboctets/BUFFER_SIZE)+1) :
 							tmpfile.seek(num,0)
@@ -171,8 +171,10 @@ def commandes_client(sock,mess):
 					elif nboctets == 0 :
 						pass
 					else :
+						tmpfile.flush()
 						tmpfile.seek(0)
 						data = tmpfile.read()
+						print data
 						send(sock,data)
 		else:
 			print "Droits de lecture et écriture insuffisants"
