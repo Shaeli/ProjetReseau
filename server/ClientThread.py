@@ -20,8 +20,8 @@ class ClientThread(Thread):
 		passages = 0
 		#Tentative de connection du client via id et mdp 
 		while passages < 4 : #apres 4 tentatives echouees, la connexion est refusée
-			id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			self.id_cli=id_cli[1:]
+			self.id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			self.id_cli=self.id_cli[1:]
 			mdp_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 			self.path = "./data"
 			user_base = open("server/ressources/users.bdd","r")
@@ -29,14 +29,14 @@ class ClientThread(Thread):
 			accepted = False
 			for line in user_base.read().split("\n"):
 				(id_base, mdp_base, rghts) = line.split(';')
-				if (id_base == id_cli and mdp_base == mdp_cli):
+				if (id_base == self.id_cli and mdp_base == mdp_cli):
 					accepted = True
 					rights = rghts
 			user_base.close()
 			if accepted:	
 				self.send("access granted") #acces accorde au client
-				print("Nouveau client : "+ id_cli + " sur : " + ip + " " + str(port) + ", droits de type " + str(rights))
-				self.Thread_name = id_cli
+				print("Nouveau client : "+ self.id_cli + " sur : " + ip + " " + str(port) + ", droits de type " + str(rights))
+				self.Thread_name = self.id_cli
 				self.rights = str(rights)
 				passages = 8
 

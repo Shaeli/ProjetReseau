@@ -20,7 +20,7 @@
 - [X] Création de dossiers ou fichiers avec certains privilèges
 - [X] Utilisation de connexions chiffrées pour le client et le serveur (utilisation de certificats par exemple)
 - [X] Le client peut stocker localement des fichiers chiffrés et les ouvrir sans qu'ils apparaissent en clair sur le poste client
-- [ ] Client et Serveur sous Windows
+- [X] Client et Serveur sous Windows
 - [ ] Client et serveur sur des systèmes hétérogènes (serveur linux et client windows)
 
 ## LIB NECESSAIRES :
