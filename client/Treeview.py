@@ -46,7 +46,7 @@ def initialisation_arbre_racine(arbre, socket):
 
 
 #Méthode pour mettre à jour le path lorsque l'on clique sur un item de l'arbre
-def eventOnCLick(event, arbre, spath, ptype):
+def eventOnCLick(event, arbre, self):
 	item = arbre.selection()[0]
 	path = ""
 	parent = arbre.parent(item)
@@ -54,8 +54,9 @@ def eventOnCLick(event, arbre, spath, ptype):
 		path = arbre.item(parent, "text") + "/" + path
 		parent = arbre.parent(parent)
 	path = "./data/" + path + arbre.item(item, "text")
-	spath = path
-	ptype = arbre.item(item,"values")[1]
+	self.path = path
+	self.ptype = arbre.item(item,"values")[1]
+	return self.path + "::" + self.ptype 
 
 
 

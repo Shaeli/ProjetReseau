@@ -13,6 +13,7 @@ class Window:
 		self.socket = socket
 		self.path = ""
 		self.ptype = "directory"
+
 		CommandsGUI.getPass(self, socket)
 
 		# Création de la fenêtre principale
@@ -32,7 +33,7 @@ class Window:
 		tree_arb.grid(column=0, row=0, sticky='nswe')
 		tree_arb.heading("#0", text="Arborescence", anchor='w')
 		tv.initialisation_arbre_racine(tree_arb, socket)
-		tree_arb.bind("<Double-1>", lambda event, spath = self.path, ptype = self.ptype, arbre = tree_arb : tv.eventOnCLick(event, arbre, spath, ptype))
+		tree_arb.bind("<Double-1>", lambda event, x = self, arbre = tree_arb : self.show_path.set(tv.eventOnCLick(event, arbre, x)))
 
 		# Création de l'affichage du path
 		path_name_frame = Frame(fenetre, bg = "ivory", borderwidth=2, relief=GROOVE, height = 40, width = 510)
