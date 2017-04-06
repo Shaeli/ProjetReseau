@@ -89,5 +89,6 @@ def eventOnClickClient(event, arbre, self):
 	while arbre.item(parent, "text") != "":
 		path = arbre.item(parent, "text") + "/" + path
 		parent = arbre.parent(parent)
-	path = "./data/" + path + arbre.item(item, "text")
+	path = "./client/" + path + arbre.item(item, "text")
+	print path
 	self.path_client = path

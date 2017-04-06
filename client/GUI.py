@@ -21,6 +21,7 @@ class Window:
 		# Création de la fenêtre principale
 		fenetre = Tk()
 		fenetre.title("PREZO")
+		fenetre.geometry("1000x800")
 		self.show_path = StringVar()
 		self.show_path.set(self.path + "::" + self.ptype)
 
