@@ -11,6 +11,7 @@ from getpass import getpass
 import time
 import tempfile
 from xml.sax.saxutils import escape as xml
+from Crypto.Cipher import AES
 
 
 BUFFER_SIZE = 4096

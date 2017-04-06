@@ -15,6 +15,7 @@ class Window:
 		self.ptype = "directory"
 
 		self.path_client = ""
+		self.ptype_client = "directory"
 
 		CommandsGUI.getPass(self, socket)
 
@@ -71,7 +72,7 @@ class Window:
 		SUPPR = Button(menubar, text = "Supprimer", width = 80)
 		SUPPR.pack(pady=5)
 
-		DOWNLOAD = Button(menubar, text = "Download", width = 80)
+		DOWNLOAD = Button(menubar, text = "Download", width = 80, command = lambda y = socket, x = self : CommandsGUI.getFileFromServer(y, x))
 		DOWNLOAD.pack(pady=5)
 
 		UPLOAD = Button(menubar, text = "Upload", width = 80, command = lambda y = socket, x = self : CommandsGUI.sendFileToServer(y, x))

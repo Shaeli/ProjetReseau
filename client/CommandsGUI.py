@@ -82,27 +82,34 @@ def sendFileToServer(socket, gui):
 
 def getFileFromServer(socket, gui):
 	send("commandes", socket)
-	send(sock, "dlx " + gui.path)
-	file = gui.path
-	droits = sock.recv(BUFFER_SIZE).decode("Utf8")
-	fich = "./client/dataclient/" + mess[1]
-	if droits != "no" :
-		existe = sock.recv(BUFFER_SIZE).decode("Utf8")
-		if existe == "Ce fichier n'existe pas!\n" :
-			print existe
-		else :
-			fp = open(fich,"wb")
-			nbretour = int(existe)
-			if nbretour > BUFFER_SIZE :
-				for i in range((nbretour / BUFFER_SIZE) +1) :
-					data=sock.recv(BUFFER_SIZE)
-					fp.write(data)
-			elif nbretour == 0 :
-				pass
+	if gui.ptype_client == "directory":
+		send("dlx " + gui.path, socket)
+		file = gui.path
+		obj = file.rstrip().split("/")
+		obj = obj[len(obj) - 1]
+		socket.recv(BUFFER_SIZE).decode("Utf8")
+		droits = socket.recv(BUFFER_SIZE).decode("Utf8")
+		fich = gui.path_client + obj
+		print gui.path_client
+		if droits != "no" :
+			existe = socket.recv(BUFFER_SIZE).decode("Utf8")
+			if existe == "Ce fichier n'existe pas!\n" :
+				print existe
 			else :
-				data=sock.recv(BUFFER_SIZE)
-				fp.write(data)
-			fp.close()	
+				fp = open(fich,"wb")
+				nbretour = int(existe)
+				if nbretour > BUFFER_SIZE :
+					for i in range((nbretour / BUFFER_SIZE) +1) :
+						data=socket.recv(BUFFER_SIZE)
+						fp.write(data)
+				elif nbretour == 0 :
+					pass
+				else :
+					data=socket.recv(BUFFER_SIZE)
+					fp.write(data)
+				fp.close()
+	else:
+		tkMessageBox.showinfo("GUI", "L'élement de destination n'est pas un dossier.")
 
 def send(message,clientsocket):
 	clientsocket.send(message.encode("Utf8"))
