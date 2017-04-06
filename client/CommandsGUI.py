@@ -89,8 +89,7 @@ def getFileFromServer(socket, gui):
 		obj = obj[len(obj) - 1]
 		socket.recv(BUFFER_SIZE).decode("Utf8")
 		droits = socket.recv(BUFFER_SIZE).decode("Utf8")
-		fich = gui.path_client + obj
-		print gui.path_client
+		fich = gui.path_client + "/" + obj
 		if droits != "no" :
 			existe = socket.recv(BUFFER_SIZE).decode("Utf8")
 			if existe == "Ce fichier n'existe pas!\n" :
