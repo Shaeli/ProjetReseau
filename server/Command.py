@@ -335,6 +335,17 @@ def commandes_server(self, clientsocket):
 					#send(self,datacryptes,clientsocket)
 				fp.close()
 
+	elif data[0] == "rmx":
+		if rights.isWritable(self.rights):
+			send(self, "ok", clientsocket)
+			try:
+				os.remove(data[1])
+				send(self,"ok", clientsocket)
+			except Exception as e:
+				send(self,"no", clientsocket)
+		else:
+			send(self,"no", clientsocket)
+
 	elif data[0] == "startx" : #commande startx
 		pass
 

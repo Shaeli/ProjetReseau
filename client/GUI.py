@@ -70,7 +70,7 @@ class Window:
 		ADD = Button(menubar, text = "Ajouter", width = 80)
 		ADD.pack(pady=5)
 
-		SUPPR = Button(menubar, text = "Supprimer", width = 80)
+		SUPPR = Button(menubar, text = "Supprimer", width = 80, command = lambda y = socket, x = self : CommandsGUI.delFileOnServer(y, x))
 		SUPPR.pack(pady=5)
 
 		DOWNLOAD = Button(menubar, text = "Download", width = 80, command = lambda y = socket, x = self : CommandsGUI.getFileFromServer(y, x))

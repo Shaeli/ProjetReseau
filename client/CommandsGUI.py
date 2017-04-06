@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
-import Tkinter, Tkconstants, tkFileDialog
+import Tkinter, Tkconstants, tkFileDialog, tkMessageBox
 import socket, sys, md5, ssl, time, readline, os, commandclient
+import Treeview as TV
 
 BUFFER_SIZE = 2048
 
@@ -109,6 +110,23 @@ def getFileFromServer(socket, gui):
 				fp.close()
 	else:
 		tkMessageBox.showinfo("GUI", "L'élement de destination n'est pas un dossier.")
+
+def delFileOnServer(socket, gui):
+	send("commandes", socket)
+	if gui.ptype != "directory":
+		send("rmx " + gui.path, socket)
+		#socket.recv(BUFFER_SIZE).decode("Utf8")
+		droits = socket.recv(BUFFER_SIZE).decode("Utf8")
+		if droits != "no" :
+			recept = socket.recv(BUFFER_SIZE).decode("Utf8")
+			if recept == "ok":
+				tkMessageBox.showinfo("GUI", "Fichier supprimé.")
+			else:
+				tkMessageBox.showinfo("GUI", "Erreur lors de la suppression.")
+		else:
+			tkMessageBox.showinfo("GUI", "Droits d'écriture insuffisants.")
+	else:
+		tkMessageBox.showinfo("GUI", "L'élément à supprimer est un dossier : erreur.")
 
 def send(message,clientsocket):
 	clientsocket.send(message.encode("Utf8"))
