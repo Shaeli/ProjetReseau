@@ -63,3 +63,31 @@ def eventOnCLick(event, arbre, self):
 #Fonction pour envoyer un message string sur une socket
 def send(sock, message):
 	sock.send(message.encode("Utf8"))
+
+
+##################################################
+#################PARTIE CLIENT####################
+##################################################
+
+#Méthode de récupération de l'arborescence client
+def init_arbo_client(tree):
+	node = tree.insert('', 'end', text="dataclient", values=["client/dataclient", "directory"])
+	for i in os.listdir("client/dataclient"):
+		ptype = None
+		if os.path.isdir(i):
+			ptype = "directory"
+		elif os.path.isfile(i):
+			ptype = "file"
+		tree.insert(node, "end", text=i, values=[i, ptype])
+
+
+
+def eventOnClickClient(event, arbre, self):
+	item = arbre.selection()[0]
+	path = ""
+	parent = arbre.parent(item)
+	while arbre.item(parent, "text") != "":
+		path = arbre.item(parent, "text") + "/" + path
+		parent = arbre.parent(parent)
+	path = "./data/" + path + arbre.item(item, "text")
+	self.path_client = path

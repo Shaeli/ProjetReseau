@@ -14,6 +14,8 @@ class Window:
 		self.path = ""
 		self.ptype = "directory"
 
+		self.path_client = ""
+
 		CommandsGUI.getPass(self, socket)
 
 		# Création de la fenêtre principale
@@ -34,6 +36,19 @@ class Window:
 		tree_arb.heading("#0", text="Arborescence", anchor='w')
 		tv.initialisation_arbre_racine(tree_arb, socket)
 		tree_arb.bind("<Double-1>", lambda event, x = self, arbre = tree_arb : self.show_path.set(tv.eventOnCLick(event, arbre, x)))
+
+
+		#Création de l'arborescence client
+		arbo_client = Frame(fenetre, borderwidth = 2, bg = "grey", relief = GROOVE, height = 150, width = 100)
+		#arbo_client.pack_propagate(False)
+		arbo_client.pack(side = LEFT, padx = 5, pady = 5)
+
+		tree_arb_client = ttk.Treeview(arbo_client)
+		tree_arb_client.grid(column=0, row=0, sticky='nswe')
+		tree_arb_client.heading("#0", text = "Arborescence client", anchor = 'w')
+		tv.init_arbo_client(tree_arb_client)
+		tree_arb_client.bind("<Double-1>", lambda event, x = self, arbre = tree_arb_client : tv.eventOnClickClient(event, arbre, x))
+
 
 		# Création de l'affichage du path
 		path_name_frame = Frame(fenetre, bg = "ivory", borderwidth=2, relief=GROOVE, height = 40, width = 510)
