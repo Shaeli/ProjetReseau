@@ -10,7 +10,7 @@ import os
 from getpass import getpass
 import time
 import tempfile
-from Crypto.Cipher import AES
+#from Crypto.Cipher import AES
 
 
 BUFFER_SIZE = 2048

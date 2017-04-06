@@ -6,7 +6,7 @@ import md5
 import subprocess
 import time
 import tempfile
-from Crypto.Cipher import AES
+#from Crypto.Cipher import AES
 
 TCP_IP = "127.0.0.1"
 TCP_PORT = 8888
@@ -254,6 +254,12 @@ def commandes_client(sock,mess):
 					data=sock.recv(BUFFER_SIZE)
 					fp.write(data)
 				fp.close()	
+	elif mess[0] == "clear" :
+		if os.name == "nt":
+			os.system('cls')  # on windows
+		else :
+			os.system('clear') # on linux
+		send(sock,"nothing to do")
 	else :
 		print("Commande non reconnue")
 
