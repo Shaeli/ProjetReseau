@@ -55,7 +55,7 @@ class Window:
 		DOWNLOAD = Button(menubar, text = "Download", width = 80)
 		DOWNLOAD.pack(pady=5)
 
-		UPLOAD = Button(menubar, text = "Upload", width = 80, command = lambda y = socket : CommandsGUI.sendFileToServer(y))
+		UPLOAD = Button(menubar, text = "Upload", width = 80, command = lambda y = socket, x = self : CommandsGUI.sendFileToServer(y, x))
 		UPLOAD.pack(pady=5)
 
 		QUIT = Button(menubar, text = "Quitter", command = self.fenetre.quit, width = 80)

@@ -12,7 +12,7 @@ def getPass(self, socket):
 	socket.recv(BUFFER_SIZE).decode("Utf8")
 	self.path = socket.recv(BUFFER_SIZE).decode("Utf8")
 
-def sendFileToServer(socket):
+def sendFileToServer(socket, gui):
 	#On récupère le nom du fichier à envoyer
 	filename = tkFileDialog.askopenfilename(title = "Fichier à envoyer")
 
@@ -23,7 +23,7 @@ def sendFileToServer(socket):
 		file = filename.rstrip().split("/")
 		file = file[len(file) - 1]
 		#On lance la procédure d'upload
-		send("upload " + str(file), socket)
+		send("uploadx " +  gui.path + "/" + str(file), socket)
 		data = socket.recv(BUFFER_SIZE).decode("Utf8")
 		data = socket.recv(BUFFER_SIZE).decode("Utf8")
 		if data == "ok":
@@ -76,6 +76,30 @@ def sendFileToServer(socket):
 			fp.close()
 		else:
 			print "Droit d'écriture insuffisants."
+
+def getFileFromServer(socket, gui):
+	send("commandes", socket)
+	send(sock, "dlx " + gui.path)
+	file = gui.path.
+	droits = sock.recv(BUFFER_SIZE).decode("Utf8")
+	fich = "./client/dataclient/" + mess[1]
+	if droits != "no" :
+		existe = sock.recv(BUFFER_SIZE).decode("Utf8")
+		if existe == "Ce fichier n'existe pas!\n" :
+			print existe
+		else :
+			fp = open(fich,"wb")
+			nbretour = int(existe)
+			if nbretour > BUFFER_SIZE :
+				for i in range((nbretour / BUFFER_SIZE) +1) :
+					data=sock.recv(BUFFER_SIZE)
+					fp.write(data)
+			elif nbretour == 0 :
+				pass
+			else :
+				data=sock.recv(BUFFER_SIZE)
+				fp.write(data)
+			fp.close()	
 
 def send(message,clientsocket):
 	clientsocket.send(message.encode("Utf8"))
