@@ -12,11 +12,15 @@ class Window:
 
 		self.socket = socket
 		self.path = ""
+		self.ptype = "directory"
+
 		CommandsGUI.getPass(self, socket)
 
 		# Création de la fenêtre principale
 		fenetre = Tk()
 		fenetre.title("PREZO")
+		self.show_path = StringVar()
+		self.show_path.set(self.path + "::" + self.ptype)
 
 		self.fenetre = fenetre
 
@@ -28,14 +32,14 @@ class Window:
 		tree_arb = ttk.Treeview(arbo)
 		tree_arb.grid(column=0, row=0, sticky='nswe')
 		tree_arb.heading("#0", text="Arborescence", anchor='w')
-		#tv.initialisation_arbre_racine(tree_arb, sock)
 		tv.initialisation_arbre_racine(tree_arb, socket)
+		tree_arb.bind("<Double-1>", lambda event, x = self, arbre = tree_arb : self.show_path.set(tv.eventOnCLick(event, arbre, x)))
 
 		# Création de l'affichage du path
 		path_name_frame = Frame(fenetre, bg = "ivory", borderwidth=2, relief=GROOVE, height = 40, width = 510)
 		path_name_frame.pack_propagate(False)
 		path_name_frame.pack(side = TOP, padx=5, pady=5)
-		path_name = Label(path_name_frame, text=self.path, bg = "ivory").pack(side = LEFT, pady = 5, padx = 5)
+		path_name = Label(path_name_frame, textvariable = self.show_path, bg = "ivory").pack(side = LEFT, pady = 5, padx = 5)
 
 		#Création de la fenêtre d'affichage
 		affichage = Frame(fenetre, borderwidth=2, relief=GROOVE, height = 300, width = 400)

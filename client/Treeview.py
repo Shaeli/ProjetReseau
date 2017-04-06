@@ -9,7 +9,7 @@ BUFFER_SIZE = 4096
 def parcours_XML(treeview, root, treeview_root, treeview_node):
 	for child in root:
 		if (child.tag == "name" and child.text == "data"):
-			treeview_root = treeview.insert('', 'end', text = child.text, values = [child.text, "directory" ])
+			continue
 		elif (root.text == "data") and child.tag != "files" and child.tag != "dir":
 			treeview_node = treeview.insert(treeview_root, 'end', text = child.text, values = [child.text, "directory"])
 		elif child.tag != "files" and child.tag != "dir":
@@ -38,11 +38,25 @@ def initialisation_arbre_racine(arbre, socket):
 	tree = ET.parse('client/dataclient/tree.xml')
 	os.remove('client/dataclient/tree.xml')
 	root = tree.getroot()
-	parcours_XML(arbre,root,"","")
+	treeview_root = arbre.insert('','end', text="data", values = ["data", "directory"])
+	parcours_XML(arbre,root,treeview_root,"")
 
 #Méthode de mise à jour de l'arborescence	
 #def update_arbre(arbre, node, socket):
 
+
+#Méthode pour mettre à jour le path lorsque l'on clique sur un item de l'arbre
+def eventOnCLick(event, arbre, self):
+	item = arbre.selection()[0]
+	path = ""
+	parent = arbre.parent(item)
+	while arbre.item(parent, "text") != "":
+		path = arbre.item(parent, "text") + "/" + path
+		parent = arbre.parent(parent)
+	path = "./data/" + path + arbre.item(item, "text")
+	self.path = path
+	self.ptype = arbre.item(item,"values")[1]
+	return self.path + "::" + self.ptype 
 
 
 
