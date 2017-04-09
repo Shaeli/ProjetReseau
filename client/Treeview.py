@@ -3,6 +3,7 @@
 
 import socket, os, time
 import xml.etree.ElementTree as ET
+from Tkinter import *
 
 BUFFER_SIZE = 4096
 
@@ -46,7 +47,7 @@ def initialisation_arbre_racine(arbre, socket):
 
 
 #Méthode pour mettre à jour le path lorsque l'on clique sur un item de l'arbre
-def eventOnCLick(event, arbre, self):
+def eventOnCLick(event, arbre, self, zoneTexte):
 	item = arbre.selection()[0]
 	path = ""
 	parent = arbre.parent(item)
@@ -82,7 +83,7 @@ def init_arbo_client(tree):
 
 
 
-def eventOnClickClient(event, arbre, self):
+def eventOnClickClient(event, arbre, self, zoneTexte):
 	item = arbre.selection()[0]
 	path = ""
 	parent = arbre.parent(item)
@@ -90,5 +91,10 @@ def eventOnClickClient(event, arbre, self):
 		path = arbre.item(parent, "text") + "/" + path
 		parent = arbre.parent(parent)
 	path = "./client/" + path + arbre.item(item, "text")
-	print path
+	#Affichage du fichier dans la zone de texte
+	if os.path.isdir(path) == False:
+		zoneTexte.delete(1.0, END)
+		fd = open(path, 'r')
+		content = fd.read()
+		zoneTexte.insert(END, content)
 	self.path_client = path

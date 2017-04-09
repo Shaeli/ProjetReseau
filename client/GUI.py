@@ -33,11 +33,15 @@ class Window:
 		arbo.pack_propagate(False)
 		arbo.pack(side=LEFT, padx=5, pady=5)
 
+		#Création de la fenêtre d'affichage
+		affichage = Frame(fenetre, borderwidth=2, relief=GROOVE, height = 300, width = 400)
+		zoneTexte = Text(affichage)
+
 		tree_arb = ttk.Treeview(arbo)
 		tree_arb.grid(column=0, row=0, sticky='nswe')
 		tree_arb.heading("#0", text="Arborescence", anchor='w')
 		tv.initialisation_arbre_racine(tree_arb, socket)
-		tree_arb.bind("<Double-1>", lambda event, x = self, arbre = tree_arb : self.show_path.set(tv.eventOnCLick(event, arbre, x)))
+		tree_arb.bind("<Double-1>", lambda event, x = self, arbre = tree_arb, z = zoneTexte : self.show_path.set(tv.eventOnCLick(event, arbre, x, z)))
 
 
 		#Création de l'arborescence client
@@ -49,7 +53,7 @@ class Window:
 		tree_arb_client.grid(column=0, row=0, sticky='nswe')
 		tree_arb_client.heading("#0", text = "Arborescence client", anchor = 'w')
 		tv.init_arbo_client(tree_arb_client)
-		tree_arb_client.bind("<Double-1>", lambda event, x = self, arbre = tree_arb_client : tv.eventOnClickClient(event, arbre, x))
+		tree_arb_client.bind("<Double-1>", lambda event, x = self, arbre = tree_arb_client, z = zoneTexte : tv.eventOnClickClient(event, arbre, x, z))
 
 
 		# Création de l'affichage du path
@@ -58,9 +62,9 @@ class Window:
 		path_name_frame.pack(side = TOP, padx=5, pady=5)
 		path_name = Label(path_name_frame, textvariable = self.show_path, bg = "ivory").pack(side = LEFT, pady = 5, padx = 5)
 
-		#Création de la fenêtre d'affichage
-		affichage = Frame(fenetre, borderwidth=2, relief=GROOVE, height = 300, width = 400)
+		#Package de la zone de texte
 		affichage.pack(side=LEFT, padx=5, pady=5)
+		zoneTexte.pack()
 
 		#Création du menu
 		menubar = Frame(fenetre, bg="white", borderwidth=2, relief=GROOVE, height = 300, width = 100)
