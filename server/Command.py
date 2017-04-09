@@ -351,7 +351,6 @@ def commandes_server(self, clientsocket):
 			send(self, "ok", clientsocket)
 			try:
 				chn = "touch " + data[2] + "/" + data[1]
-				print chn
 				os.system(chn)
 				send(self,"ok", clientsocket)
 			except Exception as e:
