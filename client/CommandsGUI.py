@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
-import Tkinter, Tkconstants, tkFileDialog, tkMessageBox
+import Tkconstants, tkFileDialog, tkMessageBox
 import socket, sys, md5, ssl, time, readline, os, commandclient
 import Treeview as TV
+import Tkinter as tk
 
 BUFFER_SIZE = 2048
 
@@ -127,6 +128,37 @@ def delFileOnServer(socket, gui):
 			tkMessageBox.showinfo("GUI", "Droits d'écriture insuffisants.")
 	else:
 		tkMessageBox.showinfo("GUI", "L'élément à supprimer est un dossier : erreur.")
+
+def addFileToServer(socket, gui):
+	subwindow = tk.Toplevel()
+	text = tk.StringVar()
+	entry = tk.Entry(subwindow, textvariable = text)
+	button = tk.Button(subwindow, text = "Ajouter", command = lambda y = socket, x = gui , z = text: touchServer(y, x, z))
+	entry.pack()
+	button.pack()
+
+	
+def touchServer(socket, gui, text):
+	if text.get() != "":
+		if gui.ptype == "directory":
+				send("commandes", socket)
+				time.sleep(0.1)
+				send("touchx " + text.get() + " " + gui.path, socket)
+				#socket.recv(BUFFER_SIZE).decode("Utf8")
+				droits = socket.recv(BUFFER_SIZE).decode("Utf8")
+				if droits != "no" :
+					recept = socket.recv(BUFFER_SIZE).decode("Utf8")
+					if recept == "ok":
+						tkMessageBox.showinfo("GUI", "Fichier ajouté.")
+					else:
+						tkMessageBox.showinfo("GUI", "Erreur lors de l'ajout.")
+				else:
+					tkMessageBox.showinfo("GUI", "Droits d'écriture insuffisants.")
+		else:
+			tkMessageBox.showinfo("GUI", "Vous n'êtes pas dans un dossier.")
+	else:
+		tkMessageBox.showinfo("GUI", "fichier vide")
+	socket.recv(BUFFER_SIZE).decode("Utf8")
 
 def send(message,clientsocket):
 	clientsocket.send(message.encode("Utf8"))

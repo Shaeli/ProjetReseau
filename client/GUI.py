@@ -67,7 +67,7 @@ class Window:
 		menubar.pack_propagate(False)
 		menubar.pack(side=RIGHT, padx=5, pady=5)
 
-		ADD = Button(menubar, text = "Ajouter", width = 80)
+		ADD = Button(menubar, text = "Ajouter", width = 80, command = lambda y = socket, x = self : CommandsGUI.addFileToServer(y, x))
 		ADD.pack(pady=5)
 
 		SUPPR = Button(menubar, text = "Supprimer", width = 80, command = lambda y = socket, x = self : CommandsGUI.delFileOnServer(y, x))
