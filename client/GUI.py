@@ -41,7 +41,7 @@ class Window:
 		tree_arb.grid(column=0, row=0, sticky='nswe')
 		tree_arb.heading("#0", text="Arborescence", anchor='w')
 		tv.initialisation_arbre_racine(tree_arb, socket)
-		tree_arb.bind("<Double-1>", lambda event, x = self, arbre = tree_arb, z = zoneTexte : self.show_path.set(tv.eventOnCLick(event, arbre, x, z)))
+		tree_arb.bind("<Double-1>", lambda event, x = self, arbre = tree_arb : self.show_path.set(tv.eventOnCLick(event, arbre, x)))
 
 
 		#Création de l'arborescence client

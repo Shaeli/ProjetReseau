@@ -47,7 +47,7 @@ def initialisation_arbre_racine(arbre, socket):
 
 
 #Méthode pour mettre à jour le path lorsque l'on clique sur un item de l'arbre
-def eventOnCLick(event, arbre, self, zoneTexte):
+def eventOnCLick(event, arbre, self):
 	item = arbre.selection()[0]
 	path = ""
 	parent = arbre.parent(item)

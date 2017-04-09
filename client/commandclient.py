@@ -24,7 +24,10 @@ def commandes_client(sock,mess):
 		send(sock,mess[0]) #envoie du changement de chemin
 		window = GUI.Window(sock)
 		window.launchWindow()
-		window.closeWindow()
+		try:
+			window.closeWindow()
+		except Exception as e:
+			pass
 
 	elif mess[0] == "cd": #commande cd
 			global path
