@@ -1,15 +1,11 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
-import socket, Rights
 from socket import error as SocketError
-import errno, shutil
 from os import chdir
 from os import system
-import os
+import os, base64, time, tempfile, errno, shutil, socket, Rights
 from getpass import getpass
-import time
-import tempfile
 from xml.sax.saxutils import escape as xml
 from Crypto.Cipher import AES
 
@@ -310,7 +306,7 @@ def commandes_server(self, clientsocket):
 			except:
 				send(self,"Ce fichier n'existe pas!\n",clientsocket)
 			if exist :
-				cle = self.id_cli
+				cle = self.mdp
 				cle += '\0' *(-len(cle)%16)
 				codeur = AES.new(cle,AES.MODE_ECB)
 				fp = open(fich,'rb')
@@ -322,7 +318,7 @@ def commandes_server(self, clientsocket):
 						fp.seek(num,0)
 						data = fp.read(BUFFER_SIZE)
 						data += '\0' *(-len(data)%16)
-						datacryptes = codeur.encrypt(data)
+						datacryptes = codeur.encrypt(data.encode("utf8"))
 						self.clientsocket.send(datacryptes)
 						num = num + BUFFER_SIZE
 				elif nboctets == 0 :
@@ -330,7 +326,7 @@ def commandes_server(self, clientsocket):
 				else : #si il est possible d'envoyer en une fois
 					data = fp.read() 
 					data += '\0' *(-len(data)%16)
-					datacryptes = codeur.encrypt(data)
+					datacryptes = codeur.encrypt(data.encode("utf8"))
 					self.clientsocket.send(datacryptes)
 					#send(self,datacryptes,clientsocket)
 				fp.close()

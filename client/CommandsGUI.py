@@ -2,7 +2,7 @@
 # -*-coding:Utf8 -*
 
 import Tkconstants, tkFileDialog, tkMessageBox
-import socket, sys, md5, ssl, time, readline, os, commandclient
+import socket, sys, md5, ssl, time, readline, os, commandclient, base64
 import Treeview as TV
 import Tkinter as tk
 

@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*-coding:Utf8 -*
 
-import socket, os, time
+import socket, os, time, md5, base64
 import xml.etree.ElementTree as ET
 from Tkinter import *
+from Crypto.Cipher import AES
 
 BUFFER_SIZE = 4096
 
@@ -93,8 +94,28 @@ def eventOnClickClient(event, arbre, self, zoneTexte):
 	path = "./client/" + path + arbre.item(item, "text")
 	#Affichage du fichier dans la zone de texte
 	if os.path.isdir(path) == False:
-		zoneTexte.delete(1.0, END)
-		fd = open(path, 'r')
-		content = fd.read()
-		zoneTexte.insert(END, content)
+		getHashMdp(zoneTexte, path)
 	self.path_client = path
+
+def getHashMdp(zoneTexte, path):
+	subwindow = Toplevel()
+	text = StringVar()
+	label = Label(subwindow, text="Mot de passe :")
+	entry = Entry(subwindow, textvariable = text, show = "*")
+	button = Button(subwindow, text = "Decoder", command = lambda x = text, y = subwindow, z = zoneTexte, a = path: hashing(x, y, z, a))
+	label.pack()
+	entry.pack()
+	button.pack()
+
+def hashing(text, window, zoneTexte, path):
+	textstr = text.get()
+	text.set(md5.new(textstr).hexdigest())
+	window.destroy()
+	cle = text.get()
+	cle += '\0' *(-len(cle)%16)
+	decoder = AES.new(cle, AES.MODE_ECB)
+	zoneTexte.delete(1.0, END)
+	fd = open(path, 'rb')
+	content = fd.read()
+	zoneTexte.insert(END, decoder.decrypt(content))
+	fd.close()
