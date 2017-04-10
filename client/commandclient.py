@@ -10,7 +10,7 @@ import GUI
 
 
 TCP_IP = "127.0.0.1"
-TCP_PORT = 8888
+TCP_PORT_REFRESHER = 8102
 BUFFER_SIZE = 2048
 
 path = ""
@@ -21,10 +21,13 @@ def commandes_client(sock,mess):
 	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
 	
 	if mess[0] == "startx":
+		sock_refresher = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		sock_refresher.connect((TCP_IP, TCP_PORT_REFRESHER))
 		send(sock,mess[0]) #envoie du changement de chemin
-		window = GUI.Window(sock)
+		window = GUI.Window(sock, sock_refresher)
 		window.launchWindow()
 		window.closeWindow()
+		sock_refresher.close()
 
 	elif mess[0] == "cd": #commande cd
 			global path
