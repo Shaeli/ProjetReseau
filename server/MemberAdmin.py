@@ -24,12 +24,13 @@ def MAJListe():
 	fd.write(";")
 	fd.write(str(jobs[0].get()))
 	for x in xrange(1,len(entreesNames)):
-		fd.write("\n")
-		fd.write(str(names[x].get()))
-		fd.write(";")
-		fd.write(passwords[x])
-		fd.write(";")
-		fd.write(str(jobs[x].get()))
+		if names[x].get() != "":
+			fd.write("\n")
+			fd.write(str(names[x].get()))
+			fd.write(";")
+			fd.write(passwords[x])
+			fd.write(";")
+			fd.write(str(jobs[x].get()))
 	fd.close()
 	tkMessageBox.showinfo("Member Administrator", "Listes des utilisateurs mise à jour")
 

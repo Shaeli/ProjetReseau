@@ -17,6 +17,7 @@ class Window:
 		self.path = ""
 		self.ptype = "directory"
 		self.path_client = ""
+		self.ptype_client = "directory"
 
 		CommandsGUI.getPass(self, socket)
 		# Création de la fenêtre principale
@@ -74,16 +75,16 @@ class Window:
 		menubar.pack_propagate(False)
 		menubar.pack(side=RIGHT, padx=5, pady=5)
 
-		ADD = Button(menubar, text = "Ajouter", width = 80)
+		ADD = Button(menubar, text = "Ajouter", width = 80, command = lambda y = socket, x = self : CommandsGUI.addFileToServer(y, x))
 		ADD.pack(pady=5)
 
-		SUPPR = Button(menubar, text = "Supprimer", width = 80)
+		SUPPR = Button(menubar, text = "Supprimer", width = 80, command = lambda y = socket, x = self : CommandsGUI.delFileOnServer(y, x))
 		SUPPR.pack(pady=5)
 
-		DOWNLOAD = Button(menubar, text = "Download", width = 80)
+		DOWNLOAD = Button(menubar, text = "Download", width = 80, command = lambda y = socket, x = self : CommandsGUI.getFileFromServer(y, x))
 		DOWNLOAD.pack(pady=5)
 
-		UPLOAD = Button(menubar, text = "Upload", width = 80, command = lambda y = socket : CommandsGUI.sendFileToServer(y))
+		UPLOAD = Button(menubar, text = "Upload", width = 80, command = lambda y = socket, x = self : CommandsGUI.sendFileToServer(y, x))
 		UPLOAD.pack(pady=5)
 
 		QUIT = Button(menubar, text = "Quitter", command = self.fenetre.quit, width = 80)

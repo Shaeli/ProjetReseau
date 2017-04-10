@@ -11,6 +11,7 @@ from getpass import getpass
 import time
 import tempfile
 from xml.sax.saxutils import escape as xml
+from Crypto.Cipher import AES
 
 
 BUFFER_SIZE = 4096
@@ -263,6 +264,99 @@ def commandes_server(self, clientsocket):
 			fp.close()
 		else:
 			send(self,"no",clientsocket)
+
+	elif data[0] == 'uploadx' :
+		path = data[1].rstrip().split('/')
+		path = path[0:len(path) - 1]
+		path = "/".join(path)
+		rights = Rights.Rights(path)
+		if rights.isWritable(self.rights):
+			send(self, "ok",clientsocket)
+			nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			nbretour = int(nbretour)
+			fich = data[1]
+			fp = open(fich, "wb")
+			if nbretour > BUFFER_SIZE :
+				for i in range((nbretour / BUFFER_SIZE) +1) :
+					data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+					fp.write(data)
+			else :
+				data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+				fp.write(data)
+			fp.close()
+		else:
+			send(self,"no",clientsocket)
+
+	elif data[0] == "dlx" :
+		path = data[1].rstrip().split('/')
+		path = path[0:len(path) - 1]
+		path = "/".join(path)
+		rights = Rights.Rights(path)
+		fich = data[1] 
+		droits = True
+		exist = False
+		if rights.isWritable(self.rights) :
+			send(self,"ok",clientsocket)
+		elif rights.isReadable(self.rights) and not rights.isWritable(self.rights):
+			send(self,"RO",clientsocket)
+		else:
+			send(self,"no",clientsocket)
+			droits = False
+		if droits :
+			try:
+				fp=open(fich,"rb") #ici nous testons l'exitence du fichier
+				fp.close()
+				exist = True
+			except:
+				send(self,"Ce fichier n'existe pas!\n",clientsocket)
+			if exist :
+				cle = self.id_cli
+				cle += '\0' *(-len(cle)%16)
+				codeur = AES.new(cle,AES.MODE_ECB)
+				fp = open(fich,'rb')
+				nboctets=os.path.getsize(fich)
+				send(self,str(nboctets),clientsocket)
+				num = 0
+				if nboctets > BUFFER_SIZE : #si il y a plus d'octets que la taille du buffer, on envoie en plusieurs fois
+					for i in range((nboctets/BUFFER_SIZE)+1) :
+						fp.seek(num,0)
+						data = fp.read(BUFFER_SIZE)
+						data += '\0' *(-len(data)%16)
+						datacryptes = codeur.encrypt(data)
+						self.clientsocket.send(datacryptes)
+						num = num + BUFFER_SIZE
+				elif nboctets == 0 :
+					pass
+				else : #si il est possible d'envoyer en une fois
+					data = fp.read() 
+					data += '\0' *(-len(data)%16)
+					datacryptes = codeur.encrypt(data)
+					self.clientsocket.send(datacryptes)
+					#send(self,datacryptes,clientsocket)
+				fp.close()
+
+	elif data[0] == "rmx":
+		if rights.isWritable(self.rights):
+			send(self, "ok", clientsocket)
+			try:
+				os.remove(data[1])
+				send(self,"ok", clientsocket)
+			except Exception as e:
+				send(self,"no", clientsocket)
+		else:
+			send(self,"no", clientsocket)
+
+	elif data[0] == "touchx":
+		if rights.isWritable(self.rights):
+			send(self, "ok", clientsocket)
+			try:
+				chn = "touch " + data[2] + "/" + data[1]
+				os.system(chn)
+				send(self,"ok", clientsocket)
+			except Exception as e:
+				send(self,"no", clientsocket)
+		else:
+			send(self,"no", clientsocket)
 
 	elif data[0] == "startx" : #commande startx
 		pass
