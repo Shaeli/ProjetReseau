@@ -40,42 +40,13 @@ def sendFileToServer(socket, gui):
 					for i in range((nboctets/BUFFER_SIZE)+1) :
 						fp.seek(num,0)
 						data = fp.read(BUFFER_SIZE)
-						send(data, socket)
-						num = num + BUFFER_SIZE
-						if pourcent == 0 and num > nboctets / 100 * 10 and num < nboctets / 100 * 20:
-							print " >> 10%",
-							pourcent = 1
-						elif pourcent == 1 and num > nboctets / 100 * 20 and num < nboctets / 100 * 30:
-							print " >> 20%",
-							pourcent = 2
-						elif pourcent < 3 and num > nboctets / 100 * 30 and num < nboctets / 100 * 40:
-							print " >> 30%",
-							pourcent = 3
-		 				elif pourcent < 4 and num > nboctets / 100 * 40 and num < nboctets / 100 * 50:
-							print " >> 40%",
-							pourcent = 4
-						elif pourcent < 5 and num > nboctets / 100 * 50 and num < nboctets / 100 * 60:
-							print " >> 50%",
-							pourcent = 5
-						elif pourcent < 6 and num > nboctets / 100 * 60 and num < nboctets / 100 * 70:
-							print " >> 60%",
-							pourcent = 6
-						elif pourcent < 7 and num > nboctets / 100 * 70 and num < nboctets / 100 * 80:
-							print " >> 70%",
-							pourcent = 7
-						elif pourcent < 8 and num > nboctets / 100 * 80 and num < nboctets / 100 * 90:
-							print " >> 80%",
-							pourcent = 8
-						elif pourcent < 9 and num > nboctets / 100 * 90 and num < nboctets / 100 * 100:
-							print " >> 90%"                    
-							pourcent = 9
-
+						socket.send(data)
 				else : #si il est possible d'envoyer en une fois
 					data = fp.read() 
 					if data == "":
 						send(" ", socket)
 					else:
-						send(str(data), socket)
+						socket.send(data)
 				fp.close()
 			else:
 				print "Droit d'écriture insuffisants."

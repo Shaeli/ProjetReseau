@@ -274,10 +274,10 @@ def commandes_server(self, clientsocket):
 			fp = open(fich, "wb")
 			if nbretour > BUFFER_SIZE :
 				for i in range((nbretour / BUFFER_SIZE) +1) :
-					data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+					data = self.clientsocket.recv(BUFFER_SIZE)
 					fp.write(data)
 			else :
-				data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+				data = self.clientsocket.recv(BUFFER_SIZE)
 				fp.write(data)
 			fp.close()
 		else:
@@ -339,6 +339,25 @@ def commandes_server(self, clientsocket):
 				send(self,"ok", clientsocket)
 			except Exception as e:
 				send(self,"no", clientsocket)
+		else:
+			send(self,"no", clientsocket)
+
+	elif data[0] == "ask":
+		if rights.isReadable(self.rights):
+			send(self, "ok", clientsocket)
+			fp=open(data[1],"rb")
+			nboctets = os.path.getsize(data[1])
+			send(self,str(nboctets),clientsocket)
+			if nboctets > BUFFER_SIZE :
+				for i in range((nboctets/BUFFER_SIZE)+1) :
+					fp.seek(num,0)
+					data = fp.read(BUFFER_SIZE)
+					send(self,data,clientsocket)
+					num = num + BUFFER_SIZE
+			else :
+				data = fp.read()
+				send(self,data,clientsocket)
+			fp.close()
 		else:
 			send(self,"no", clientsocket)
 

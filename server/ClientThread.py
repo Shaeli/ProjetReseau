@@ -61,7 +61,7 @@ class ClientThread(Thread):
  				liste.extend(sousRepertoires)
  			completion= " ".join(liste)
  			self.send(completion)
-			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
+			data = self.clientsocket.recv(BUFFER_SIZE) #recupération de la connection
 
 			if data == "commandes" :
 				Command.commandes_server(self,self.clientsocket)

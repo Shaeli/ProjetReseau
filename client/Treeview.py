@@ -48,7 +48,7 @@ def initialisation_arbre_racine(arbre, socket):
 
 
 #Méthode pour mettre à jour le path lorsque l'on clique sur un item de l'arbre
-def eventOnCLick(event, arbre, self):
+def eventOnCLick(event, arbre, self, zoneTexte):
 	item = arbre.selection()[0]
 	path = ""
 	parent = arbre.parent(item)
@@ -58,9 +58,35 @@ def eventOnCLick(event, arbre, self):
 	path = "./data/" + path + arbre.item(item, "text")
 	self.path = path
 	self.ptype = arbre.item(item,"values")[1]
+	if self.ptype != "directory":
+		askFileFromServer(self, zoneTexte)
 	return self.path + "::" + self.ptype 
 
+#Demande au serveur si il peut afficher le fichier coté client
+def askFileFromServer(self, zoneTexte):
+	send(self.socket, "commandes")
+	send(self.socket, "ask " + self.path)
+	data = self.socket.recv(BUFFER_SIZE).decode("Utf8")
+	data = self.socket.recv(BUFFER_SIZE).decode("Utf8")
+	if data == "ok":
+		printFileFromServer(self, zoneTexte)
+	else:
+		print "Droit de lecture insuffisants."
 
+#Affiche le fichier du serveur
+def printFileFromServer(self, zoneTexte):
+	zoneTexte.delete(1.0, END)
+	data = self.socket.recv(BUFFER_SIZE).decode("Utf8")
+	nbretour = int(data)
+	if nbretour > BUFFER_SIZE :
+		for i in range((nbretour / BUFFER_SIZE) +1) :
+			data = self.socket.recv(BUFFER_SIZE)
+			zoneTexte.insert(END, data)
+	elif nbretour == 0 :
+		pass
+	else :
+		data = self.socket.recv(BUFFER_SIZE)
+		zoneTexte.insert(END, data)
 
 #Fonction pour envoyer un message string sur une socket
 def send(sock, message):
