@@ -27,7 +27,7 @@
 
 
   -PyCrypto
-
+  -readchar
 
 ## Roadmap
 
