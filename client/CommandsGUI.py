@@ -90,6 +90,7 @@ def delFileOnServer(socket, gui):
 		#socket.recv(BUFFER_SIZE).decode("Utf8")
 		droits = socket.recv(BUFFER_SIZE).decode("Utf8")
 		if droits != "no" :
+			socket.recv(BUFFER_SIZE).decode("Utf8")
 			recept = socket.recv(BUFFER_SIZE).decode("Utf8")
 			if recept == "ok":
 				tkMessageBox.showinfo("GUI", "Fichier supprimé.")

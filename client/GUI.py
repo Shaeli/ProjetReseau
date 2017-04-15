@@ -49,8 +49,8 @@ class Window:
 		tree_arb.heading("#0", text="Arborescence", anchor='w')
 		tv.initialisation_arbre_racine(tree_arb, socket)
 		tree_arb.bind("<Double-1>", lambda event, x = self, arbre = tree_arb, z = zoneTexte : self.show_path.set(tv.eventOnCLick(event, arbre, x, z)))
-		newthread = RH.RefresherHandler(socket_refresher, tree_arb)
-		newthread.start()
+		self.newthread = RH.RefresherHandler(socket_refresher, tree_arb)
+		self.newthread.start()
 
 
 		#Création de l'arborescence client
@@ -99,3 +99,4 @@ class Window:
 
 	def closeWindow(self):
 		self.fenetre.destroy()
+		self.newthread.destroy()

@@ -55,10 +55,9 @@ def eventOnCLick(event, arbre, self, zoneTexte):
 	while arbre.item(parent, "text") != "":
 		path = arbre.item(parent, "text") + "/" + path
 		parent = arbre.parent(parent)
-	path = "./data/" + path + arbre.item(item, "text")
+	path = "./" + path + arbre.item(item, "text")
 	self.path = path
 	self.ptype = arbre.item(item,"values")[1]
-	print self.path
 	if self.ptype != "directory":
 		askFileFromServer(self, zoneTexte)
 	return self.path + "::" + self.ptype 

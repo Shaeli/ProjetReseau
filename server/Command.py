@@ -356,7 +356,10 @@ def commandes_server(self, clientsocket):
 					num = num + BUFFER_SIZE
 			else :
 				data = fp.read()
-				send(self,data,clientsocket)
+				if data == "":
+					send(self, "empty file", clientsocket)
+				else:
+					send(self,data,clientsocket)
 			fp.close()
 		else:
 			send(self,"no", clientsocket)
