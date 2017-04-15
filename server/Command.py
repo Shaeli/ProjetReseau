@@ -148,7 +148,7 @@ def commandes_server(self, clientsocket):
 
 	elif data[0] == "admin":
 		if rights.isOwner(self.Thread_name):
-			#Envoit des données à l'application graphique
+			#Envoie des données à l'application graphique
 			send(self, "yes", clientsocket)			
 			config = open(self.path +"/.config", "r")
 			config.readline()
