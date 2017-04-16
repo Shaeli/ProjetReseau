@@ -10,7 +10,10 @@ import os
 from getpass import getpass
 import time
 import tempfile
-#from Crypto.Cipher import AES
+from Crypto.Cipher import AES
+import sys
+import threading
+import subprocess
 
 
 BUFFER_SIZE = 2048
@@ -37,7 +40,7 @@ def commandes_server(self, clientsocket):
 			if mot[0]!=".":
 				tampon = tampon +" "+ mot
 		taille = len(tampon)/BUFFER_SIZE
-		tampon = str(taille) + tampon + "\n"
+		tampon = str(taille) + tampon + " "+ "\n"
 		send(self,tampon,clientsocket) #on envoie le resultat
 		del tampon
 
@@ -195,60 +198,27 @@ def commandes_server(self, clientsocket):
 
 
 	elif data[0] == "vim":
-		droits = True
+		IP = "127.0.0.1"
+		port = 7000
+		droit=False
+		file = self.path +"/" + data[1]
+		print file
 		if rights.isWritable(self.rights):
 			send(self,"ok",clientsocket)
-		elif rights.isReadable(self.rights) and not rights.isWritable(self.rights):
-			send(self,"RO",clientsocket)
-		else:
+			droit=True
+		else :
 			send(self,"no",clientsocket)
-			droits = False
 
-	############################  Partie envoie du fichier au client  ################################ 
-		if droits == True :	
-			fich = self.path + separateur + data[1] 
-			exist = False
-			vide = False
-			try:
-				fp=open(fich,"rb") #ici nous testons l'exitence du fichier
-				fp.close()
-				exist = True
-			except:
-				send(self,"Ce fichier n'existe pas!\n",clientsocket)
+		if droit :
+			sock_serv = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+			sock_serv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+			sock_serv.bind((IP, port))
+			sock_serv.listen(10)
+			(conn, (ip, port)) = sock_serv.accept()
+			subprocess.call(["rvim", file], bufsize=0, stdin=conn, stdout=conn)
+			conn.send("STOP");
 
-			if exist == True :
-				num = 0
-				fp=open(fich,"rb")
-				nboctets = os.path.getsize(fich)
-				send(self,str(nboctets),clientsocket)
-				if nboctets > BUFFER_SIZE :
-					for i in range((nboctets/BUFFER_SIZE)+1) :
-						fp.seek(num,0)
-						data = fp.read(BUFFER_SIZE)
-						send(self,data,clientsocket)
-						num = num + BUFFER_SIZE
-				elif nboctets == 0 :
-					vide = True
-				else :
-					data = fp.read()
-					send(self,data,clientsocket)
-				fp.close()
 
-############################  Partie reception du fichier  ################################ 
-			if exist == True :
-				nbretour = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-				nbretour = int(nbretour)
-				fp = open(fich, "wb")
-				if nbretour > BUFFER_SIZE :
-					for i in range((nbretour/ BUFFER_SIZE) +1) :
-						data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-						fp.write(data)
-				elif nbretour==0:
-					pass
-				else :
-					data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-					fp.write(data)
-				fp.close()
 
 
 	elif data[0] == 'upload' : #test si fich existe a faire
