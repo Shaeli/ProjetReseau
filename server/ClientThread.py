@@ -23,7 +23,6 @@ class ClientThread(Thread):
 			self.id_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
 			self.id_cli=self.id_cli[1:]
 			mdp_cli = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			self.mdp = mdp_cli
 			self.path = "./data"
 			user_base = open("server/ressources/users.bdd","r")
 
@@ -61,7 +60,7 @@ class ClientThread(Thread):
  				liste.extend(sousRepertoires)
  			completion= " ".join(liste)
  			self.send(completion)
-			data = self.clientsocket.recv(BUFFER_SIZE) #recupération de la connection
+			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
 
 			if data == "commandes" :
 				Command.commandes_server(self,self.clientsocket)

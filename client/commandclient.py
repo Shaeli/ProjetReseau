@@ -4,22 +4,63 @@ from getpass import getpass
 import socket, sys , os
 import md5
 import subprocess
-import time
+from time import *
 import tempfile
 import GUI
 
-
 TCP_IP = "127.0.0.1"
 TCP_PORT_REFRESHER = 8102
+from Crypto.Cipher import AES
+import threading
+import readchar
+import signal
+
 BUFFER_SIZE = 2048
 
 path = ""
+
+
+class ThreadReception(threading.Thread):
+    """docstring for ThreadReception."""
+    def __init__(self, conn, thE, eventStop):
+        super(ThreadReception, self).__init__()
+        self.connexion = conn
+        self.thE = thE
+        self.eventStop = eventStop
+
+    def run(self):
+        while 1:
+            msg_r = self.connexion.recv(1024)
+            if msg_r.upper() == 'STOP':
+                self.eventStop.set()
+                subprocess.call("clear")
+                print "Appuyez sur n'importe qu'elle touche > "
+                self.thE.join()
+                break
+            sys.stdout.write(msg_r)
+            sys.stdout.flush()
+            pass
+        self.connexion.close()
+
+class ThreadEmission(threading.Thread):
+    """docstring for ThreadEmission."""
+    def __init__(self, conn, eventStop):
+        super(ThreadEmission, self).__init__()
+        self.connexion = conn
+        self.eventStop = eventStop
+
+    def run(self):
+        while not self.eventStop.isSet():
+            msg_r = readchar.readkey()
+            if not self.eventStop.isSet() :
+                self.connexion.send(msg_r)
+        print ""
+        return
 
 def commandes_client(sock,mess):
 
 
 	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
-	
 	if mess[0] == "startx":
 		sock_refresher = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock_refresher.connect((TCP_IP, TCP_PORT_REFRESHER))
@@ -135,49 +176,34 @@ def commandes_client(sock,mess):
 				print "Problème dans l'édition des droits."
 
 	elif mess[0] == "vim" :
-		vide = False
+
+		ip = "127.0.0.1"
+		port = 7000
 		chn = " ".join(mess) 
 		send(sock,chn)
 		openingTry = sock.recv(BUFFER_SIZE).decode("Utf8")
 		if openingTry != "no":
-			infos= sock.recv(BUFFER_SIZE).decode("Utf8")
-			if infos == "Ce fichier n'existe pas!\n" :
-				print "Le fichier n'existe pas"
-			else :
-				data = ""
-				infos = int (infos)
-				print infos
-				if infos > BUFFER_SIZE :
-					for i in range((infos/BUFFER_SIZE) +1) :
-						data = data + sock.recv(BUFFER_SIZE).decode("Utf8")
-				elif infos == 0 :
-					vide = True
-				else :
-					data = sock.recv(BUFFER_SIZE).decode("Utf8")
-				with tempfile.NamedTemporaryFile(suffix=".tmp") as tmpfile :
-					tmpfile.write(data)
-					tmpfile.flush()
-					if openingTry == "RO" :
-					#subprocess.call([vim],tempfil.name)
-						os.system("vim -R " + tmpfile.name)
-					else:
-						os.system("vim " + tmpfile.name)
-					num = 0
-					nboctets = os.path.getsize(tmpfile.name)
-					send(sock,str(nboctets))
-					if nboctets > BUFFER_SIZE :
-						for i in range((nboctets/BUFFER_SIZE)+1) :
-							tmpfile.seek(num,0)
-							data = tmpfile.read(BUFFER_SIZE)
-							send(sock,data)
-							num = num + BUFFER_SIZE
-					else :
-						tmpfile.seek(0)
-						data = tmpfile.read()
-						send(sock,data)
+				
+			conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			try:
+			    conn.connect((ip, port))
+			    pass
+			except socket.error:
+			    sys.stderr.write("La connexion à échoué\n")
+			    sys.exit()
+			print "La connexion établie avec le serveur"
+
+			eventStop = threading.Event()
+
+
+			thE = ThreadEmission(conn,eventStop)
+			thR = ThreadReception(conn, thE,eventStop)
+			thE.start()
+			thR.start()
 		else:
 			print "Droits de lecture et écriture insuffisants"
-
+		sys.stdin.flush()
+		sys.stdout.flush()
 
 	elif mess[0] == "upload" :
 		chn = " ".join(mess)
@@ -186,7 +212,7 @@ def commandes_client(sock,mess):
 		if data == "ok":
 			pourcent = 0
 			num = 0
-			fich = "./client/dataclient/" + mess[1] #fichier a upload : il doit se situer dans le dossier client/dataclient
+			fich = "."+separateur+"client"+separateur+"dataclient"+separateur + mess[1] #fichier a upload : il doit se situer dans le dossier client/dataclient
 			fp=open(fich,"rb") #on ouvre le fichier
 			nboctets = os.path.getsize(fich)
 			send(sock,str(nboctets)) #on envoie le nombre d'octets presents dans le fichier
@@ -233,6 +259,35 @@ def commandes_client(sock,mess):
 			fp.close()
 		else:
 			print "Droit d'écriture insuffisants."
+
+	elif mess[0] == "dl" :
+		chn = " ".join(mess)
+		send(sock,chn)
+		droits = sock.recv(BUFFER_SIZE).decode("Utf8")
+		fich = "./client/dataclient/" + mess[1]
+		if droits != "no" :
+			existe = sock.recv(BUFFER_SIZE).decode("Utf8")
+			if existe == "Ce fichier n'existe pas!\n" :
+				print existe
+			else :
+				fp = open(fich,"wb")
+				nbretour = int(existe)
+				if nbretour > BUFFER_SIZE :
+					for i in range((nbretour / BUFFER_SIZE) +1) :
+						data=sock.recv(BUFFER_SIZE)
+						fp.write(data)
+				elif nbretour == 0 :
+					pass
+				else :
+					data=sock.recv(BUFFER_SIZE)
+					fp.write(data)
+				fp.close()	
+	elif mess[0] == "clear" :
+		if os.name == "nt":
+			os.system('cls')  # on windows
+		else :
+			os.system('clear') # on linux
+		send(sock,"nothing to do")
 	else :
 		print("Commande non reconnue")
 

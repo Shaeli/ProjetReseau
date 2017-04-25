@@ -19,9 +19,15 @@
 - [ ] Le client peut accepter les flux graphiques du serveur (RDP ou VNC)
 - [X] Création de dossiers ou fichiers avec certains privilèges
 - [X] Utilisation de connexions chiffrées pour le client et le serveur (utilisation de certificats par exemple)
-- [ ] Le client peut stocker localement des fichiers chiffrés et les ouvrir sans qu'ils apparaissent en clair sur le poste client
-- [ ] Client et Serveur sous Windows
+- [X] Le client peut stocker localement des fichiers chiffrés et les ouvrir sans qu'ils apparaissent en clair sur le poste client
+- [X] Client et Serveur sous Windows
 - [ ] Client et serveur sur des systèmes hétérogènes (serveur linux et client windows)
+
+## LIB NECESSAIRES :
+
+
+  -PyCrypto
+  -readchar
 
 ## Roadmap
 
@@ -39,15 +45,19 @@ Etapes achevés:
 - [X] Autocomplétion
 - [X] Dépot de documents
 - [X] Création de dossiers ou fichiers avec certains privilèges
+- [X] Chiffrement local des documents - Editions de documents 
 
 Etapes en cours:
 
-- [ ] Chiffrement local des documents - Editions de documents   
-- [ ] Envoie de flux graphiques
-- [ ] Etape secondaire : Faire de la place au niveaux des thread
+- [ ] Adaptation windows
+- [ ] Client graphique
+- [ ] Faire de la place au niveaux des thread
+- [ ] Regler probleme de cd : differencier les dossiers /fichier? + si cd dans un fichier -> NOP.
+- [ ] commande clear
 
 Etapes futures:
 
-- [ ] Client graphique ?? a voir                  
+- [ ] Faire de la place au niveaux des thread                
 - [ ] Etape : Envoit de flux graphiques             
 - [ ] Etape : Ajout de fonctionnalités
+>>>>>>> 88ec9cc285853ea31c35697edbcc47f311005347
