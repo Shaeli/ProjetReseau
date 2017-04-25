@@ -59,7 +59,10 @@ class ClientThread(Thread):
  				liste.extend(fichiers)
  				liste.extend(sousRepertoires)
  			completion= " ".join(liste)
- 			self.send(completion)
+ 			if completion != "":
+ 			 	self.send(completion)
+ 			else:
+ 				send(" ")
 			data = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8") #recupération de la connection
 
 			if data == "commandes" :
