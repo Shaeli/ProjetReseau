@@ -18,6 +18,8 @@ class Window:
 		self.ptype = "directory"
 		self.path_client = ""
 		self.ptype_client = "directory"
+		self.side = ""
+		self.curret = ""
 
 		CommandsGUI.getPass(self, socket)
 		# Création de la fenêtre principale
@@ -43,6 +45,7 @@ class Window:
 		affichage = Frame(fenetre, borderwidth=2, relief=GROOVE, height = 250, width = 400)
 		affichage.pack(side=LEFT, padx=5, pady=5)
 		zoneTexte = Text(affichage)
+		boutonSend = Button(affichage, text = "Mettre à jour", command = lambda x = self, y = zoneTexte : CommandsGUI.majFile(x, y))
 
 		tree_arb = ttk.Treeview(arbo)
 		tree_arb.grid(column=0, row=0, sticky='nswe')
@@ -73,6 +76,7 @@ class Window:
 
 		#Package de la zone de texte
 		zoneTexte.pack()
+		boutonSend.pack()
 
 		#Création du menu
 		menubar = Frame(fenetre, bg="white", borderwidth=2, relief=GROOVE, height = 250, width = 100)

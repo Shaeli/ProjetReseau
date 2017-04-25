@@ -57,6 +57,7 @@ def eventOnCLick(event, arbre, self, zoneTexte):
 		parent = arbre.parent(parent)
 	path = "./" + path + arbre.item(item, "text")
 	self.path = path
+	self.current = path
 	self.ptype = arbre.item(item,"values")[1]
 	if self.ptype != "directory":
 		askFileFromServer(self, zoneTexte)
@@ -66,8 +67,8 @@ def eventOnCLick(event, arbre, self, zoneTexte):
 def askFileFromServer(self, zoneTexte):
 	send(self.socket, "commandes")
 	send(self.socket, "ask " + self.path)
-	data = self.socket.recv(BUFFER_SIZE).decode("Utf8")
-	data = self.socket.recv(BUFFER_SIZE).decode("Utf8")
+	data = flushRecv(self.socket)
+	print data
 	if data == "ok":
 		printFileFromServer(self, zoneTexte)
 	else:
@@ -87,6 +88,7 @@ def printFileFromServer(self, zoneTexte):
 	else :
 		data = self.socket.recv(BUFFER_SIZE)
 		zoneTexte.insert(END, data)
+	self.side = "server"
 
 #Fonction pour envoyer un message string sur une socket
 def send(sock, message):
@@ -122,6 +124,8 @@ def eventOnClickClient(event, arbre, self, zoneTexte):
 	if os.path.isdir(path) == False:
 		getHashMdp(zoneTexte, path)
 	self.path_client = path
+	self.current = path
+	self.side = "client"
 
 def getHashMdp(zoneTexte, path):
 	subwindow = Toplevel()
@@ -145,3 +149,14 @@ def hashing(text, window, zoneTexte, path):
 	content = fd.read()
 	zoneTexte.insert(END, decoder.decrypt(content))
 	fd.close()
+
+
+
+#Fonction pour flush un message reçu par le client (virer l'autocomplétion)
+def flushRecv(sock):
+	data = sock.recv(BUFFER_SIZE).decode("Utf8")
+	test = data.split(" ")
+	if test[0] == ".config":
+		return sock.recv(BUFFER_SIZE).decode("Utf8")
+	else:
+		return data
