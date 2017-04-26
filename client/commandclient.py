@@ -10,7 +10,8 @@ import GUI
 
 TCP_IP = "127.0.0.1"
 TCP_PORT_REFRESHER = 8102
-from Crypto.Cipher import AES
+if os.name!="nt":
+	from Crypto.Cipher import AES
 import threading
 import readchar
 import signal
@@ -18,7 +19,10 @@ import signal
 BUFFER_SIZE = 2048
 
 path = ""
-
+if os.name=="nt":
+	separateur="\\"
+else:
+	separateur="/"
 
 def commandes_client(sock,mess):
 
@@ -160,7 +164,7 @@ def commandes_client(sock,mess):
 			#On lance le programme d'édition
 			os.system("python2.7 client/RightsAdministrator.py " + read + " " + write + " " + str(os.getpid()))
 			#On lit des information de retour
-			fd = open("client/tmp", 'r')
+			fd = open("client"+separateur+"tmp", 'r')
 			line = fd.readline()
 			send(sock, line)
 			line = fd.readline()

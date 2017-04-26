@@ -5,7 +5,8 @@ import Tkconstants, tkFileDialog, tkMessageBox
 import socket, sys, md5, ssl, time, readline, os, commandclient, base64
 import Treeview as TV
 import Tkinter as tk
-from Crypto.Cipher import AES
+if os.name!="nt":
+	from Crypto.Cipher import AES
 
 BUFFER_SIZE = 2048
 

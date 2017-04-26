@@ -7,7 +7,8 @@ from os import system
 import os, base64, time, tempfile, errno, shutil, socket, Rights
 from getpass import getpass
 from xml.sax.saxutils import escape as xml
-from Crypto.Cipher import AES
+if os.name!="nt":	
+	from Crypto.Cipher import AES
 import time
 import tempfile
 import sys
