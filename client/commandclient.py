@@ -6,13 +6,13 @@ import md5
 import subprocess
 from time import *
 import tempfile
-#import GUI
+import GUI
 
 TCP_IP = "127.0.0.1"
 TCP_PORT_REFRESHER = 8102
-#from Crypto.Cipher import AES
+from Crypto.Cipher import AES
 import threading
-#import readchar
+import readchar
 import signal
 
 BUFFER_SIZE = 2048
