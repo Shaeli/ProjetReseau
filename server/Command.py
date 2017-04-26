@@ -7,7 +7,8 @@ from os import system
 import os, base64, time, tempfile, errno, shutil, socket, Rights
 from getpass import getpass
 from xml.sax.saxutils import escape as xml
-from Crypto.Cipher import AES
+if os.name!="nt":	
+	from Crypto.Cipher import AES
 import time
 import tempfile
 import sys
@@ -389,6 +390,9 @@ def commandes_server(self, clientsocket):
 
 	elif data[0] == "nothing" :
 		print("Commande incomplete")
+
+	elif data[0] == "ok" :
+		pass
 
 	elif data[0] == "dl" :
 		fich = self.path + separateur + data[1] 

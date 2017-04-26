@@ -4,7 +4,8 @@
 import socket, os, time, md5, base64
 import xml.etree.ElementTree as ET
 from Tkinter import *
-from Crypto.Cipher import AES
+if os.name!="nt":
+	from Crypto.Cipher import AES
 
 TREEVIEW_ROOT = ""
 BUFFER_SIZE = 4096
