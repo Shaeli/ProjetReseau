@@ -19,6 +19,7 @@ import signal
 BUFFER_SIZE = 2048
 
 path = ""
+
 if os.name=="nt":
 	separateur="\\"
 else:
@@ -60,7 +61,17 @@ def commandes_client(sock,mess):
 	        return
 
 
-	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
+	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload , add
+	if mess[0] == "add":
+		if len(mess) != 2 :
+			chn = " ".join(mess)
+			send(sock,chn) #envoie du message
+			data = sock.recv(BUFFER_SIZE).decode("Utf8") #reception des donnees
+			message = ""
+			nb = data[0] #recuperation du nombre de message arrivant
+			taille = len(data) 
+		else :
+			send(sock,"nothing to do")
 	if mess[0] == "startx":
 		sock_refresher = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock_refresher.connect((TCP_IP, TCP_PORT_REFRESHER))
@@ -216,41 +227,14 @@ def commandes_client(sock,mess):
 					data = fp.read(BUFFER_SIZE)
 					send(sock,data)
 					num = num + BUFFER_SIZE
-					if pourcent == 0 and num > nboctets / 100 * 10 and num < nboctets / 100 * 20:
-						print " >> 10%",
-						pourcent = 1
-					elif pourcent == 1 and num > nboctets / 100 * 20 and num < nboctets / 100 * 30:
-						print " >> 20%",
-						pourcent = 2
-					elif pourcent < 3 and num > nboctets / 100 * 30 and num < nboctets / 100 * 40:
-						print " >> 30%",
-						pourcent = 3
-	 				elif pourcent < 4 and num > nboctets / 100 * 40 and num < nboctets / 100 * 50:
-						print " >> 40%",
-						pourcent = 4
-					elif pourcent < 5 and num > nboctets / 100 * 50 and num < nboctets / 100 * 60:
-						print " >> 50%",
-						pourcent = 5
-					elif pourcent < 6 and num > nboctets / 100 * 60 and num < nboctets / 100 * 70:
-						print " >> 60%",
-						pourcent = 6
-					elif pourcent < 7 and num > nboctets / 100 * 70 and num < nboctets / 100 * 80:
-						print " >> 70%",
-						pourcent = 7
-					elif pourcent < 8 and num > nboctets / 100 * 80 and num < nboctets / 100 * 90:
-						print " >> 80%",
-						pourcent = 8
-					elif pourcent < 9 and num > nboctets / 100 * 90 and num < nboctets / 100 * 100:
-						print " >> 90%"                    
-						pourcent = 9
-
 			else : #si il est possible d'envoyer en une fois
 				data = fp.read() 
 				if data == "":
-					send(" ", socket)
+					send(sock, " ")
 				else:
-					send(str(data), socket)
+					send(sock, str(data))
 			fp.close()
+			os.remove(fich)
 		else:
 			print "Droit d'écriture insuffisants."
 
