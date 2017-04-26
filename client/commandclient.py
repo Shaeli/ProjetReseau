@@ -78,8 +78,11 @@ def commandes_client(sock,mess):
 			chn = " ".join(mess)
 			send(sock,chn) #envoie du changement de chemin
 			tmp = sock.recv(BUFFER_SIZE).decode("Utf8")
-			taille=len(tmp)
-			path=tmp[6:taille] #mise a jour du nouveau chemin coté client
+			if tmp.split(",")[0]=="error":
+				print tmp.split(",")[1]
+			else:
+				taille=len(tmp)
+				path=tmp[6:taille] #mise a jour du nouveau chemin coté client
 
 	elif mess[0] == "ls": #commande ls
 		chn = " ".join(mess)

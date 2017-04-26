@@ -45,8 +45,12 @@ def commandes_server(self, clientsocket):
 
 	elif data[0] == "cd" : #commande cd
 		if len(data) != 1 :
-			if (data[1] in os.listdir(self.path))  : #si c'est dans la liste, ou "..", on peut changer le path
-				self.path = self.path + separateur + data[1]
+			if (data[1] in os.listdir(self.path) )  : #si c'est dans la liste, ou "..", on peut changer le path
+				if(os.path.isdir(self.path+separateur+data[1])):
+					self.path = self.path+separateur+data[1]
+					send(self,self.path,clientsocket)
+				else: 
+					send(self,"error,cd impossible: C'est un fichier",clientsocket)
 			elif data[1] == ".." :
 				if (self.path != "./data" and self.path!=".\\data"): #si le path est "./data" et l'on souhaite faire "cd ..", on ne le change pas, ce n'est pas possible
 					path = self.path.split(separateur)
@@ -56,9 +60,10 @@ def commandes_server(self, clientsocket):
 						self.path = self.path+separateur
 					nb=len(self.path)
 					self.path=self.path[0:nb-1]
+					send(self,self.path,clientsocket)
 			else :
-				print("pas de changement de path car cd pas bon")
-		send(self,self.path,clientsocket)
+				send(self,"error,cd impossible: Le dossier n'existe pas",clientsocket)
+		
 	elif data[0] == "cat" : #commande cat
 		if rights.isReadable(self.rights) and data[1] != ".config": #verification si l'on possede les droits
 			if (data[1] in os.listdir(self.path)) :
