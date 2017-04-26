@@ -3,7 +3,7 @@
 
 ***
 
-##Fonctionnalités de base
+## Fonctionnalités de base
 
 ### Client
 - [X] Saisie Login et mdp
