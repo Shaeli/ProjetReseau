@@ -20,44 +20,40 @@ BUFFER_SIZE = 2048
 path = ""
 
 
-class ThreadReception(threading.Thread):
-    """docstring for ThreadReception."""
-    def __init__(self, conn, thE, eventStop):
-        super(ThreadReception, self).__init__()
-        self.connexion = conn
-        self.thE = thE
-        self.eventStop = eventStop
-
-    def run(self):
-        while 1:
-            msg_r = self.connexion.recv(1024)
-            if msg_r.upper() == 'STOP':
-                self.eventStop.set()
-                subprocess.call("clear")
-                print "Appuyez sur n'importe qu'elle touche > "
-                self.thE.join()
-                break
-            sys.stdout.write(msg_r)
-            sys.stdout.flush()
-            pass
-        self.connexion.close()
-
-class ThreadEmission(threading.Thread):
-    """docstring for ThreadEmission."""
-    def __init__(self, conn, eventStop):
-        super(ThreadEmission, self).__init__()
-        self.connexion = conn
-        self.eventStop = eventStop
-
-    def run(self):
-        while not self.eventStop.isSet():
-            msg_r = readchar.readkey()
-            if not self.eventStop.isSet() :
-                self.connexion.send(msg_r)
-        print ""
-        return
-
 def commandes_client(sock,mess):
+
+
+	class Reception(threading.Thread):
+	    def __init__(self, so, Emiss, Fin):
+	        super(Reception, self).__init__()
+	        self.so = so
+	        self.Emiss = Emiss
+	        self.Fin = Fin
+	    def run(self):
+	        while 1:
+	            data = self.so.recv(1024)
+	            if data.upper() == 'FIN':
+	                self.Fin.set()
+	                subprocess.call("clear")
+	                print "Veuillez appuyer sur une touche, merci."
+	                self.Emiss.join()
+	                break
+	            sys.stdout.write(data)
+	            sys.stdout.flush()
+	            pass
+	        self.so.close()
+	class Emission(threading.Thread):
+	    def __init__(self, so, Fin):
+	        super(Emission, self).__init__()
+	        self.so = so
+	        self.Fin = Fin
+	    def run(self):
+	        while not self.Fin.isSet():
+	            data = readchar.readkey()
+	            if not self.Fin.isSet() :
+	                self.so.send(data)
+	        print ""
+	        return
 
 
 	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload
@@ -178,28 +174,19 @@ def commandes_client(sock,mess):
 	elif mess[0] == "vim" :
 
 		ip = "127.0.0.1"
-		port = 7000
+		port = 6300
 		chn = " ".join(mess) 
 		send(sock,chn)
 		openingTry = sock.recv(BUFFER_SIZE).decode("Utf8")
 		if openingTry != "no":
-				
-			conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			try:
-			    conn.connect((ip, port))
-			    pass
-			except socket.error:
-			    sys.stderr.write("La connexion à échoué\n")
-			    sys.exit()
-			print "La connexion établie avec le serveur"
-
-			eventStop = threading.Event()
-
-
-			thE = ThreadEmission(conn,eventStop)
-			thR = ThreadReception(conn, thE,eventStop)
-			thE.start()
-			thR.start()
+			Fin = threading.Event()	
+			so = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			so.connect((ip, port))
+			print "Connexion en cours, veuillez patienter"
+			Emiss = Emission(so, Fin)
+			Recep = Reception(so, Emiss,Fin)
+			Emiss.start()
+			Recep.start()
 		else:
 			print "Droits de lecture et écriture insuffisants"
 		sys.stdin.flush()

@@ -198,8 +198,8 @@ def commandes_server(self, clientsocket):
 
 	elif data[0] == "vim":
 		IP = "127.0.0.1"
-		port = 7000
-		droit=False
+		port = 6300
+		droit = False
 		file = self.path +"/" + data[1]
 		print file
 		if rights.isWritable(self.rights):
@@ -215,7 +215,7 @@ def commandes_server(self, clientsocket):
 			sock_serv.listen(10)
 			(conn, (ip, port)) = sock_serv.accept()
 			subprocess.call(["rvim", file], bufsize=0, stdin=conn, stdout=conn)
-			conn.send("STOP");
+			conn.send("FIN");
 
 
 
