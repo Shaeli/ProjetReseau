@@ -21,11 +21,13 @@
 - [X] Utilisation de connexions chiffrées pour le client et le serveur (utilisation de certificats par exemple)
 - [X] Le client peut stocker localement des fichiers chiffrés et les ouvrir sans qu'ils apparaissent en clair sur le poste client
 - [X] Client et Serveur sous Windows
-- [ ] Client et serveur sur des systèmes hétérogènes (serveur linux et client windows)
+- [X] Client et serveur sur des systèmes hétérogènes (serveur linux et client windows)
 
 ## LIB NECESSAIRES :
-
-
+  
+  -pip
+  -Tkinter 
+  -Tix
   -PyCrypto
   -readchar
 
@@ -33,31 +35,27 @@
 
 Deux équipes travaillent en parallèle, l'une sur tout ce qui est connection entre les deux entités, l'autre sur la partie fonctionnement.
 
-Etapes achevés:
+### Etapes achevés:
 
 - [X] Etape 1 : Serveur multithreadé et connection client basique (echo sans authentification)   
 - [X] Etape 2 : Connection par mot de passe - Implémentation des commandes classiques            
-- [X] Etape : Comptabilité Windows (client seulement)
-- [X] Etape : Ergonomie dans les commandes + test d'exception
-- [X] Etape 3 : Connection chiffrée via certificat   
-- [X] Etape : Le client peut ajouter des donnees dans les fichiers ~ en mode console
-- [X] Etape : Rajouter mkdir et rm
-- [X] Autocomplétion
-- [X] Dépot de documents
-- [X] Création de dossiers ou fichiers avec certains privilèges
-- [X] Chiffrement local des documents - Editions de documents 
+- [X] Etape 3 : Comptabilité Windows (client seulement)
+- [X] Etape 4 : Ergonomie dans les commandes + test d'exception
+- [X] Etape 5 : Connection chiffrée via certificat   
+- [X] Etape 6 : Le client peut ajouter des donnees dans les fichiers ~ en mode console
+- [X] Etape 7 : Rajouter mkdir et rm
+- [X] Etape 8 : Autocomplétion
+- [X] Etape 9 : Dépot de documents
+- [X] Etape 10 : Création de dossiers ou fichiers avec certains privilèges
+- [X] Etape 11 : Chiffrement local des documents - Editions de documents 
+- [X] Etape 12 : Adaptation windows
+- [X] Etape 13 : Client graphique
+- [X] Etape 14 : Faire de la place au niveaux des threads             
+- [X] Etape 15 : Envoit de flux graphiques             
+- [X] Etape 16 : Ajout de fonctionnalités
+- [X] Etape 17 : Regler probleme de cd : differencier les dossiers /fichier? + si cd dans un fichier -> NOP.
+- [X] Etape 18 :commande clear
 
-Etapes en cours:
+### Etapes en cours:
 
-- [ ] Adaptation windows
-- [ ] Client graphique
-- [ ] Faire de la place au niveaux des thread
-- [ ] Regler probleme de cd : differencier les dossiers /fichier? + si cd dans un fichier -> NOP.
-- [ ] commande clear
-
-Etapes futures:
-
-- [ ] Faire de la place au niveaux des thread                
-- [ ] Etape : Envoit de flux graphiques             
-- [ ] Etape : Ajout de fonctionnalités
->>>>>>> 88ec9cc285853ea31c35697edbcc47f311005347
+### Etapes futures:
