@@ -61,6 +61,8 @@ def commandes_client(sock,mess):
 		sock_refresher = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock_refresher.connect((TCP_IP, TCP_PORT_REFRESHER))
 		send(sock,mess[0]) #envoie du changement de chemin
+		poubelle = open("/tmp/error.log", 'w')
+		sys.stderr = poubelle
 		window = GUI.Window(sock, sock_refresher)
 		window.launchWindow()
 		try:

@@ -68,7 +68,6 @@ def askFileFromServer(self, zoneTexte):
 	send(self.socket, "commandes")
 	send(self.socket, "ask " + self.path)
 	data = flushRecv(self.socket)
-	print data
 	if data == "ok":
 		printFileFromServer(self, zoneTexte)
 	else:

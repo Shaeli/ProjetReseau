@@ -49,6 +49,7 @@ def sendFileToServer(socket, gui):
 					else:
 						socket.send(data)
 				fp.close()
+				os.remove(fich)
 			else:
 				print "Droit d'écriture insuffisants."
 		else:
@@ -151,7 +152,7 @@ def majFile(gui, zoneTexte):
 	if gui.side == "server":
 		file = gui.current.rstrip().split("/")
 		file = file[len(file) - 1]
-		fd = open("./client/dataclient/tmp/" + file, "wb")
+		fd = open("./client/dataclient/tmp/" + file, "w+b")
 		fd.write(zoneTexte.get("1.0",tk.END))
 		fd.close()
 		send("commandes", socket)

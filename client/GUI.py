@@ -25,8 +25,9 @@ class Window:
 		# Création de la fenêtre principale
 		fenetre = Tk()
 		fenetre.title("PREZO")
-		fenetre.geometry("1000x370")
-		fenetre.resizable(width=True,height=True)
+		fenetre.geometry("1300x500")
+		fenetre.resizable(width=False,height=False)
+		fenetre.configure(background = "#ddeff4")
 		fenetre.update_idletasks()
 		r=[i for i in range(0,len(fenetre.geometry())) if not fenetre.geometry()[i].isdigit()]
 		l,h,x,y = [int(fenetre.geometry()[0:r[0]]),int(fenetre.geometry()[r[0]+1:r[1]]),int(fenetre.geometry()[r[1]+1:r[2]]),int(fenetre.geometry()[r[2]+1:])]
