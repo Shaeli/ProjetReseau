@@ -161,7 +161,7 @@ def commandes_client(sock,mess):
 			#On récupère les droits
 			read = sock.recv(BUFFER_SIZE).decode("Utf8")
 			write = sock.recv(BUFFER_SIZE).decode("Utf8")
-			#On lance le programme d'édition
+			#On lance sys.stderr = fsock  le programme d'édition
 			os.system("python2.7 client/RightsAdministrator.py " + read + " " + write + " " + str(os.getpid()))
 			#On lit des information de retour
 			fd = open("client/tmp", 'r')
@@ -254,7 +254,7 @@ def commandes_client(sock,mess):
 			os.system('cls')  # on windows
 		else :
 			os.system('clear') # on linux
-		send(sock,"nothing to do")
+		send(sock,"ok")
 	else :
 		print("Commande non reconnue")
 

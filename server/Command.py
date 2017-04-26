@@ -390,6 +390,9 @@ def commandes_server(self, clientsocket):
 	elif data[0] == "nothing" :
 		print("Commande incomplete")
 
+	elif data[0] == "ok" :
+		pass
+
 	elif data[0] == "dl" :
 		fich = self.path + separateur + data[1] 
 		droits = True
