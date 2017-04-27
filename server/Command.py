@@ -53,7 +53,7 @@ def commandes_server(self, clientsocket):
 				else: 
 					send(self,"error,cd impossible: C'est un fichier",clientsocket)
 			elif data[1] == ".." :
-				if (self.path != "./data" and self.path!=".\\data"): #si le path est "./data" et l'on souhaite faire "cd ..", on ne le change pas, ce n'est pas possible
+				if ((self.path != "./data") or (self.path!=".\\data")): #si le path est "./data" et l'on souhaite faire "cd ..", on ne le change pas, ce n'est pas possible
 					path = self.path.split(separateur)
 					self.path = ""
 					for i in range(0,len(path)-1): #mise a jour du nouveau path
@@ -207,7 +207,6 @@ def commandes_server(self, clientsocket):
 		port = 6300
 		droit = False
 		file = self.path +"/" + data[1]
-		print file
 		if rights.isWritable(self.rights):
 			send(self,"ok",clientsocket)
 			droit=True
@@ -413,7 +412,7 @@ def commandes_server(self, clientsocket):
 			except:
 				send(self,"Ce fichier n'existe pas!\n",clientsocket)
 			if exist :
-				cle = self.id_cli
+				cle = self.mdp
 				cle += '\0' *(-len(cle)%16)
 				codeur = AES.new(cle,AES.MODE_ECB)
 				fp = open(fich,'rb')
