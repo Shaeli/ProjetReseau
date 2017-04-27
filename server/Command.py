@@ -62,6 +62,9 @@ def commandes_server(self, clientsocket):
 					nb=len(self.path)
 					self.path=self.path[0:nb-1]
 					send(self,self.path,clientsocket)
+				else:
+					send(self,"error, cd imossible : racine",clientsocket)
+
 			else :
 				send(self,"error,cd impossible: Le dossier n'existe pas",clientsocket)
 		else:
