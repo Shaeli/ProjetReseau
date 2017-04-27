@@ -30,7 +30,7 @@ def check_data(completionstring):
 
 def client(): #Fonction client
 	global id_cli
-	print "Bienvenu sur le serveur de l'hopital !"
+	print "Bienvenue sur le serveur de l'hopital !"
 	print "veullez vous connecter :"
 	#print("Connexion sur le port " + str(TCP_PORT) + "\n")
 	#print("Adresse IP : " + str(TCP_IP) + "\n")
@@ -87,11 +87,18 @@ def en_route():
 			break
 	#Si commandes, on lance l'état commande chez le client
 		elif data[0] == "startx" or data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm" or data[0] == "touch" or data[0] == "add" or data[0] == "mkdir" or data[0] == "vim" or data[0] == "rights" or data[0] == "dl" or data[0]=="clear" or data[0] == "admin" or data[0] == "upload":
+			secu_ind=0
 			send(ssl_sock,"commandes")
 			time.sleep(0.1)
 			commandclient.commandes_client(ssl_sock,data)
 		else:
-			send(ssl_sock,str(data))
+			if secu_ind >6:
+				print"votre connexion semble instable, veuillez verifier votre connexion et vous reconnectez"
+				break
+			else:
+				secu_ind+=1
+				print "commande non reconnnue"
+				send(ssl_sock,str(data))
 	#Fermeture de la socket
 	sock.close()
 	ssl_sock.close()
