@@ -445,9 +445,7 @@ def commandes_server(self, clientsocket):
 		etat=False
 		ls ="ls" + " " + self.path
 		lst = os.popen(ls).readlines()
-		for i, item in enumerate(lst) :
-			lst[i] = item.rstrip()
-		if (data[1] in lst) :
+		if (data[1] in os.listdir(self.path)) :
 			data[1] = self.path+separateur+data[1]
 			fichier = data[1]
 			chn = "cat " + fichier
@@ -464,7 +462,10 @@ def commandes_server(self, clientsocket):
 			send(self,"0Le fichier n'existe pas, creez le avant d'ajouter du texte\n",clientsocket)
 		if etat == True :
 			ajout = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
-			commande = 'echo "' + ajout + '" ' + ">>" + " " + fichier
+			if os.name=="nt":
+				commande = 'echo ' + ajout + ">>" + " " + fichier
+			else:	
+				commande = 'echo "' + ajout + '" ' + ">>" + " " + fichier
 			os.system(commande)
 	else:
 		print "commande non reconnue"
