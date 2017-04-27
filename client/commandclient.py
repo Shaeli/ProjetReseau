@@ -62,16 +62,6 @@ def commandes_client(sock,mess):
 
 
 	#Liste des commandes implémentées : cd, ls, cat, mv , rm, mkdir, touch, add, vim, upload , add
-	if mess[0] == "add":
-		if len(mess) != 2 :
-			chn = " ".join(mess)
-			send(sock,chn) #envoie du message
-			data = sock.recv(BUFFER_SIZE).decode("Utf8") #reception des donnees
-			message = ""
-			nb = data[0] #recuperation du nombre de message arrivant
-			taille = len(data) 
-		else :
-			send(sock,"nothing to do")
 	if mess[0] == "startx":
 		sock_refresher = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock_refresher.connect((TCP_IP, TCP_PORT_REFRESHER))
@@ -103,12 +93,12 @@ def commandes_client(sock,mess):
 		data = sock.recv(BUFFER_SIZE).decode("Utf8") #recuperation de la reponse
 		message = ""
 		nb = data[0] #récuperation du chiffre indiquant combien de message vont arriver
-		taille = len(data) 
+		taille = len(data)
 		for i in range(taille-1) : #affichage du premier message sans le premier octet (le chiffre indiquant le nombre de message)
 			message = message+data[i+1]
 		sys.stdout.write(message) #on imprime a l'ecran le resultat
 		if int(nb) > 0 : #si il y a plusieurs messages, on recommence avec les autres
-			a = int(nb) 
+			a = int(nb)
 			for i in range(a):
 				data = sock.recv(BUFFER_SIZE).decode("Utf8")
 				sys.stdout.write(data)
@@ -119,12 +109,12 @@ def commandes_client(sock,mess):
 			data = sock.recv(BUFFER_SIZE).decode("Utf8") #reception des donnees
 			message = ""
 			nb = data[0] #recuperation du nombre de message arrivant
-			taille = len(data) 
+			taille = len(data)
 			for i in range(taille-1) : #affichage du premier message sans le premier caractere
 				message = message+data[i+1]
 			sys.stdout.write(message)
 			if int(nb) > 0 : #si il y a plusieurs messages, recuperation et affichage des autre messages
-				a=int(nb) 
+				a=int(nb)
 				for i in range(a):
 					data = sock.recv(BUFFER_SIZE).decode("Utf8")
 					sys.stdout.write(data)
@@ -132,7 +122,7 @@ def commandes_client(sock,mess):
 			send(sock,"nothing to do")
 	elif mess[0] == "mv": #commande mv
 		if len(mess) != 2 :
-			chn = " ".join(mess) 
+			chn = " ".join(mess)
 			send(sock,chn)
 		else :
 			send(sock,"nothing to do")
@@ -140,7 +130,7 @@ def commandes_client(sock,mess):
 		if len(mess) != 1 :
 			chn = " ".join(mess)
 			send(sock,chn) #envoie du fichier a supprimer
-			data = sock.recv(BUFFER_SIZE).decode("Utf8") 
+			data = sock.recv(BUFFER_SIZE).decode("Utf8")
 			sys.stdout.write(data)
 		else :
 			send(sock,"nothing to do")
@@ -195,11 +185,11 @@ def commandes_client(sock,mess):
 
 		ip = "127.0.0.1"
 		port = 6300
-		chn = " ".join(mess) 
+		chn = " ".join(mess)
 		send(sock,chn)
 		openingTry = sock.recv(BUFFER_SIZE).decode("Utf8")
 		if openingTry != "no":
-			Fin = threading.Event()	
+			Fin = threading.Event()
 			so = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			so.connect((ip, port))
 			print "Connexion en cours, veuillez patienter"
@@ -230,7 +220,7 @@ def commandes_client(sock,mess):
 					send(sock,data)
 					num = num + BUFFER_SIZE
 			else : #si il est possible d'envoyer en une fois
-				data = fp.read() 
+				data = fp.read()
 				if data == "":
 					send(sock, " ")
 				else:
@@ -261,13 +251,32 @@ def commandes_client(sock,mess):
 				else :
 					data=sock.recv(BUFFER_SIZE)
 					fp.write(data)
-				fp.close()	
+				fp.close()
 	elif mess[0] == "clear" :
 		if os.name == "nt":
 			os.system('cls')  # on windows
 		else :
 			os.system('clear') # on linux
 		send(sock,"ok")
+	elif mess[0] == "add" : #commande add
+		chn = " ".join(mess)
+		send(sock,chn)
+		data = sock.recv(BUFFER_SIZE).decode("Utf8")
+		message = ""
+		nb = int(data[0])
+		taille = len(data)
+		for i in range(taille-1) :
+			message = message+data[i+1]
+		sys.stdout.write(message)
+		if nb > 0 :
+			for i in range(nb):
+				data = sock.recv(BUFFER_SIZE).decode("Utf8")
+				sys.stdout.write(data)
+		if data != "0Le fichier n'existe pas, creez le avant d'ajouter du texte\n" :
+			print("\n \n Que voulez vous rajouter a ce fichier ?\n")
+			ajout = sys.stdin.readline()
+			ajout = ajout.rstrip()
+			send(sock,ajout)
 	else :
 		print("Commande non reconnue")
 

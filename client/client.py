@@ -30,8 +30,10 @@ def check_data(completionstring):
 
 def client(): #Fonction client
 	global id_cli
-	print("Connexion sur le port " + str(TCP_PORT) + "\n") 
-	print("Adresse IP : " + str(TCP_IP) + "\n")
+	print "Bienvenu sur le serveur de l'hopital !"
+	print "veullez vous connecter :"
+	#print("Connexion sur le port " + str(TCP_PORT) + "\n")
+	#print("Adresse IP : " + str(TCP_IP) + "\n")
 	acces = "access denied"
 	while acces == "access denied" :
 	#Connection via id et mdp
@@ -43,7 +45,7 @@ def client(): #Fonction client
 
 		acces = ssl_sock.recv(BUFFER_SIZE)
 		if acces == "stop" : #trop de tentatives de connexions echoues, on coupe la connexion
-			print "mauvais mot de passe consécutifs, connexion annulee"
+			print "trop de mauvais mot de passe consécutifs, connexion annulee"
 			sock.close()
 			break
 		if acces == "access granted" : 	#Si on accepte l'accès au serveur
@@ -57,11 +59,11 @@ def en_route():
 	#Initialisation de l'autocompletion
 	global table_new
 	global table_commandes
-	completer = ac.AutoCompleter(table_commandes) 
+	completer = ac.AutoCompleter(table_commandes)
 	#bind de la touche <TAB>
-	readline.set_completer(completer.complete) 
+	readline.set_completer(completer.complete)
 	readline.parse_and_bind('tab: complete')
-	while True : 
+	while True :
 	#Mise à jour table d'auto_completion
 		table_client = []
 		completion = ssl_sock.recv(BUFFER_SIZE)
@@ -81,14 +83,14 @@ def en_route():
 		data = data.split(" ")
 	#Si quit, on quitte le prgramme en fermant la socket
 		if data[0] == "quit":
-			print("\nFermeture de la socket client\n")
+			print("\nDeconnexion du serveur de l'hopital\n")
 			break
 	#Si commandes, on lance l'état commande chez le client
 		elif data[0] == "startx" or data[0] == "ls" or data[0] == "cd" or data[0] == "mv" or data[0] == "cat" or data[0] == "rm" or data[0] == "touch" or data[0] == "add" or data[0] == "mkdir" or data[0] == "vim" or data[0] == "rights" or data[0] == "dl" or data[0]=="clear" or data[0] == "admin" or data[0] == "upload":
 			send(ssl_sock,"commandes")
 			time.sleep(0.1)
 			commandclient.commandes_client(ssl_sock,data)
-		else: 
+		else:
 			send(ssl_sock,str(data))
 	#Fermeture de la socket
 	sock.close()
@@ -100,9 +102,8 @@ def send(sock, message):
 
 if __name__ == '__main__': #Connexion et appel à la fonction client
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	ssl_sock = ssl.wrap_socket(sock, 
+	ssl_sock = ssl.wrap_socket(sock,
 								ca_certs = "server/sslcertif/server.crt",
 								cert_reqs = ssl.CERT_REQUIRED)
 	ssl_sock.connect((TCP_IP, TCP_PORT))
 	client()
-

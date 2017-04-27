@@ -7,7 +7,7 @@ from os import system
 import os, base64, time, tempfile, errno, shutil, socket, Rights
 from getpass import getpass
 from xml.sax.saxutils import escape as xml
-if os.name!="nt":	
+if os.name!="nt":
 	from Crypto.Cipher import AES
 import time
 import tempfile
@@ -22,7 +22,7 @@ if os.name=="nt":
 	separateur="\\"
 else:
 	separateur="/"
-	
+
 def commandes_server(self, clientsocket):
 	self.path=self.path.replace("/",separateur)
 	tampon = ""
@@ -46,14 +46,14 @@ def commandes_server(self, clientsocket):
 
 	elif data[0] == "cd" : #commande cd
 		if len(data) != 1 :
-			if (data[1] in os.listdir(self.path) )  : #si c'est dans la liste, ou "..", on peut changer le path
+			if (data[1] in os.listdir(self.path) and data[1]!="..")  : #si c'est dans la liste, ou "..", on peut changer le path
 				if(os.path.isdir(self.path+separateur+data[1])):
 					self.path = self.path+separateur+data[1]
 					send(self,self.path,clientsocket)
-				else: 
+				else:
 					send(self,"error,cd impossible: C'est un fichier",clientsocket)
 			elif data[1] == ".." :
-				if ((self.path != "./data") or (self.path!=".\\data")): #si le path est "./data" et l'on souhaite faire "cd ..", on ne le change pas, ce n'est pas possible
+				if ((self.path != "./data") and (self.path!=".\\data")): #si le path est "./data" et l'on souhaite faire "cd ..", on ne le change pas, ce n'est pas possible
 					path = self.path.split(separateur)
 					self.path = ""
 					for i in range(0,len(path)-1): #mise a jour du nouveau path
@@ -64,7 +64,9 @@ def commandes_server(self, clientsocket):
 					send(self,self.path,clientsocket)
 			else :
 				send(self,"error,cd impossible: Le dossier n'existe pas",clientsocket)
-		
+		else:
+			send(self,"error, synthaxe : cd \"path\"",clientsocket)
+
 	elif data[0] == "cat" : #commande cat
 		if rights.isReadable(self.rights) and data[1] != ".config": #verification si l'on possede les droits
 			if (data[1] in os.listdir(self.path)) :
@@ -164,7 +166,7 @@ def commandes_server(self, clientsocket):
 	elif data[0] == "admin":
 		if rights.isOwner(self.Thread_name):
 			#Envoie des données à l'application graphique
-			send(self, "yes", clientsocket)			
+			send(self, "yes", clientsocket)
 			config = open(self.path +separateur+".config", "r")
 			config.readline()
 			line = config.readline().replace(";", ",").replace(" ", "").rstrip()
@@ -270,7 +272,7 @@ def commandes_server(self, clientsocket):
 		path = path[0:len(path) - 1]
 		path = "/".join(path)
 		rights = Rights.Rights(path)
-		fich = data[1] 
+		fich = data[1]
 		droits = True
 		exist = False
 		if rights.isWritable(self.rights) :
@@ -306,7 +308,7 @@ def commandes_server(self, clientsocket):
 				elif nboctets == 0 :
 					pass
 				else : #si il est possible d'envoyer en une fois
-					data = fp.read() 
+					data = fp.read()
 					data += '\0' *(-len(data)%16)
 					datacryptes = codeur.encrypt(data.encode("utf8"))
 					self.clientsocket.send(datacryptes)
@@ -383,7 +385,7 @@ def commandes_server(self, clientsocket):
 		arbostring =initialisationXML("data")
 		str(arbostring)
 		send(self, arbostring ,clientsocket)
-		
+
 	elif data[0] == "getpass":
 		send(self,self.path,clientsocket)
 
@@ -394,7 +396,7 @@ def commandes_server(self, clientsocket):
 		pass
 
 	elif data[0] == "dl" :
-		fich = self.path + separateur + data[1] 
+		fich = self.path + separateur + data[1]
 		droits = True
 		exist = False
 		if rights.isWritable(self.rights) :
@@ -430,12 +432,37 @@ def commandes_server(self, clientsocket):
 				elif nboctets == 0 :
 					pass
 				else : #si il est possible d'envoyer en une fois
-					data = fp.read() 
+					data = fp.read()
 					data += '\0' *(-len(data)%16)
 					datacryptes = codeur.encrypt(data)
 					self.clientsocket.send(datacryptes)
 					#send(self,datacryptes,clientsocket)
 				fp.close()
+	elif data[0] == "add" :
+		etat=False
+		ls ="ls" + " " + self.path
+		lst = os.popen(ls).readlines()
+		for i, item in enumerate(lst) :
+			lst[i] = item.rstrip()
+		if (data[1] in lst) :
+			data[1] = self.path+separateur+data[1]
+			fichier = data[1]
+			chn = "cat " + fichier
+			res = os.popen(chn).readlines()
+			for mot in res :
+				tampon = tampon + mot
+			taille = len(tampon)/BUFFER_SIZE
+			tampon = str(taille) + tampon
+			tampon = tampon + "\n"
+			send(self,tampon,clientsocket)
+			del tampon
+			etat=True
+		else :
+			send(self,"0Le fichier n'existe pas, creez le avant d'ajouter du texte\n",clientsocket)
+		if etat == True :
+			ajout = self.clientsocket.recv(BUFFER_SIZE).decode("Utf8")
+			commande = 'echo "' + ajout + '" ' + ">>" + " " + fichier
+			os.system(commande)
 	else:
 		print "commande non reconnue"
 
