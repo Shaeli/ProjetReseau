@@ -37,7 +37,8 @@ def commandes_client(sock,mess):
 	    def run(self):
 	        while 1:
 	            data = self.so.recv(1024)
-	            if data.upper() == 'FIN':
+		    data=data.rstrip()
+	            if data == "FIN":
 	                self.Fin.set()
 	                subprocess.call("clear")
 	                print "Veuillez appuyer sur une touche, merci."
@@ -201,6 +202,7 @@ def commandes_client(sock,mess):
 			print "Droits de lecture et écriture insuffisants"
 		sys.stdin.flush()
 		sys.stdout.flush()
+
 
 	elif mess[0] == "upload" :
 		chn = " ".join(mess)
