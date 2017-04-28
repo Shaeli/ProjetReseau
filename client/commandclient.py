@@ -37,8 +37,9 @@ def commandes_client(sock,mess):
 	    def run(self):
 	        while 1:
 	            data = self.so.recv(1024)
-		    data=data.rstrip()
-	            if data == "FIN":
+		    data=data.strip()
+		
+	            if "FIN" in data:
 	                self.Fin.set()
 	                subprocess.call("clear")
 	                print "Veuillez appuyer sur une touche, merci."
