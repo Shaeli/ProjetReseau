@@ -1,5 +1,4 @@
 # Projet système et réseau
-## Application coopérative médicale
 
 ## LIB NECESSAIRES :
   
